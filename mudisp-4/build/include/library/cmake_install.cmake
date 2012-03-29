@@ -1,4 +1,4 @@
-# Install script for directory: /home/iltrauma/MuDiSP_4_Release/mudisp4/include/library
+# Install script for directory: /home/massimo/MuDiSP4/mudisp-4/include/library
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,8 +34,8 @@ ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/library/base" TYPE FILE FILES
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/library/base/filter.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/library/base/write.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/library/base/filter.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/library/base/write.h"
     )
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 

@@ -1,4 +1,4 @@
-# Install script for directory: /home/iltrauma/MuDiSP_4_Release/mudisp4
+# Install script for directory: /home/massimo/MuDiSP4/mudisp-4
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -33,25 +33,26 @@ IF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "libraries")
-  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/iltrauma/MuDiSP_4_Release/mudisp4/build/mudisp.pc")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/massimo/MuDiSP4/mudisp-4/build/mudisp.pc")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "libraries")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/docs" TYPE FILE FILES
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/README"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/LICENSE"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/AUTHORS"
+    "/home/massimo/MuDiSP4/mudisp-4/README"
+    "/home/massimo/MuDiSP4/mudisp-4/LICENSE"
+    "/home/massimo/MuDiSP4/mudisp-4/AUTHORS"
     )
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE FILE FILES "/home/iltrauma/MuDiSP_4_Release/mudisp4/Makefile.sim")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE FILE FILES "/home/massimo/MuDiSP4/mudisp-4/Makefile.sim")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  INCLUDE("/home/iltrauma/MuDiSP_4_Release/mudisp4/build/docs/cmake_install.cmake")
-  INCLUDE("/home/iltrauma/MuDiSP_4_Release/mudisp4/build/include/cmake_install.cmake")
+  INCLUDE("/home/massimo/MuDiSP4/mudisp-4/build/docs/cmake_install.cmake")
+  INCLUDE("/home/massimo/MuDiSP4/mudisp-4/build/include/cmake_install.cmake")
+  INCLUDE("/home/massimo/MuDiSP4/mudisp-4/build/lib/cmake_install.cmake")
 
 ENDIF(NOT CMAKE_INSTALL_LOCAL_ONLY)
 
@@ -61,7 +62,7 @@ ELSE(CMAKE_INSTALL_COMPONENT)
   SET(CMAKE_INSTALL_MANIFEST "install_manifest.txt")
 ENDIF(CMAKE_INSTALL_COMPONENT)
 
-FILE(WRITE "/home/iltrauma/MuDiSP_4_Release/mudisp4/build/${CMAKE_INSTALL_MANIFEST}" "")
+FILE(WRITE "/home/massimo/MuDiSP4/mudisp-4/build/${CMAKE_INSTALL_MANIFEST}" "")
 FOREACH(file ${CMAKE_INSTALL_MANIFEST_FILES})
-  FILE(APPEND "/home/iltrauma/MuDiSP_4_Release/mudisp4/build/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
+  FILE(APPEND "/home/massimo/MuDiSP4/mudisp-4/build/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
 ENDFOREACH(file)

@@ -31,67 +31,70 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# The program to use to edit the cache.
+CMAKE_EDIT_COMMAND = /usr/bin/cmake-gui
+
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/iltrauma/MuDiSP_4_Release/mudisp4
+CMAKE_SOURCE_DIR = /home/massimo/MuDiSP4/mudisp-4
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/iltrauma/MuDiSP_4_Release/mudisp4/build
+CMAKE_BINARY_DIR = /home/massimo/MuDiSP4/mudisp-4/build
 
 # Utility rule file for doxygen_docs.
 
 docs/CMakeFiles/doxygen_docs: docs/doxygen
 
-docs/doxygen: ../include/library/base/write.h
-docs/doxygen: ../include/library/base/filter.h
 docs/doxygen: ../include/config.h
-docs/doxygen: ../include/CommonLib/BitVector.h
-docs/doxygen: ../include/CommonLib/Configuration.h
-docs/doxygen: ../include/CommonLib/Logger.h
-docs/doxygen: ../include/CommonLib/F16.h
-docs/doxygen: ../include/CommonLib/Threads.h
-docs/doxygen: ../include/CommonLib/Regexp.h
-docs/doxygen: ../include/CommonLib/rndgen.h
-docs/doxygen: ../include/CommonLib/Sockets.h
-docs/doxygen: ../include/CommonLib/Timeval.h
-docs/doxygen: ../include/CommonLib/Interthread.h
-docs/doxygen: ../include/CommonLib/Vector.h
-docs/doxygen: ../include/CommonLib/LinkedLists.h
-docs/doxygen: ../include/mudisp/engine/port.h
-docs/doxygen: ../include/mudisp/engine/main.h
-docs/doxygen: ../include/mudisp/engine/lcm.h
-docs/doxygen: ../include/mudisp/engine/block.h
-docs/doxygen: ../include/mudisp/engine/param.h
-docs/doxygen: ../include/mudisp/engine/parlist.h
-docs/doxygen: ../include/mudisp/engine/mudisp.h
 docs/doxygen: ../include/mudisp/engine/errors.h
-docs/doxygen: ../include/tnt/region1d.h
-docs/doxygen: ../include/tnt/tntmath.h
-docs/doxygen: ../include/tnt/transv.h
-docs/doxygen: ../include/tnt/cmat.h
-docs/doxygen: ../include/tnt/stpwatch.h
-docs/doxygen: ../include/tnt/tnt.h
-docs/doxygen: ../include/tnt/trislv.h
-docs/doxygen: ../include/tnt/tntreqs.h
-docs/doxygen: ../include/tnt/blas.h
-docs/doxygen: ../include/tnt/tntcmplx.h
-docs/doxygen: ../include/tnt/subscrpt.h
-docs/doxygen: ../include/tnt/version.h
-docs/doxygen: ../include/tnt/qr.h
-docs/doxygen: ../include/tnt/index.h
-docs/doxygen: ../include/tnt/lapack.h
-docs/doxygen: ../include/tnt/fspvec.h
-docs/doxygen: ../include/tnt/triang.h
-docs/doxygen: ../include/tnt/cholesky.h
-docs/doxygen: ../include/tnt/lu.h
-docs/doxygen: ../include/tnt/fcscmat.h
-docs/doxygen: ../include/tnt/region2d.h
+docs/doxygen: ../include/mudisp/engine/param.h
+docs/doxygen: ../include/mudisp/engine/block.h
+docs/doxygen: ../include/mudisp/engine/lcm.h
+docs/doxygen: ../include/mudisp/engine/port.h
+docs/doxygen: ../include/mudisp/engine/mudisp.h
+docs/doxygen: ../include/mudisp/engine/main.h
+docs/doxygen: ../include/mudisp/engine/parlist.h
 docs/doxygen: ../include/tnt/fmat.h
 docs/doxygen: ../include/tnt/vec.h
-docs/doxygen: ../include/tnt/vecadaptor.h
+docs/doxygen: ../include/tnt/fcscmat.h
+docs/doxygen: ../include/tnt/region2d.h
+docs/doxygen: ../include/tnt/tntmath.h
+docs/doxygen: ../include/tnt/version.h
+docs/doxygen: ../include/tnt/index.h
+docs/doxygen: ../include/tnt/trislv.h
+docs/doxygen: ../include/tnt/stpwatch.h
+docs/doxygen: ../include/tnt/tntcmplx.h
+docs/doxygen: ../include/tnt/tntreqs.h
+docs/doxygen: ../include/tnt/qr.h
+docs/doxygen: ../include/tnt/tnt.h
+docs/doxygen: ../include/tnt/blas.h
+docs/doxygen: ../include/tnt/cholesky.h
+docs/doxygen: ../include/tnt/transv.h
 docs/doxygen: ../include/tnt/fortran.h
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/iltrauma/MuDiSP_4_Release/mudisp4/build/CMakeFiles $(CMAKE_PROGRESS_1)
+docs/doxygen: ../include/tnt/vecadaptor.h
+docs/doxygen: ../include/tnt/lu.h
+docs/doxygen: ../include/tnt/cmat.h
+docs/doxygen: ../include/tnt/triang.h
+docs/doxygen: ../include/tnt/fspvec.h
+docs/doxygen: ../include/tnt/subscrpt.h
+docs/doxygen: ../include/tnt/lapack.h
+docs/doxygen: ../include/tnt/region1d.h
+docs/doxygen: ../include/library/base/write.h
+docs/doxygen: ../include/library/base/filter.h
+docs/doxygen: ../include/CommonLib/Logger.h
+docs/doxygen: ../include/CommonLib/LinkedLists.h
+docs/doxygen: ../include/CommonLib/Vector.h
+docs/doxygen: ../include/CommonLib/Regexp.h
+docs/doxygen: ../include/CommonLib/F16.h
+docs/doxygen: ../include/CommonLib/Configuration.h
+docs/doxygen: ../include/CommonLib/Interthread.h
+docs/doxygen: ../include/CommonLib/rndgen.h
+docs/doxygen: ../include/CommonLib/BitVector.h
+docs/doxygen: ../include/CommonLib/Timeval.h
+docs/doxygen: ../include/CommonLib/Sockets.h
+docs/doxygen: ../include/CommonLib/Threads.h
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/massimo/MuDiSP4/mudisp-4/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating documentation with doxygen"
-	cd /home/iltrauma/MuDiSP_4_Release/mudisp4/build/docs && /usr/bin/doxygen /home/iltrauma/MuDiSP_4_Release/mudisp4/build/docs/Doxyfile
+	cd /home/massimo/MuDiSP4/mudisp-4/build/docs && /usr/local/bin/doxygen /home/massimo/MuDiSP4/mudisp-4/build/docs/Doxyfile
 
 doxygen_docs: docs/CMakeFiles/doxygen_docs
 doxygen_docs: docs/doxygen
@@ -103,10 +106,10 @@ docs/CMakeFiles/doxygen_docs.dir/build: doxygen_docs
 .PHONY : docs/CMakeFiles/doxygen_docs.dir/build
 
 docs/CMakeFiles/doxygen_docs.dir/clean:
-	cd /home/iltrauma/MuDiSP_4_Release/mudisp4/build/docs && $(CMAKE_COMMAND) -P CMakeFiles/doxygen_docs.dir/cmake_clean.cmake
+	cd /home/massimo/MuDiSP4/mudisp-4/build/docs && $(CMAKE_COMMAND) -P CMakeFiles/doxygen_docs.dir/cmake_clean.cmake
 .PHONY : docs/CMakeFiles/doxygen_docs.dir/clean
 
 docs/CMakeFiles/doxygen_docs.dir/depend:
-	cd /home/iltrauma/MuDiSP_4_Release/mudisp4/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/iltrauma/MuDiSP_4_Release/mudisp4 /home/iltrauma/MuDiSP_4_Release/mudisp4/docs /home/iltrauma/MuDiSP_4_Release/mudisp4/build /home/iltrauma/MuDiSP_4_Release/mudisp4/build/docs /home/iltrauma/MuDiSP_4_Release/mudisp4/build/docs/CMakeFiles/doxygen_docs.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/massimo/MuDiSP4/mudisp-4/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/massimo/MuDiSP4/mudisp-4 /home/massimo/MuDiSP4/mudisp-4/docs /home/massimo/MuDiSP4/mudisp-4/build /home/massimo/MuDiSP4/mudisp-4/build/docs /home/massimo/MuDiSP4/mudisp-4/build/docs/CMakeFiles/doxygen_docs.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : docs/CMakeFiles/doxygen_docs.dir/depend
 

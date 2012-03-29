@@ -1,4 +1,4 @@
-# Install script for directory: /home/iltrauma/MuDiSP_4_Release/mudisp4/include/CommonLib
+# Install script for directory: /home/massimo/MuDiSP4/mudisp-4/include/CommonLib
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,17 +34,17 @@ ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/CommonLib" TYPE FILE FILES
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/CommonLib/BitVector.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/CommonLib/Configuration.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/CommonLib/F16.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/CommonLib/Interthread.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/CommonLib/LinkedLists.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/CommonLib/Logger.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/CommonLib/Regexp.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/CommonLib/Sockets.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/CommonLib/Threads.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/CommonLib/Timeval.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/CommonLib/Vector.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/CommonLib/BitVector.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/CommonLib/Configuration.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/CommonLib/F16.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/CommonLib/Interthread.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/CommonLib/LinkedLists.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/CommonLib/Logger.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/CommonLib/Regexp.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/CommonLib/Sockets.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/CommonLib/Threads.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/CommonLib/Timeval.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/CommonLib/Vector.h"
     )
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 

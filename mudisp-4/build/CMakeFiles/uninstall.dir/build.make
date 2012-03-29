@@ -31,16 +31,19 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# The program to use to edit the cache.
+CMAKE_EDIT_COMMAND = /usr/bin/cmake-gui
+
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/iltrauma/MuDiSP_4_Release/mudisp4
+CMAKE_SOURCE_DIR = /home/massimo/MuDiSP4/mudisp-4
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/iltrauma/MuDiSP_4_Release/mudisp4/build
+CMAKE_BINARY_DIR = /home/massimo/MuDiSP4/mudisp-4/build
 
 # Utility rule file for uninstall.
 
 CMakeFiles/uninstall:
-	/usr/bin/cmake -P /home/iltrauma/MuDiSP_4_Release/mudisp4/build/cmake_uninstall.cmake
+	/usr/bin/cmake -P /home/massimo/MuDiSP4/mudisp-4/build/cmake_uninstall.cmake
 
 uninstall: CMakeFiles/uninstall
 uninstall: CMakeFiles/uninstall.dir/build.make
@@ -55,6 +58,6 @@ CMakeFiles/uninstall.dir/clean:
 .PHONY : CMakeFiles/uninstall.dir/clean
 
 CMakeFiles/uninstall.dir/depend:
-	cd /home/iltrauma/MuDiSP_4_Release/mudisp4/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/iltrauma/MuDiSP_4_Release/mudisp4 /home/iltrauma/MuDiSP_4_Release/mudisp4 /home/iltrauma/MuDiSP_4_Release/mudisp4/build /home/iltrauma/MuDiSP_4_Release/mudisp4/build /home/iltrauma/MuDiSP_4_Release/mudisp4/build/CMakeFiles/uninstall.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/massimo/MuDiSP4/mudisp-4/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/massimo/MuDiSP4/mudisp-4 /home/massimo/MuDiSP4/mudisp-4 /home/massimo/MuDiSP4/mudisp-4/build /home/massimo/MuDiSP4/mudisp-4/build /home/massimo/MuDiSP4/mudisp-4/build/CMakeFiles/uninstall.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/uninstall.dir/depend
 

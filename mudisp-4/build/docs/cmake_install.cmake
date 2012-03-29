@@ -1,4 +1,4 @@
-# Install script for directory: /home/iltrauma/MuDiSP_4_Release/mudisp4/docs
+# Install script for directory: /home/massimo/MuDiSP4/mudisp-4/docs
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -33,6 +33,6 @@ IF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "doxygen")
-  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/docs" TYPE DIRECTORY FILES "/home/iltrauma/MuDiSP_4_Release/mudisp4/build/docs/doxygen")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/docs" TYPE DIRECTORY FILES "/home/massimo/MuDiSP4/mudisp-4/build/docs/doxygen")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "doxygen")
 

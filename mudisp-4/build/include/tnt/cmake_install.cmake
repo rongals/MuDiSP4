@@ -1,4 +1,4 @@
-# Install script for directory: /home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt
+# Install script for directory: /home/massimo/MuDiSP4/mudisp-4/include/tnt
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,31 +34,31 @@ ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/TNT" TYPE FILE FILES
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/blas.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/cmat.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/fmat.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/index.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/qr.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/stpwatch.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/tnt.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/transv.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/vecadaptor.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/cholesky.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/fortran.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/lapack.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/region1d.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/subscrpt.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/tntmath.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/triang.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/vec.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/fcscmat.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/fspvec.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/lu.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/region2d.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/tntcmplx.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/tntreqs.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/trislv.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/tnt/version.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/blas.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/cmat.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/fmat.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/index.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/qr.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/stpwatch.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/tnt.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/transv.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/vecadaptor.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/cholesky.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/fortran.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/lapack.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/region1d.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/subscrpt.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/tntmath.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/triang.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/vec.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/fcscmat.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/fspvec.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/lu.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/region2d.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/tntcmplx.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/tntreqs.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/trislv.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/tnt/version.h"
     )
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 

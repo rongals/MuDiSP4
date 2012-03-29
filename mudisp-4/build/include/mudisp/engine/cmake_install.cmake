@@ -1,4 +1,4 @@
-# Install script for directory: /home/iltrauma/MuDiSP_4_Release/mudisp4/include/mudisp/engine
+# Install script for directory: /home/massimo/MuDiSP4/mudisp-4/include/mudisp/engine
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,14 +34,14 @@ ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/mudisp/engine" TYPE FILE FILES
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/mudisp/engine/errors.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/mudisp/engine/main.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/mudisp/engine/param.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/mudisp/engine/block.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/mudisp/engine/lcm.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/mudisp/engine/mudisp.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/mudisp/engine/parlist.h"
-    "/home/iltrauma/MuDiSP_4_Release/mudisp4/include/mudisp/engine/port.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/mudisp/engine/errors.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/mudisp/engine/main.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/mudisp/engine/param.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/mudisp/engine/block.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/mudisp/engine/lcm.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/mudisp/engine/mudisp.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/mudisp/engine/parlist.h"
+    "/home/massimo/MuDiSP4/mudisp-4/include/mudisp/engine/port.h"
     )
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 

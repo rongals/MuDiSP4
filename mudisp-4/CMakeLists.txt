@@ -61,6 +61,8 @@ SET(CMAKE_CXX_FLAGS_DEBUG "-g")
 #Imposta le librerie
 SET(BUILD_SHARED_LIBS ON)
 
+#SET(CMAKE_BINARY_DIR ${CMAKE_INCLUDE_PATH} "/usr/local/libboost/include/boost")
+
 #file(GLOB itemviews-ng_SOURCES ${INCLUDE_DIR}/tnt/*.h )
 #MESSAGE(STATUS "File nella cartella ${itemviews-ng_SOURCES}")
 #
@@ -135,15 +137,8 @@ ENDIF(WIN32)
 # Setup Boost
 ########################################################################
 MESSAGE(STATUS "")
-#LIST(APPEND BOOST_LIBRARYDIR "/usr/local/libboost") #fedora 64-bit fix
-SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "/usr/local/libboost/include/boost")
-SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "/usr/local/libboost/lib")
-
-
-MESSAGE(STATUS "Boost Library Dir " ${BOOST_LIBRARYDIR})
-
-SET(Boost_ADDITIONAL_VERSIONS "1.46.0" "1.46")
-FIND_PACKAGE(Boost ${BOOST_MIN_VERSION} COMPONENTS
+MESSAGE(STATUS "Configuring Boost C++ Libraries...")
+SET(BOOST_REQUIRED_COMPONENTS
     date_time
     filesystem
     program_options
@@ -166,14 +161,10 @@ IF(MSVC)
     ENDIF(BOOST_ALL_DYN_LINK)
 ENDIF(MSVC)
 
-SET(Boost_ADDITIONAL_VERSIONS  "1.46")
-#// _INCLUDE_DIR   // a list of directories containing the package's include files
-#//  <name>_LIBRARIES     // a list of directories containing the package's libraries
+SET(Boost_ADDITIONAL_VERSIONS "1.42.0" "1.42" "1.43.0" "1.43" "1.44.0" "1.44" "1.45.0" "1.45" "1.46.0" "1.46" "1.47.0" "1.47"  "1.48.0" "1.48"
+ "1.49.0" "1.49")
+FIND_PACKAGE(Boost 1.36 COMPONENTS ${BOOST_REQUIRED_COMPONENTS})
 
-SET(Boost_INCLUDE_DIR  ${Boost_INCLUDE_DIRS} "/usr/local/libboost/include/boost")
-SET(Boost_LIBRARY_DIRS ${Boost_INCLUDE_DIRS} "/usr/local/libboost/lib")
-
-FIND_PACKAGE(Boost ${BOOST_MIN_VERSION} COMPONENTS ${BOOST_REQUIRED_COMPONENTS})
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
@@ -319,3 +310,5 @@ MUDISP_PRINT_COMPONENT_SUMMARY()
 #UHD_PRINT_COMPONENT_SUMMARY()
 MESSAGE(STATUS "Building version: ${CPACK_PACKAGE_VERSION}")
 MESSAGE(STATUS "Using install prefix: ${CMAKE_INSTALL_PREFIX}")
+
+

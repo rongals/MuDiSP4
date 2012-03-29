@@ -1,0 +1,75 @@
+#
+# MuDiSP Makefile: libraries
+#
+comma:= ,
+empty:=
+space:= $(empty) $(empty)
+
+
+objects = $(sources:.cpp=.o)
+
+objects_dbg = $(sources:%.cpp=%_d.o)
+
+install_lib = $(target_name).a \
+              $(target_name)_dbg.a 
+
+
+VPATH = $(subst $(space),:,$(strip $(SUBDIRS)))
+
+#
+# The Targets
+#
+
+
+default: $(install_lib)
+
+
+.PHONY: clean default distclean
+
+
+$(target_name)_dbg.a: $(objects_dbg)
+	  rm -f $@
+	  $(AR) rcs $@ $^
+
+$(target_name).a: $(objects)
+	  rm -f $@
+	  $(AR) rcs $@ $^
+
+clean:
+	rm -f *~ *.o *.d
+
+
+distclean: clean
+	rm -f *.a
+
+
+install: $(install_lib)
+	mkdir -p $(INSTALLDIR)/lib ; \
+	mkdir -p $(INSTALLDIR)/include ;\
+	for F in $(install_include) ; do \
+	  cp -f $$F $(INSTALLDIR)/include  ; \
+	done ; \
+	for F in $(install_lib) ; do \
+	  cp -f $$F $(INSTALLDIR)/lib  ; \
+	done ; \
+
+
+#
+# The rules ...
+#
+
+%_d.o : %.cpp
+	$(CXX) $(DEBUGFLAGS) -c $(CFLAGS) $(EXTRACPPFLAGS) $(CPPFLAGS) $< -o $@
+
+%.o : %.cpp
+	$(CXX) $(RELEASEFLAGS) -c $(CFLAGS) $(EXTRACPPFLAGS) $(CPPFLAGS) $< -o $@
+
+%.d : %.cpp
+	$(CXX) -MM -c $(CFLAGS) $(EXTRACPPFLAGS) $(CPPFLAGS) $< > $@
+
+
+####################################################################################
+
+include $(objects:.o=.d)
+
+

@@ -1,0 +1,2 @@
+/home/iltrauma/MuDiSP_4_Release/mudisp4/build/docs/CMakeFiles/doxygen_docs.dir
+/home/iltrauma/MuDiSP_4_Release/mudisp4/build/CMakeFiles/uninstall.dir

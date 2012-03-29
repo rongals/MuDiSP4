@@ -1,0 +1,461 @@
+/*! \mainpage
+
+\image html logo.gif
+\image latex logo.eps "" width=5cm
+
+- \subpage intro
+- \subpage page2
+- \subpage page3
+- \subpage page4
+- \subpage start
+*/
+
+
+/*! \page intro Introduzione a MuDiSP
+*
+* \image html logo.gif
+\image latex logo.eps "" width=5cm
+*                                                     
+*
+*\b Mu ltirate  \b Di gital \b S  ignal \b P  rocessor \n
+*\section over Overview
+* MuDiSP IV is a simulating environment for Digital Signal Processing systems. It's main features are:
+* 	- Full Object Oriented Programming Language
+* 	- Multirate support with automatic generation of the system clocks
+* 	- Generic data object flows (any kind of data can be processed)
+* 	- Unlimited nesting of block recursion
+* 	- High level of abstraction and complete re-usability of the block code
+* 	- Extremely fast executables generated
+* 	- Intuitive use from the user's side
+*
+*\section sec What New
+*   
+*
+*
+*	<DL>
+*	<DT><STRONG>Lower cost</STRONG>
+*	<DD>The new version of this product costs significantly less than the previous one (0€)!
+* 	<DT><STRONG>Easier to use</STRONG>
+*	<DD>We've changed the product so that it's much easier to use (IMHO)!
+*	<DT><STRONG>Safe for kids</STRONG>
+*	<DD>You can leave your kids alone in a room with this product and
+*	they won't get hurt (not a guarantee).
+*	</DL>
+\page page2 Install Guide
+\section install How to Install MuDiSP4
+ In order to install MuDiSP4 on your LINUX distribution you must follow  these steps:
+	-# Be shure to have already installed the following packages on your system: 
+		- cmake 
+		- gcc version 3.2 (or later) \n
+		- gnuplot 3.7 (or later) \n
+		- python 2.7.2 (or later)
+		- libboost1.47-all_dev (or later)\n	
+	wou may need also the following packages for Linear Algebra Matrix comptation: 
+		- lapack-3.0 
+		- blas-3.0 \n
+	-#  creating directory an pre-build versione
+		on \verbatim 
+		   own@pcname:~/MuDiSP_4/mudisp4/$   
+		\endverbatim 
+		type:
+		\verbatim
+	 	mkdir build
+	 	cd build
+	 	cmake -DCMAKE_INSTALL_PREFIX=/usr/local/mudisp4/ -DENABLE_DOC=ON ../
+		\endverbatim
+		the MuDiSP4 libraries are installed in the "/usr/local/mudisp4"
+		directory. If you need to modify the install path change the CMAKE_INSTALL_PREFIX enviroment variable width
+		the correct path in pre-build invoke e.g.:
+		\verbatim	
+			cmake -DCMAKE_INSTALL_PREFIX=/opt/ ../
+		\endverbatim
+	-# execute the command:
+	        \verbatim 
+		own@pcname:~/MuDiSP_4/mudisp4/build$ make
+		\endverbatim  from within the MuDiSP4 distribution directory
+	-# if the compilation process is successful, become root and execute the command: 
+		\verbatim 
+		own@pcname:~/MuDiSP_4/mudisp4/build$ make install
+		\endverbatim
+	-# test the installation following the QUICKSTART note in the /usr/local/mudisp4/doc directory.
+
+have fun !
+\page page3 Migration Operations From MuDiSP3
+\section change What Change
+\subsection makefile Makefile
+The current release of the simulation environment is not too far from the previous one from the user's side. The migration is simply obtained through these simple steps:
+	-# save the old version of the Makefile in your project directory
+	-# copy the new Makefile from the location 
+	\verbatim 
+	own@pcname:$/usr/local/mudisp4/demoproject 
+	\endverbatim
+	and place it in your project directory
+	-# merge all the necessary data from the saved old Makefile into the new one (you probably want to change the USERPROJECT USERDIRS and USERSRC sections)
+
+\subsubsection adv Advanced Modification 
+For experts users a couple of lines of explanation. \n The new Makefiles
+refer to the variable "MDSP4_SRC" which substitutes "MDSP3_SRC". Also the
+value of this variable must point to the new installation location
+"/usr/local/mudisp4" (previously "/usr/local/mudisp3"). If you chose
+another directory for installing the simulation engine change the
+provious paths accordingly. e.g.
+\verbatim
+	MDSP4_SRC=/usr/local/mudisp4
+\endverbatim
+The new implementation of mudisp require to add a couple of line necessary to link library. e.g.:
+\verbatim
+	# SIMULATOR LIBS
+	LIBS = -lgsl -lgslcblas -lstdc++ -l:/usr/lib/libboost_thread-mt.so -rdynamic -l:/usr/local/mudisp5/lib/libuhd.so
+\endverbatim
+\subsection bkheader Block Header
+Modified block header file include definition such like:
+\code
+#ifndef __MUDISP2_BITBER_H 
+#define __MUDISP2_BITBER_H
+
+#include "mudisp.h"
+#include "tnt.h"
+#include "cmat.h"
+#include <deque>
+\endcode
+to new form:
+\code
+#ifndef __MUDISP2_BITSRCC_H  
+#define __MUDISP2_BITSRCC_H 
+
+#include <mudisp/engine/mudisp.h>
+#include <TNT/tnt.h>
+#include <TNT/cmath.h>
+#include <deque>
+\endcode
+**************************************************************
+*/
+
+
+
+
+
+/*! \defgroup mudisp MuDiSP  C++ Signal Processing Blocks
+ * \brief All C++ blocks that can be used in MuDiSP graphs are listed here or in
+ * the subcategories below.  
+ *
+ * Sorry, at this time the Python hierarchical blocks are not included
+ * in this index.
+ * @{
+ */
+	/*!
+ 	* \defgroup Core MuDiSP Core C++ Signal Processing Methods
+ 	* \brief All C++ MuDiSP Base Core Blocks and Methon that can be use 
+ 	* to create own MuDiSP blocks  are listed here or in the subcategories 
+ 	* below.   
+	*/
+	/*! \defgroup mudisp_blk Top Block and Hierarchical Block Base Classes for MuDiSP		
+ 	*  \brief Classi e Metodi che implementano il Core del Sistema MuDiSP
+	* @{ */
+		/*! 
+		 * \defgroup base_blk Base classes for MuDiSP Blocks
+		 * \brief All C++ blocks are derived from these base classes
+		 * @{ */
+		 	/*! \defgroup source_blk Signal Sources			*/
+			/*! \defgroup sink_blk Signal Sinks			*/
+			/*! \defgroup filter_blk Filters			*/
+		/*! @} */
+	/*! @} */
+/*! @} */
+
+/*! \defgroup data_gen Data Generation Method
+ 	* \brief Generazione di segnali casuali o pseudo casuali mediante l'utilizzo di funzioni distribuzione statistiche. 	
+	* @{ */
+		/*! \defgroup rand Random Generation */  
+		 /*! \defgroup distribution Statistical Distribution Generation */
+	 /*! @} */ 
+
+/*!  \defgroup matrix Basic Algebra Manipulation
+ * \brief Operazioni su Matrici e Vettori 
+ * 
+ *  */
+
+/*! \defgroup hardware Misc Hardware Control		
+ * \brief Classi e Metodi per il Controllo di Dispositivi Hardware
+ * @{ */
+  	/*! \defgroup usrp USRP				
+  	 * \brief USRP Hardware 
+  	* @{*/
+		/*! \defgroup uhd Universal Hardware Drive 
+    		* \brief Driver Multipiattaforma per USRP 
+		* */
+	/*! @} */
+/*! @} */
+
+/*! \page page4 User Guide
+\section guide User's Guide
+The main steps for the creation of a simulated systems are:
+
+   -# Creating your workdesk
+   -# How the simulator works
+   -# Creating a primitive block
+   -# Creating a container block
+   -# Creating the system
+   -# Running the simulation
+   -# Tips for an efficient programming in MuDiSP II
+
+\subsection mkworkdesk Creating your workdesk
+The MuDiSP collection of libraries must be installed on your system and you must know the location of it. Contact your system administrator to know the full path to the MuDiSP directory and remember it. As an example let's suppose that the MuDiSP4 is installed in the following path:
+
+MuDiSP4 Installation Path \verbatim
+/usr/local/mudisp4
+\endverbatim
+
+Next, create a project directory in your personal disk space with a subdirectory which will contain your C++ sources. For example if your personal home directory is :
+\verbatim
+own@pcname:$/home/gargiulo
+\endverbatim
+you can create the project directory MYPROJECT under /home/gargiulo with the following UNIX  commands:
+\verbatim
+> cd /home/gargiulo
+> mkdir MYPROJECT
+> cd MYPROJECT
+\endverbatim
+Then you create a subdirectory of the project dir where to place the source code of your system. As an example, create the sources directory src this way:
+\verbatim
+> mkdir src
+\endverbatim
+If you prefere, there is a demo running project in the installation directory. An easy way to start programming with MuDiSP4 is to copy the entire demo directory with:
+\verbatim
+> cp -r /usr/local/mudisp4/demoproject ~
+> cd demoproject
+\endverbatim
+Now you have to edit the first lines of the Makefile in order to reflect your system. Usually you only have to add the cpp files that you create in the source directory. The sections of the Makefile to be edited are clearly indicated by comments.
+
+You have all you need to begin to create your personal block library. Each block you create will have a couple of files in the src directory: myblock.h and myblock.cpp for example. Then the system.h and system.cpp is modified in order to include your blocks and, eventually, other library blocks made available by others.
+
+In the next section you will discover how the simulator works (not in detail)  that will help you understand the steps to build your system. 
+
+\section howtosim How the simulator works
+\subsection genconcept General concepts
+The simulating environment generated with MuDiSP is composed by blocks which represent the elementary units of the modeled system.
+Each block, following the object oriented phylosophy, can be used without the knowledge of the effective implementation of its code. The user can imagine it as a "black box" featuring some processing tasks.
+
+The block interacts with the surrounding environments by ports: objects created to deliver data elements of any kind.
+
+The blocks with output ports only are sources of data; the ones with input ports only are data sinks; all the other blocks are processing blocks.
+
+Output ports are connected to input ports by the user in order to build the desired system. These connection can be viewed as very high speed serial connections featuring a FIFO buffering of data objects passing through them.
+
+Output and input ports are specialized by the type of data objects they are called to deliver. For example an output port carring float data elements is called a "float output port" and is created in the C++ code by using the standard C++ template notation
+\verbatim
+OutPort <float> o1;
+\endverbatim
+Only connections between ports of the same type are allowed, as one may expect. No limitation is imposed on the number of input ports served by a single output port. On the other hand only one output port can be connected to an input port.
+The situation is represented in the picture.
+\image html user_guide_fig1.gif "A simple system"
+\image latex user_guide_fig1.eps "A simple system" width=0.6\textwidth
+In the system shown, each time the block \b B1 is activated, it produces a data object and put it in its output port \b o1.
+The data is duplicated and delivered to the input ports of blocks \b B2 and \b B3 .
+Note that the duplication and delivery of the data is performed by the simulator automatically. The user indicates only the desired connections.
+
+\subsection multirate Multirate Systems
+
+One of the main fatures of this simulator is the full support for multi-rate execution.
+A system is called to be multi-rate if there are sections of it running at different clock speeds. Situations like the one depicted in figure often occur in DSP systems.
+
+\image html user_guide_fig2.gif "A multi-rate system"
+\image latex user_guide_fig2.eps "A multi-rate system" width=0.9\textwidth
+
+In the example under each port is indicated the consumption/production rate of the port. It represents the number of data objects produced (for an output port) or consumed (for an input port) by the block at each activation.
+
+Let's track the data to understand how the multirate situation is managed by the simulator.
+	-# The "Source" block is activated once - a data object is produced from the output port \b o1 of "Source"
+    	-# The "Interpolator" is activated once - consumes <em> <b> one data object from i1  </b></em>, process it and produces <em><b>10 data objects in o1 </b></em>
+	-# The "Destination" block is activated 10 times - each activation consumes one data object so the balance is correct if the clock rate of this block is 10 times the interpolator one
+
+The correct sequence of activations, also called run sequence, is automatically searched by the simulator so that the user does not care about clocks and order of executions.
+
+When the user build his own blocks, declares the consumption/production rate for each port. The simulator will use this information to find out the exact run sequence with the appropriate block rates.
+
+I insist on this point: the block rate is different from the consumption/production rate. The latter is an attribute of each port in the single block and it is independent from the other blocks in the system, so it can be determined during the block design. The former cannot be determined by the block itself but depends on the other blocks connected to it.
+
+In the last example, the block rate of "Destination" is 10 and depends on the "Interpolator block". Another system using the same destination block may attribute to it a different rate.
+
+\subsection blockdesign The Block design
+The user can create his own blocks in C++ and use them together with other users' library blocks in the desired system.
+
+Moreover each block behavior can be defined by C++ code (primitive block) or by assembling together more blocks from the library (container block).
+No limitation is imposed on the nesting of container blocks. The hierarchical structure of the simulator allows an easy design of complex system by assembling simpler elements together.
+
+Descending into details (and considering acquired by the user a good knowledge of C++ language)  each block is an object of a class derived from the Block class. The Block class is defined in the MuDiSP library.
+
+Each Block object has some main methods defining its behaviour during the simulation. These methods are virtually defined in the Block class from which they inherit the default behavior. The user writing the class MyBlock derived (public) from Block does not need to re-define all the methods in order to create a running block.
+The essential methods for both a primitive and a container block are listed into the following example which defines MyPrimitive and MyContainer blocks:
+\code
+#include "mudisp.h"
+
+class MyPrimitive : public Block {
+private:
+
+// local attributes here
+
+public:
+	MyPrimitive():Block("MyPrimitive");
+	void Setup();
+	void Run();
+	void Finish();
+};
+
+class MyContainer : public Block {
+private:
+
+// local attributes
+// and sub-blocks here
+
+public:
+	MyContainer():Block("MyContainer");
+	void Build();
+	void Setup();
+};
+\endcode
+The meaning of each section is summarized in the following table:
+\htmlonly
+<TABLE BORDER="1" FRAME=lhs>
+<CAPTION> Methods inside a Block</CAPTION>
+<TR>	<TH>Name
+	<TH>Description
+	<TH>Present in primitive
+	<TH>Present in container
+
+<TR>	<TD>constructor
+	<TD>contains the initializations of the attributes, parameters registration and export
+	<TD>yes
+	<TD>yes
+<TR>	<TD>Build()
+	<TD>executed once at the beginning of the simulation, creates the connections in the container blocks
+	<TD>no
+	<TD>yes
+<TR>	<TD>Setup()
+	<TD>executed once at the beginning of the simulation when the parameters are available, set the ports production/consumption rates and initializes the parameters of sub-blocks in the containers
+	<TD>yes
+	<TD>yes
+<TR>	<TD>Run()
+	<TD>at each system iteration this method is executed R&nbsp;times where R is the block rate
+	<TD>yes
+	<TD>no
+<TR>	<TD>Finish()
+	<TD>executed once at the end of the simulation
+	<TD>yes
+	<TD>no
+</TABLE>
+
+<P>
+\endhtmlonly
+
+\latexonly
+\begin{table}
+\caption{ Methods inside a Block}
+\begin{tabular}{|l|p{5.7cm}|p{1.6cm}|p{1.6cm}|}
+ \hline \textbf{Name}
+	& \textbf{Description}
+	& \textbf{Present in primitive}
+	& \textbf{Present in container }\\ \hline	
+	constructor
+	& contains the initializations of the attributes, parameters registration and export
+	& yes
+	& yes
+\\ \hline	Build()
+	& executed once at the beginning of the simulation, creates the connections in the container blocks
+	& no
+	& yes
+\\ \hline	Setup()
+	& executed once at the beginning of the simulation when the parameters are available, set the ports production/consumption rates and initializes the parameters of sub-blocks in the containers
+	& yes
+	& yes
+\\ \hline	Run()
+	&  at each system iteration this method is executed R times where R is the block rate
+	& yes
+	& no
+\\ \hline	Finish()
+	& executed once at the end of the simulation
+	& yes
+	& no \\
+\hline
+\end{tabular}
+\end{table}
+\endlatexonly
+In the constructor of the Block-derived class there are the initializations of the attributes of the class, a call to the Block constructor with the name of the class as argument, parameters initialization and registration (parameters will be explained in the next section). The constructor is executed at the instantiation of the object at the very beginning of the execution of the simulation.
+
+\a Build() is re-defined only for container blocks. It contains the connections between the blocks objects contained inside. It is executed once per simulation before the parameter are read.
+
+\a Setup() is also executed once per simulation but after the parameters reading so the parameters value are available. It is present both in primitive blocks and container blocks. In primitive blocks it is used to initialize complex data structures like vectors and to properly declare the rate of the ports. As an example in a block performing a FIR  filtering here you put the coefficient initialization. In container blocks it is used to set the parameters for the contained blocks function of the local parameters.
+
+\a Run() is the hearth of the block. It is executed a number of times depending on the length of the simulation and the block rate. It is present in primitive blocks only and it is responsible for the collection of data from input ports, processing and delivery of data to the output port of the block.
+
+\a Finish() is executed at the end of the simulation. It is useful for the promitive block that has to post-process the collected data to produce the result. An example I have in mind is the Probability of Error calculation obtained by the error count during the simulation.
+
+\section param A special section is due to the parameters and the way the MuDiSP manages them.
+\subsection paramdef Parameters
+A parameter is a special variable that can be modified without the need of recompiling the simulator executable. It is very useful in those situations when a batch execution is required. MuDiSP presents a sophisticate management of parameters.
+
+The value of a parameter is available when the simulator read the parameter file. This is done BEFORE the call to Setup() method of a block so you can safely use the parameters values in this method.
+Each block is associated a name that is assigned in the constructor with the call to Block("Name"). The name helps to identify the block in the parameter file. If a block is given the name "MyBlock", each instance of the block will have a name like this: "MyBlock_n" where n is the instance counter starting from 1.
+The system itself is a block (a container block) and its name is "System".
+When a block is contained into another the param file will indicate this dependence with the following line:
+\verbatim
+System_1.Container_1.Block_1
+\endverbatim
+
+\page start Quick Start 
+* \image html logo.gif
+\section cdma QUICKSTART "CDMA DEMO"
+Here are the instructions for creating a custom simulation
+environment, with a simple simulated example. You can use the demo to
+both verify your installation and learn the main steps in the
+simulation design.
+
+You must:
+	-# create a project space in your home directory
+	-# design the simulator (C++ programming)
+	-# build the simulation executable
+	-# launch the simulations with varying parameters
+	-# collect the results and plot them
+
+For your convenience, the 2nd step is already done in the demo project
+so you can have a cup of tea and relax. The remaining step are very
+easy to be performed.
+
+Let's do it in order  @CMAKE_SOURCE_DIR@/docs :
+	-# create a project space in your home directory
+	copy in any place within your user space the directory you can find in
+	\verbatim 
+	> /usr/local/mudisp3/demoproject
+ 	\endverbatim . The command is 
+	\verbatim
+	> cp -r /usr/local/mudisp3/demoproject ~/
+	\endverbatim 
+	  Enter the demoproject directory with 
+	\verbatim 
+	> cd demoproject
+	\endverbatim
+	-# design the simulator (C++ programming)
+
+I have already done it for you. The C++ sources are located in the \a "src" and \a "src_blind" directories. For the moment do not matter about the meaning of these directories. The communication system implemented is a asynchronous CDMA transmission with the blind adaptive multiuser detection (Verdu' style) at the receiver. There are two users but the interefering user is transmitting 10dB louder than the desired one. (Sorry for the terms, if you are not involved in this topic you probably have just yawned)
+	-# build the simulation executable
+	execute the command 
+	\verbatim 
+	> make 
+	\endverbatim  
+	from inside the project directory. A lot of messages are welcomed but please, no errors. At the end you should see some new files in the project dir. A lot of .d and .o and a executable (cdma_verdu_awgn). Everything is OK.
+	-# launch the simulations with varying parameters
+	now you launch the simulation. The length, though limited, depends on the computational power and the number of cpus on your Linux box. Before proceeding to the last step, however, you shoud wait until the simulation has finished. To know when it happens check your local mail. When you have received 10 strange messages (they are the output from the simulator executables for each session) your simulation has finished.
+	-# collect the results and plot them
+	You are at the last step. If everything is ok in the simulation step you shoud be able to plot the simulated results by executing the command "make demoplot". After you have finished with this game you may want to clean up the demoproject directory again with "make democlean".
+
+Enjoy !!
+*/
+
+
+ /*!  \class MuDiSP4
+   \brief Multirate Digital Signal Processor 4
+   \author Luca Simone Ronga
+   \author Massimo Innocenti
+   \version 4.0
+   \date    1999-2011
+ */

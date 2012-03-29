@@ -1,0 +1,32 @@
+changes in version 3.1.7:
+
+- removed "deprecated conversion from string constant to char"
+
+
+Changes in version 3.1.6:
+
+- stdlib inclusion for gcc version 4.3.1 and later 
+- new installation path
+
+
+Changes in version 3.1.5:
+
+- constructor error in filter.cpp [Simone Menci contrib]
+- virtual destructor in port h
+- demoproject Makefile updated for 315
+
+Changes in version 3.1.4:
+
+- Patched LCM/GCD routines
+
+
+Changes in version 3.1.3:
+
+- Added Block::ClearClassNames() function to reset class_names map
+
+- LIBS in user makefile contains only user-level libs (no *_dbg is applied)
+
+- Changed in "lcm.cpp" formula for least common multiplier in a/GCD(a,b)*b
+
+- Modified "vec.h" and "cmat.h" TNT for GCCv3.4 compatibility
+

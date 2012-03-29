@@ -1,0 +1,58 @@
+INSTALL INSTRUCTIONS
+  __  __           ____    _   ____    ____      __
+ |  \/  |  _   _  |  _ \  (_) / ___|  |  _ \    / /
+ | |\/| | | | | | | | | | | | \___ \  | |_) |  / /__
+ | |  | | | |_| | | |_| | | |  ___) | |  __/  /_  __|
+ |_|  |_|  \__,_| |____/  |_| |____/  |_|       |_|
+
+
+MU ltirate
+DI gital
+S  ignal
+P  rocessor
+
+In order to install MuDiSP4 on your LINUX distribution you must follow
+these steps:
+
+1-
+Be shure to have already installed the following packages on your
+system:
+	gcc version 3.2 (or later)
+	gnuplot 3.7 (or later)
+
+	libboost1.46-all_dev (or later)
+
+wou may need also the following packages for Linear Algebra
+Matrix comptation
+	lapack-3.0
+	blas-3.0
+
+2-  creating directory an pre-build versione
+	on -	own@pcname:~/mudisp4/$   type:
+	 mkdir build
+	 cd build
+	 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/mudisp4/ ../
+
+
+the MuDiSP4 libraries are installed in the "/usr/local/mudisp4"
+directory. If you need to modify the install path change the CMAKE_INSTALL_PREFIX enviroment variable width
+the correct path in pre-build invoke e.g.
+	cmake -DCMAKE_INSTALL_PREFIX=/opt/ ../
+3-
+execute the command "make" from within the MuDiSP4 distribution
+directory
+
+4-
+if the compilation process is successful, become root and execute the
+command "make install"
+
+5-
+test the installation following the QUICKSTART note in the
+/usr/local/mudisp4/doc directory.
+
+6-
+have fun !
+
+
+
+

@@ -1,0 +1,11 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: MUDSISP
+Description: MuDiSP
+Requires:
+Version: 004.0.0
+Libs: -L${libdir} -lmudisp -linesis 
+Cflags: -I${includedir}

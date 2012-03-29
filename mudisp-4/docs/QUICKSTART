@@ -1,0 +1,103 @@
+QUICKSTART GUIDE (CDMA DEMO)
+  __  __           ____    _   ____    ____    _____ 
+ |  \/  |  _   _  |  _ \  (_) / ___|  |  _ \  |___ / 
+ | |\/| | | | | | | | | | | | \___ \  | |_) |   |_ \ 
+ | |  | | | |_| | | |_| | | |  ___) | |  __/   ___) |
+ |_|  |_|  \__,_| |____/  |_| |____/  |_|     |____/ 
+                                                     
+
+MU ltirate
+DI gital
+S  ignal
+P  rocessor
+
+Here are the instructions for creating a custom simulation
+environment, with a simple simulated example. You can use the demo to
+both verify your installation and learn the main steps in the
+simulation design.
+
+You must:
+
+1 - create a project space in your home directory
+2 - design the simulator (C++ programming)
+3 - build the simulation executable
+4 - launch the simulations with varying parameters
+5 - collect the results and plot them
+
+For your convenience, the 2nd step is already done in the demo project
+so you can have a cup of tea and relax. The remaining step are very
+easy to be performed.
+
+Let's do it in order:
+
+1 - create a project space in your home directory
+
+copy in any place within your user space the directory you can find in
+"/usr/local/mudisp3/demoproject". The command is 
+	cp -r /usr/local/mudisp3/demoproject ~/
+Enter the demoproject directory with "cd demoproject".
+
+
+2 - design the simulator (C++ programming)
+
+I have already done it for you. The C++ sources are located in the
+"src" and "src_blind" directories. For the moment do not matter about
+the meaning of these directories. The communication system implemented
+is a asynchronous CDMA transmission with the blind adaptive multiuser
+detection (Verdu' style) at the receiver. There are two users but the
+interefering user is transmitting 10dB louder than the desired
+one. (Sorry for the terms, if you are not involved in this topic you
+probably have just yawned)
+
+
+3 - build the simulation executable
+
+execute the command "make" from inside the project directory. A lot of
+messages are welcomed but please, no errors. At the end you should see
+some new files in the project dir. A lot of .d and .o and a executable
+(cdma_verdu_awgn). Everything is OK.
+
+
+4 - launch the simulations with varying parameters
+
+now you launch the simulation. The length, though limited, depends on
+the computational power and the number of cpus on your Linux
+box. Before proceeding to the last step, however, you shoud wait until
+the simulation has finished. To know when it happens check your local
+mail. When you have received 10 strange messages (they are the output
+from the simulator executables for each session) your simulation has
+finished.
+
+
+5 - collect the results and plot them
+
+You are at the last step. If everything is ok in the simulation step
+you shoud be able to plot the simulated results by executing the
+command "make demoplot". After you have finished with this game you may
+want to clean up the demoproject directory again with "make democlean".
+
+Enjoy !!
+
+**************************************************************
+
+
+MuDiSP3 (Multirate Digital Signal Processor 3)
+Copyright 1999, Luca Simone Ronga
+
+
+ MuDiSP3 is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ MuDiSP3 is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with MuDiSP3; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+

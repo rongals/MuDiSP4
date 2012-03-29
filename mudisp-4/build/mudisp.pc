@@ -1,4 +1,4 @@
-prefix=/usr/local
+prefix=/usr/local/mudisp4
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

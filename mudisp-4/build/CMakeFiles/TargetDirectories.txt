@@ -1,5 +1,0 @@
-/home/massimo/MuDiSP4/mudisp-4/build/lib/library/CMakeFiles/blocks.dir
-/home/massimo/MuDiSP4/mudisp-4/build/docs/CMakeFiles/doxygen_docs.dir
-/home/massimo/MuDiSP4/mudisp-4/build/lib/CommonLib/CMakeFiles/inesis.dir
-/home/massimo/MuDiSP4/mudisp-4/build/lib/mudisp/CMakeFiles/mudisp.dir
-/home/massimo/MuDiSP4/mudisp-4/build/CMakeFiles/uninstall.dir

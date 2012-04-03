@@ -19,7 +19,7 @@ CXX = $(CC)
 
 LDFLAGS = -L$(MDSP4_SRC)/lib
 
-MUDISPLIBS = -lmudisp -linesis -lblocks -lnewran03 -luhd
+MUDISPLIBS = -lmudisp -linesis -lblocks
 
 #DEBUGLIBS = $(MUDISPLIBS:%=%_dbg) $(LIBS)
 

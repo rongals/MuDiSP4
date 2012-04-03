@@ -27,12 +27,12 @@ RELEASELIBS = $(MUDISPLIBS) $(LIBS)
 
 CPPFLAGS = 	$(patsubst %,-I%,$(USERDIRS)) \
 	   	-I$(MDSP4_SRC)/include \
-		-I$(MDSP4_SRC)/include/tnt \
+		-I$(MDSP4_SRC)/include/TNT \
 		-I$(MDSP4_SRC)/include/mudisp/engine\
-		-I$(MDSP4_SRC)/include/common \
-		-I$(MDSP4_SRC)/include/library \
-		-I$(MDSP4_SRC)/include/newran03\
-		-I$(MDSP4_SRC)/include/uhd
+		-I$(MDSP4_SRC)/include/CommonLib \
+		-I$(MDSP4_SRC)/include/library 
+	#	-I$(MDSP4_SRC)/include/newran03\
+	#	-I$(MDSP4_SRC)/include/uhd
 
 
 

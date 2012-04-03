@@ -309,7 +309,7 @@ ENDIF(ENABLE_LIBMUDISP)
 # Install Makefile.sim
 ########################################################################
 INSTALL(FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Makefile.sim
+    ${CMAKE_CURRENT_SOURCE_DIR}/install/Makefile.sim
     DESTINATION ${LIBRARY_DIR}
 )
 

@@ -396,27 +396,29 @@ public:
         lk.unlock();  
     } 
    
-/*! \fn DATATYPE GetDataObj()
- * \brief \b pop one element from data queue.
- * @tparam DATATYPE Tamplate data type format
- * \return One element from queue
+/*! 
+ *	\fn DATATYPE GetDataObj()
+ * 	\brief \b pop one element from data queue.
+ *	 @tparam DATATYPE Tamplate data type format
+ * 	\return One element from queue
  */
-  DATATYPE GetDataObj(){
-	  DATATYPE data= DATATYPE(0);
-	  lock lk(InPort::Port_Monitor);
-	if (!port_data_buffer.empty())
-  {	
-      data=port_data_buffer.front();
-      port_data_buffer.pop();    
-   } else {
- #ifdef EMPTY_BUF_WARNING
-	   std::cout << " © ";
- #endif
-	//   DATATYPE data= DATATYPE(0);
-	   }
- return data;
-  lk.unlock();
+  DATATYPE GetDataObj(DATATYPE init=DATATYPE(0)){
+	//  DATATYPE data= DATATYPE(0);  // <-  Generate segmentation error for no standard type variale
+	 DATATYPE data;
+	 
+	 lock lk(InPort::Port_Monitor);
+		if (!port_data_buffer.empty())
+			{	
+				data=port_data_buffer.front();
+				port_data_buffer.pop();    
+			} else {
+				data = init;
+			}
+		return data;
+		lk.unlock();
     }
+ 
+   
     //*/
 
 }; 

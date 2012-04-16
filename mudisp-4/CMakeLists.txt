@@ -111,13 +111,12 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 #SET(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING "")
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
-    ADD_DEFINITIONS(-g)
     ADD_DEFINITIONS(-Wall)
     ADD_DEFINITIONS(-Wextra)
     ADD_DEFINITIONS(-c)
     ADD_DEFINITIONS(-w)
     ADD_DEFINITIONS(-pthread) #-pthread
-   ADD_DEFINITIONS( -DMUDISP_VERBOSE) #-pthread
+    #ADD_DEFINITIONS( -DMUDISP_VERBOSE) #-pthread
     #ADD_DEFINITIONS(-std=gnu++0x)
     ADD_DEFINITIONS(-ansi)
     #only export symbols that are declared to be part of the uhd api:
@@ -256,7 +255,7 @@ ADD_CUSTOM_TARGET(uninstall
     ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
 )
 
-########################################################################
+#######################################################################
 # Create Pkg Config File
 ########################################################################
 CONFIGURE_FILE(

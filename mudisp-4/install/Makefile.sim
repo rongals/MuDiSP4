@@ -19,11 +19,13 @@ CXX = $(CC)
 
 LDFLAGS = -L$(MDSP4_SRC)/lib
 
+BOOSTLIBS = -lboost_thread-mt
+
 MUDISPLIBS = -lmudisp -linesis -lblocks
 
-#DEBUGLIBS = $(MUDISPLIBS:%=%_dbg) $(LIBS)
+DEBUGLIBS = $(MUDISPLIBS:%=%_dbg) $(LIBS) $(BOOSTLIBS)
 
-RELEASELIBS = $(MUDISPLIBS) $(LIBS)
+RELEASELIBS = $(MUDISPLIBS) $(LIBS) $(BOOSTLIBS)
 
 CPPFLAGS = 	$(patsubst %,-I%,$(USERDIRS)) \
 	   	-I$(MDSP4_SRC)/include \

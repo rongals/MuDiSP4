@@ -6,8 +6,9 @@
 ################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(MUDSISP CXX)
-ENABLE_TESTING()
-MESSAGE(STATUS "Build Running on: ${CMAKE_SYSTEM_NAME} OS width ${CMAKE_SYSTEM_PROCESSOR} extension ")
+#ENABLE_TESTING()
+
+
 ########################################################################
 # Config Files (include order is important)
 ########################################################################
@@ -34,7 +35,14 @@ SET(INCLUDE_DIR include)
 SET(HEADER_DIR ${CMAKE_SOURCE_DIR}/include)
 #SET(PKG_DATA_DIR share/uhd)
 SET(TOOLS_RUNTIME_DIR tools)
-SET(PKG_DOC_DIR  docs)
+SET(PKG_DOC_DIR  "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}_docs")
+
+
+
+MESSAGE(STATUS "${CPACK_PACKAGE_NAME} \n")
+MESSAGE(STATUS "Build Running on: ${CMAKE_SYSTEM_NAME} OS width ${CMAKE_SYSTEM_PROCESSOR} extension \n")
+
+
 ########################################################################
 # Local Include Dir
 ########################################################################
@@ -89,15 +97,27 @@ ENDMACRO(MUDISP_ADD_OPTIONAL_CXX_COMPILER_FLAG)
 IF(NOT CMAKE_BUILD_TYPE)
    SET(CMAKE_BUILD_TYPE "Release")
    MESSAGE(STATUS "Build type not specified: defaulting to release.")
+#  ${CMAKE_BUILD_TYPE}
 ENDIF(NOT CMAKE_BUILD_TYPE)
-SET(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING "")
+
+
+
+
+ MESSAGE(STATUS "Build type set to: ${CMAKE_BUILD_TYPE} ")
+
+
+
+#SET(CMAKE_BUILD_TYPE "${CMAKE_INSTALL_PREFIX}" CACHE STRING "/usr/local/mudisp4")
+#SET(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING "")
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
+    ADD_DEFINITIONS(-g)
     ADD_DEFINITIONS(-Wall)
     ADD_DEFINITIONS(-Wextra)
     ADD_DEFINITIONS(-c)
     ADD_DEFINITIONS(-w)
     ADD_DEFINITIONS(-pthread) #-pthread
+   ADD_DEFINITIONS( -DMUDISP_VERBOSE) #-pthread
     #ADD_DEFINITIONS(-std=gnu++0x)
     ADD_DEFINITIONS(-ansi)
     #only export symbols that are declared to be part of the uhd api:

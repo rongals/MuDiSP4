@@ -80,18 +80,36 @@ LIBINESIS_APPEND_SOURCES(
 MESSAGE(STATUS " Directory Corrente ${libinesis_sources}")
 
 ########################################################################
-# Setup libuhd library
+# Setup libinesis library
 ########################################################################
-ADD_LIBRARY(inesis STATIC ${libinesis_sources})
-ADD_DEFINITIONS(-pthread) 
-TARGET_LINK_LIBRARIES(inesis ${libinesis_libs} pthread)
-SET_TARGET_PROPERTIES(inesis PROPERTIES DEFINE_SYMBOL "NEWINESIS_DLL_EXPORTS")
+IF("${CMAKE_BUILD_TYPE}" MATCHES Debug) 
+	ADD_LIBRARY(inesis_dbg STATIC ${libinesis_sources})
+	ADD_DEFINITIONS(-pthread) 
+	TARGET_LINK_LIBRARIES(inesis_dbg ${libinesis_libs} pthread)
+	SET_TARGET_PROPERTIES(inesis_dbg PROPERTIES DEFINE_SYMBOL "NEWINESIS_DLL_EXPORTS")
+
+INSTALL(TARGETS inesis_dbg
+    LIBRARY DESTINATION ${LIBRARY_DIR} # .so file
+    ARCHIVE DESTINATION ${LIBRARY_DIR} # .lib file
+    RUNTIME DESTINATION ${LIBRARY_DIR} # .dll file
+)
+ENDIF("${CMAKE_BUILD_TYPE}" MATCHES Debug)
+
+IF("${CMAKE_BUILD_TYPE}" MATCHES Release) 
+
+	ADD_LIBRARY(inesis STATIC ${libinesis_sources})
+	ADD_DEFINITIONS(-pthread) 
+	TARGET_LINK_LIBRARIES(inesis ${libinesis_libs} pthread)
+	SET_TARGET_PROPERTIES(inesis PROPERTIES DEFINE_SYMBOL "NEWINESIS_DLL_EXPORTS")
 
 INSTALL(TARGETS inesis
     LIBRARY DESTINATION ${LIBRARY_DIR} # .so file
     ARCHIVE DESTINATION ${LIBRARY_DIR} # .lib file
     RUNTIME DESTINATION ${LIBRARY_DIR} # .dll file
 )
+ENDIF("${CMAKE_BUILD_TYPE}" MATCHES Release)
+
+
 
 
 

@@ -27,25 +27,59 @@ Matrix comptation
 	lapack-3.0
 	blas-3.0
 
-2-  creating directory an pre-build versione
-	on -	own@pcname:~/mudisp4/$   type:
-	 mkdir build
-	 cd build
-	 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/mudisp4/ ../
+2. Building 
+	2.1   Standard Method 
+  
+	2.1.a- creating directory an pre-build versione
+		on -	own@pcname:~/mudisp-4/$   type:
+			mkdir build 
+			cd build
+			cmake -DCMAKE_INSTALL_PREFIX=/usr/local/mudisp4/ ../
 
-
-the MuDiSP4 libraries are installed in the "/usr/local/mudisp4"
-directory. If you need to modify the install path change the CMAKE_INSTALL_PREFIX enviroment variable width
-the correct path in pre-build invoke e.g.
+	the MuDiSP4 libraries are installed in the "/usr/local/mudisp4"
+	directory. If you need to modify the install path change the CMAKE_INSTALL_PREFIX enviroment variable width
+	the correct path in pre-build invoke e.g.
 	cmake -DCMAKE_INSTALL_PREFIX=/opt/ ../
-3-
-execute the command "make" from within the MuDiSP4 distribution
-directory
 
-4-
-if the compilation process is successful, become root and execute the
-command "make install"
+	2.1.b- build 
+	execute the command "make" from within the MuDiSP4 distribution directory
 
+	2.1.c- if the compilation process is successful, become root and execute the
+	     command "make install
+       ------------------------------------------------------------------------------
+	2.2 	Fast Method
+	
+	2.2.a - Build Release version
+		
+		on -	own@pcname:~/mudisp-4/$   type:
+		./build.sh
+	2.2.b	if the compilation process is successful type,
+		own@pcname:~/mudisp-4/$  cd _build 
+	
+	2.2.c   become root and execute the  command "make install" type:
+		root@pcname:~/mudisp-4/_build$ make install  
+	------------------------------------------------------------------------------
+	
+	2.3 	Fast Build Debug Version
+	
+	2.3.a - Build Debug		
+		on -	own@pcname:~/mudisp-4/$   type:
+		./debug.sh
+	2.3.b	if the compilation process is successful type,
+		own@pcname:~/mudisp-4/$ cd _build_debug 
+	
+	2.3.c   become root and execute the  command 
+		root@pcname:~/mudisp-4/_build_debug/$  make install
+	------------------------------------------------------------------------------
+	2.4	Fast Build Release and Debug version 
+		
+		2.4.a - Build 		
+		on -	own@pcname:~/mudisp-4/$   type:
+		./build_all.sh
+
+	2.4.b	if the compilation process is successful type, chose the version to install:
+		- For Release version do 2.2.b 2.2.c
+		- For Debug   version do 2.3.b 2.3.c
 5-
 test the installation following the QUICKSTART note in the
 /usr/local/mudisp4/doc directory.

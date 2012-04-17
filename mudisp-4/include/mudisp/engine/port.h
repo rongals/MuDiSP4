@@ -357,7 +357,7 @@ public:
     // the block which owns the port put the data
     virtual void PutDataObj( const DATATYPE & data) {
 		lock lk(InPort::Port_Monitor);
-      port_data_buffer.push(data);
+		port_data_buffer.push(data);
       lk.unlock();
     }
     
@@ -366,9 +366,9 @@ public:
      * \return  number of elements inside the \a InPort Buffer.
      * */
     int Elements(){
-	lock lk(InPort::Port_Monitor);
-	return port_data_buffer.size();
-	lk.unlock();	
+		lock lk(InPort::Port_Monitor);
+		lk.unlock();
+	return port_data_buffer.size();	
 	}
 	
 	/*! \fn bool Empty() 
@@ -376,9 +376,7 @@ public:
 	 * \return State of data buffer, return \b true if \a InPort buffer if empty
 	 */
     bool Empty(){
-	lock lk(InPort::Port_Monitor);
 	return port_data_buffer.empty();
-	lk.unlock();	
 	}
 	
     // the receiving blocks access it
@@ -391,7 +389,7 @@ public:
     DATATYPE GetDataObj(){
       lock lk(InPort::Port_Monitor);
         DATATYPE data=port_data_buffer.front();
-	port_data_buffer.pop();
+		port_data_buffer.pop();
       lk.unlock();  
       return data;
     } 
@@ -450,8 +448,8 @@ template <class DATATYPE> class TransPort : public InPort <DATATYPE>,
    * @param data Data object
    */   
   void PutDataObj( const DATATYPE & data) {
-	 lock lk(Trans_Monitor);
-    DeliverDataObj( data );
+	lock lk(Trans_Monitor);
+	DeliverDataObj( data );
     lk.unlock();
   }
 };

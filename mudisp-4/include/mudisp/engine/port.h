@@ -402,16 +402,17 @@ public:
  */ 
     DATATYPE GetDataObj(DATATYPE &init){
       
-      DATATYPE data=init;
-
       lock lk(InPort::Port_Monitor);
-        if (!port_data_buffer.empty())
-	  {	
-	    data=port_data_buffer.front();
-	    port_data_buffer.pop();    
-	  }
-	lk.unlock();  
-      return data;
+        if (!port_data_buffer.empty()) {	
+	  DATATYPE data=port_data_buffer.front();
+	  port_data_buffer.pop();
+	  lk.unlock();
+	  return data;
+	} else {
+	  DATATYPE data=init;
+	  lk.unlock();  
+	  return data;
+	}
     } 
   
 }; 

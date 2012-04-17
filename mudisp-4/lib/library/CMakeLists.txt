@@ -103,23 +103,6 @@ MESSAGE(STATUS " File Nella Cartella Corrente ${libblocks_sources}")
 ########################################################################
 # Setup libblock library
 ########################################################################
-
-
-
-IF("${CMAKE_BUILD_TYPE}" MATCHES Debug) 
-ADD_LIBRARY(blocks_dbg STATIC ${libblocks_sources})
-TARGET_LINK_LIBRARIES(blocks_dbg ${Boost_LIBRARIES} ${libinesis_libs} ${libmudisp_libs} ${libblocks_lib} mudisp_dbg)
-#TARGET_LINK_LIBRARIES(${libblocks_lib} mudisp)
-SET_TARGET_PROPERTIES(blocks_dbg PROPERTIES DEFINE_SYMBOL "NEWBLOCKS_DLL_EXPORTS")
-
-INSTALL(TARGETS blocks_dbg
-    LIBRARY DESTINATION ${LIBRARY_DIR} # .so file
-    ARCHIVE DESTINATION ${LIBRARY_DIR} # .lib file
-    RUNTIME DESTINATION ${LIBRARY_DIR} # .dll file
-)
-ENDIF("${CMAKE_BUILD_TYPE}" MATCHES Debug)
-
-IF("${CMAKE_BUILD_TYPE}" MATCHES Release) 
 ADD_LIBRARY(blocks STATIC ${libblocks_sources})
 TARGET_LINK_LIBRARIES(blocks ${Boost_LIBRARIES} ${libinesis_libs} ${libmudisp_libs} ${libblocks_lib} mudisp)
 #TARGET_LINK_LIBRARIES(${libblocks_lib} mudisp)
@@ -130,7 +113,6 @@ INSTALL(TARGETS blocks
     ARCHIVE DESTINATION ${LIBRARY_DIR} # .lib file
     RUNTIME DESTINATION ${LIBRARY_DIR} # .dll file
 )
-ENDIF("${CMAKE_BUILD_TYPE}" MATCHES Release)
 	
 
 

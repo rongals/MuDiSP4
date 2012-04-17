@@ -102,32 +102,15 @@ MESSAGE(STATUS " Directory Corrente ${libmudisp_sources}")
 ########################################################################
 # Setup libmudisp library
 ########################################################################
-IF("${CMAKE_BUILD_TYPE}" MATCHES Debug) 
-
-	ADD_LIBRARY(mudisp_dbg STATIC ${libmudisp_sources})
-	TARGET_LINK_LIBRARIES(mudisp_dbg ${Boost_LIBRARIES} ${libinesis_libs} ${libmudisp_libs})
-	SET_TARGET_PROPERTIES(mudisp_dbg PROPERTIES DEFINE_SYMBOL "NEWMUDISP_DLL_EXPORTS")
-    
-    INSTALL(TARGETS mudisp_dbg
-		LIBRARY DESTINATION ${LIBRARY_DIR} # .so file
-		ARCHIVE DESTINATION ${LIBRARY_DIR} # .lib file
-		RUNTIME DESTINATION ${LIBRARY_DIR} # .dll file
-	)
-
-ENDIF("${CMAKE_BUILD_TYPE}" MATCHES Debug)
-
-IF("${CMAKE_BUILD_TYPE}" MATCHES Release) 
-
 	ADD_LIBRARY(mudisp STATIC ${libmudisp_sources})
 	TARGET_LINK_LIBRARIES(mudisp ${Boost_LIBRARIES} ${libinesis_libs} ${libmudisp_libs})
 	SET_TARGET_PROPERTIES(mudisp PROPERTIES DEFINE_SYMBOL "NEWMUDISP_DLL_EXPORTS")
   
-      INSTALL(TARGETS mudisp
+    INSTALL(TARGETS mudisp
 		LIBRARY DESTINATION ${LIBRARY_DIR} # .so file
 		ARCHIVE DESTINATION ${LIBRARY_DIR} # .lib file
 		RUNTIME DESTINATION ${LIBRARY_DIR} # .dll file
 	)
-ENDIF("${CMAKE_BUILD_TYPE}" MATCHES Release)
 
 
 

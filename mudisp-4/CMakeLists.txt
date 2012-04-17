@@ -62,8 +62,8 @@ SET(CMAKE_CXX_FLAGS_DISTRIBUTION "-O4 -c")
 SET(CMAKE_C_FLAGS_DISTRIBUTION "-O4 -c")
 
 # Impostazione dei Flag di compilazione per il DEBUG
-SET(CMAKE_CXX_FLAGS_DEBUG "-g")
-
+SET(CMAKE_CXX_FLAGS_DEBUG "-g -gstabs+ -gstabs")
+SET(CMAKE_DEBUG_POSTFIX "_dbg")
 
 
 #Imposta le librerie
@@ -86,6 +86,7 @@ INCLUDE(CheckCXXCompilerFlag)
 #ENDMACRO(UHD_ADD_OPTIONAL_CXX_COMPILER_FLAG)
 
 #for MuDiSP
+
 MACRO(MUDISP_ADD_OPTIONAL_CXX_COMPILER_FLAG flag have)
     CHECK_CXX_COMPILER_FLAG(${flag} ${have})
     IF(${have})
@@ -115,17 +116,21 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     ADD_DEFINITIONS(-Wextra)
     ADD_DEFINITIONS(-c)
     ADD_DEFINITIONS(-w)
+    ADD_DEFINITIONS(-g)
     ADD_DEFINITIONS(-pthread) #-pthread
     #ADD_DEFINITIONS( -DMUDISP_VERBOSE) #-pthread
     #ADD_DEFINITIONS(-std=gnu++0x)
     ADD_DEFINITIONS(-ansi)
     #only export symbols that are declared to be part of the uhd api:
     MUDISP_ADD_OPTIONAL_CXX_COMPILER_FLAG(-fvisibility=hidden HAVE_VISIBILITY_HIDDEN)
+
     IF(NOT WIN32)
         #only export symbols that are declared to be part of the uhd api (non dll platforms)
    #     UHD_ADD_OPTIONAL_CXX_COMPILER_FLAG(-fvisibility=hidden HAVE_VISIBILITY_HIDDEN)
     ENDIF(NOT WIN32)
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+
+MESSAGE(STATUS "Compiler Flag : ")
 
 IF(MSVC)
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/msvc)
@@ -287,7 +292,7 @@ INSTALL(FILES
 ########################################################################
 # Register top level components
 ########################################################################
-LIBMUDISP_REGISTER_COMPONENT("Docs" ENABLE_DOCS ON "ENABLE_LIBMUDISP" ON)
+LIBMUDISP_REGISTER_COMPONENT("Docs" ENABLE_DOCS OFF "ENABLE_LIBMUDISP" OFF)
 LIBMUDISP_REGISTER_COMPONENT("LibMUDISP" ENABLE_LIBMUDISP ON "Boost_FOUND;HAVE_PYTHON_PLAT_MIN_VERSION;HAVE_PYTHON_MODULE_CHEETAH" OFF)
 #LIBUHD_REGISTER_COMPONENT("Examples" ENABLE_EXAMPLES ON "ENABLE_LIBUHD" OFF)
 #LIBUHD_REGISTER_COMPONENT("Utils" ENABLE_UTILS ON "ENABLE_LIBUHD" OFF)

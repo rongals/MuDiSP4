@@ -383,44 +383,39 @@ public:
 	
     // the receiving blocks access it
    
- /*! @fn DATATYPE GetDataObjM()
+ /*! @fn DATATYPE GetDataObj()
  * @brief \b pop one element from data queue.
  * @tparam DATATYPE Tamplate data type format
  * @return One element from queue
  */ 
-    DATATYPE GetDataObjM(){
-		lock lk(InPort::Port_Monitor);
-			DATATYPE data=port_data_buffer.front();
-			port_data_buffer.pop();
-        return data;
-        lk.unlock();  
+    DATATYPE GetDataObj(){
+      lock lk(InPort::Port_Monitor);
+        DATATYPE data=port_data_buffer.front();
+	port_data_buffer.pop();
+      lk.unlock();  
+      return data;
     } 
-   
-/*! 
- *	\fn DATATYPE GetDataObj()
- * 	\brief \b pop one element from data queue.
- *	 @tparam DATATYPE Tamplate data type format
- * 	\return One element from queue
- */
-  DATATYPE GetDataObj(DATATYPE init=DATATYPE(0)){
-	//  DATATYPE data= DATATYPE(0);  // <-  Generate segmentation error for no standard type variale
-	 DATATYPE data;
-	 
-	 lock lk(InPort::Port_Monitor);
-		if (!port_data_buffer.empty())
-			{	
-				data=port_data_buffer.front();
-				port_data_buffer.pop();    
-			} else {
-				data = init;
-			}
-		return data;
-		lk.unlock();
-    }
- 
-   
-    //*/
 
+ /*! @fn DATATYPE GetDataObj(DATATYPE init)
+ * @brief \b if queue is non-empty then pop one element from data queue
+ * @param init default element returned if the queue is empty
+ * @tparam DATATYPE Template data type format
+ * @return One element from queue
+ */ 
+    DATATYPE GetDataObj(DATATYPE &init){
+      
+      DATATYPE data=init;
+
+      lock lk(InPort::Port_Monitor);
+        if (!port_data_buffer.empty())
+	  {	
+	    data=port_data_buffer.front();
+	    port_data_buffer.pop();    
+	  }
+	lk.unlock();  
+      return data;
+    } 
+  
 }; 
 
 

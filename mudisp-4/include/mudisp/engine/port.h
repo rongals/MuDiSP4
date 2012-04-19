@@ -380,7 +380,27 @@ public:
 	}
 	
     // the receiving blocks access it
-   
+#ifdef OLD_PORT
+  // Deprecate version of GetDataObj for Old Code
+    DATATYPE GetDataObj(DATATYPE init=DATATYPE(0)){
+	//  DATATYPE data= DATATYPE(0);
+	 DATATYPE data;
+	 
+	 lock lk(InPort::Port_Monitor);
+		if (!port_data_buffer.empty())
+			{	
+				data=port_data_buffer.front();
+				port_data_buffer.pop();    
+			} else {
+				data = init;
+			}
+		lk.unlock();
+		return data;
+		
+    }
+#endif
+
+#ifndef OLD_PORT   
  /*! @fn DATATYPE GetDataObj()
  * @brief \b pop one element from data queue.
  * @tparam DATATYPE Tamplate data type format
@@ -400,6 +420,8 @@ public:
  * @tparam DATATYPE Template data type format
  * @return One element from queue
  */ 
+ 
+ 
     DATATYPE GetDataObj(DATATYPE &init){
       
       lock lk(InPort::Port_Monitor);
@@ -414,7 +436,7 @@ public:
 	  return data;
 	}
     } 
-  
+#endif 
 }; 
 
 

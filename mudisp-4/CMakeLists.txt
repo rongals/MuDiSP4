@@ -58,11 +58,11 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 #MESSAGE ( STATUS "Vediamola qui ${INCLUDE_DIRECTORIES}")
 
 # Flag di Compilazione
-SET(CMAKE_CXX_FLAGS_DISTRIBUTION "-O4 -c")
-SET(CMAKE_C_FLAGS_DISTRIBUTION "-O4 -c")
+SET(CMAKE_CXX_FLAGS_DISTRIBUTION "-O4 -c -DOLD_PORT")
+SET(CMAKE_C_FLAGS_DISTRIBUTION "-O4 -c -DOLD_PORT")
 
 # Impostazione dei Flag di compilazione per il DEBUG
-SET(CMAKE_CXX_FLAGS_DEBUG "-g -gstabs+ -gstabs")
+SET(CMAKE_CXX_FLAGS_DEBUG "-g -gstabs+ -gstabs -DOLD_PORT")
 SET(CMAKE_DEBUG_POSTFIX "_dbg")
 
 
@@ -77,6 +77,7 @@ SET(BUILD_SHARED_LIBS ON)
 # Optional Compiler Flags
 ########################################################################
 INCLUDE(CheckCXXCompilerFlag)
+
 #for UHD
 #MACRO(UHD_ADD_OPTIONAL_CXX_COMPILER_FLAG flag have)
 #    CHECK_CXX_COMPILER_FLAG(${flag} ${have})
@@ -93,6 +94,8 @@ MACRO(MUDISP_ADD_OPTIONAL_CXX_COMPILER_FLAG flag have)
         ADD_DEFINITIONS(${flag})
     ENDIF(${have})
 ENDMACRO(MUDISP_ADD_OPTIONAL_CXX_COMPILER_FLAG)
+
+MESSAGE (STATUS  ${MUDISP_ADD_OPTIONAL_CXX_COMPILER_FLAG})
 
 #select the release build type by default to get optimization flags
 IF(NOT CMAKE_BUILD_TYPE)
@@ -116,7 +119,9 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     ADD_DEFINITIONS(-Wextra)
     ADD_DEFINITIONS(-w)
     ADD_DEFINITIONS(-pthread) #-pthread
-    #ADD_DEFINITIONS( -DMUDISP_VERBOSE) #-pthread
+    ADD_DEFINITIONS( -DMUDISP_VERBOSE) #-Verbose 
+    ADD_DEFINITIONS( -DOLD_PORT) # Deprecate version of port
+    ADD_DEFINITIONS( -DMUDISP_REALTIME) # Real time
     #ADD_DEFINITIONS(-std=gnu++0x)
     ADD_DEFINITIONS(-ansi)
     #only export symbols that are declared to be part of the uhd api:

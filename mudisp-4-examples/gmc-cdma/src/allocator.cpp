@@ -11,10 +11,10 @@
 #include "gsl/gsl_matrix.h"
 #include "gsl/gsl_sort_vector.h"
 
-//#define FIXED_ALLOCATION
+#define FIXED_ALLOCATION
 //#define GIVE_BEST_CARR
 //#define SWAP_BAD_GOOD
-#define BEST_OVERLAP
+//#define BEST_OVERLAP
 
 //#define SHOW_POWER
 //#define SHOW_MATRIX

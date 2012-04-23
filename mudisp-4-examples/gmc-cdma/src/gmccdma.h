@@ -14,13 +14,13 @@
 //
 // uncomment for verbose debug output
 //
-#define SHOW_MATRIX
+//#define SHOW_MATRIX
 
 //
 // uncomment for original Giannakis setting 
 // for theta matrix
 //
-#define GIANNAKIS_PRECODING
+//#define GIANNAKIS_PRECODING
 
 
 

@@ -1,0 +1,11 @@
+System_1.EbNo_db:                       0.0             ; Eb/No in dB
+System_1.EbNo_db:                       0.5             ; Eb/No in dB
+System_1.EbNo_db:                       1.0             ; Eb/No in dB
+System_1.EbNo_db:                       1.5             ; Eb/No in dB
+System_1.EbNo_db:                       2.0             ; Eb/No in dB
+System_1.EbNo_db:                       2.5             ; Eb/No in dB
+System_1.EbNo_db:                       3.0             ; Eb/No in dB
+System_1.EbNo_db:                       3.5             ; Eb/No in dB
+System_1.EbNo_db:                       4.0             ; Eb/No in dB
+System_1.EbNo_db:                       4.5             ; Eb/No in dB
+System_1.EbNo_db:                       5.0             ; Eb/No in dB

@@ -1,0 +1,17 @@
+#!/bin/bash
+if [ $# -lt 2 ]; then
+echo "USAGE: changer <s_regex_command> <files>"
+echo ""
+exit;
+fi
+
+TMPFILE=/tmp/.subst
+
+RGXCMD=$1;
+shift 1;
+
+for i in $*; do
+	cat $i | sed -e $RGXCMD > $TMPFILE
+	cp -f $TMPFILE $i
+	echo "$i processed." 
+done

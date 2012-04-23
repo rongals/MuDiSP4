@@ -1,0 +1,23 @@
+;
+;  Parameters for System_1
+;
+System_1.Iterations:                    50000              ; Main iterations
+System_1.EbNo:                          3              ; SNR (dB)
+System_1.BitSymb:                       1              ; bits per symbol (PSK mapping)
+System_1.SourceSymbs:                   2              ; source symbols
+System_1.CodedSymbs:                    8              ; coded symbols
+System_1.Carriers:                      64             ; number of carriers
+
+
+;
+;  Parameters for CPMPCoeffs_1
+;
+System_1.CPMPCoeffs_1.RiceFact:         0              ; Ricean factor of channel
+System_1.CPMPCoeffs_1.PowerTau:         1              ; decay factor of delay spread
+
+
+;
+;  Parameters for BitBer_1
+;
+System_1.BitBer_1.OutFile:              results/gmccdma_8u_64c_v28_swp.dat 
+System_1.BitBer_1.Ignore:               0              ; leading bits to ignore (0=shift)

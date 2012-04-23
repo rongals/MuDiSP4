@@ -1,0 +1,114 @@
+#
+# INeSiS Makefile
+#
+##########################################
+#  C++  COMPILER
+#CC = g++ -DSHOW_MATRIX
+CC = g++
+
+
+##########################################
+# MuDiSP4 SIMULATOR PATH
+MDSP4_SRC=/usr/local/mudisp4
+MDSP3_SRC=$(MDSP4_SRC)
+
+
+##########################################
+# USER PROJECT NAME (es. iir) 
+USERPROJECT = gmc-cdma
+
+##########################################
+# USER SOURCES DIR (es. SRC SRC1 SRC2) 
+USERDIRS = src src_gmccdma src_coding
+#USERDIRS = src src_testcoding src_coding
+
+
+
+##########################################
+# USER SOURCES FILES
+#USERSRC = convencode.cpp \
+	  blocksrc.cpp \
+	  pskmapper.cpp \
+	  blockawgn.cpp \
+          softdemapper.cpp \
+	  viterbidecoder.cpp \
+	  perfeval.cpp \
+	  gsl_mudisp.cpp \
+	  convolutional.cpp
+
+USERSRC = blockuser.cpp \
+	  bitsrc.cpp \
+	  gslwrite.cpp \
+	  blockrec.cpp \
+	  bitber.cpp \
+	  awgn.cpp \
+	  cpmpchan.cpp \
+	  cpmpcoeffs.cpp \
+	  gsllapack.cpp  \
+	  allocator.cpp
+
+
+##########################################
+# DEBUG
+DEBUG = true;
+
+##########################################
+# SIMULATOR LIBS
+#
+# add the following for LAPACK Support
+# (requires lapack package installed)
+# 	-lg2c \
+# 	-llapack
+#
+# add the following for GSL Support
+# (requires gsl package installed)
+#	-lgsl \
+#	-lgslcblas
+#
+#
+LIBS = -L/usr/local/libboost/lib\
+	-lgsl \
+	-lgslcblas \
+	-llapack
+
+
+##########################################
+##########################################
+# DO NOT MODIFY BELOW
+#
+
+USERSRC += system.cpp	\
+	main.cpp
+
+include $(MDSP4_SRC)/lib/Makefile.sim
+
+##########################################
+##########################################
+# DEMO Targets 
+#
+demosim:
+	rm -f ./results/*.dat 
+	./launcher ./cdma_verdu_awgn params/cdma_blind_awgn_63c2u_00*
+	./launcher ./cdma_verdu_awgn params/cdma_mf_awgn_63c2u_00*
+
+demoplot:
+	analyzer/2ublind.gnu
+
+democlean: distclean
+	rm -f cdma_verdu_awgn
+
+##########################################
+##########################################
+# gmc-cdma Targets 
+#
+buildparams:
+	./tools/param_exploder params/gmccdma_fca.txt params/ebno.txt
+	./tools/param_exploder params/gmccdma_dca.txt params/ebno.txt
+	./tools/param_exploder params/gmccdma_swp.txt params/ebno.txt
+	./tools/param_exploder params/gmccdma_ovl.txt params/ebno.txt
+
+launchall:
+	./launcher ./gmc-cdma-fca 	params/gmccdma_fca_*.txt
+	./launcher ./gmc-cdma-bestcarr 	params/gmccdma_dca_*.txt
+	./launcher ./gmc-cdma-swap 	params/gmccdma_swp_*.txt
+	./launcher ./gmc-cdma-overlap 	params/gmccdma_ovl_*.txt

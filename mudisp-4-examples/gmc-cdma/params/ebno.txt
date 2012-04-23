@@ -1,0 +1,10 @@
+;
+;  Parameters for System_1
+;
+System_1.EbNo:                          0              ; SNR (dB)
+System_1.EbNo:                          3              ; SNR (dB)
+System_1.EbNo:                          6              ; SNR (dB)
+System_1.EbNo:                          9              ; SNR (dB)
+System_1.EbNo:                          11              ; SNR (dB)
+System_1.EbNo:                          13              ; SNR (dB)
+System_1.EbNo:                          15              ; SNR (dB)

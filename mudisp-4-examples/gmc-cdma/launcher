@@ -1,0 +1,13 @@
+#!/bin/bash
+if [ $# -lt 2 ]; then
+echo "USAGE: launcher <simulation_exe> <params_pattern>"
+echo ""
+exit;
+fi
+
+SIMEXE=$1;
+shift 1
+
+for i in $*; do
+	echo "$SIMEXE $i" | batch 
+done

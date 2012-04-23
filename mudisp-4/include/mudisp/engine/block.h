@@ -770,6 +770,33 @@ private:
 		}
   };
 
+
+  struct realtime_executer : public unary_function<Block *, void>
+  {
+	/** @fn  void operator()(Block *to_exe)
+	 * @brief Executer service rutine for current block. Launch every time block go in ececution mode  
+	 * */
+    void operator()(Block *to_exe) { 
+	//	cout<< to_exe->GetAbsoluteRun() << endl;
+#ifdef MUDISP_VERBOSE		
+	if ( (to_exe->GetBlkState())==7){
+		cout << "From Block " << to_exe->BlockName << " " ;
+		to_exe->PrintList();
+		to_exe->Unique();
+		cout << endl << "*----------------------------------------------------------------------*" 
+		<< endl << "*----------------------------------------------------------------------*"  << endl;
+		to_exe->PrintList();
+		to_exe->SetDone();
+		}
+#endif
+    	// to_exe->PrintPortRate();										//<-- 
+
+		to_exe->Run();  
+		
+		//to_exe->
+		}
+  };
+
   //
   // MapReset
   //

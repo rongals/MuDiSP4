@@ -369,8 +369,14 @@ void Block::_DumpParameters(ostream &os){
 }
 
 
+
 void Block::Run() {
+	#ifndef MUDISP_REALTIME
     for_each(run_seq.begin(),run_seq.end(),executer());
+    #else
+		cout  << " Running Realtime " << endl;
+    for_each(run_seq.begin(),run_seq.end(),realtime_executer());
+    #endif
 }
 
 void Block::Finish() {

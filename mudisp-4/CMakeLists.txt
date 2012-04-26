@@ -120,6 +120,7 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     ADD_DEFINITIONS(-w)
     ADD_DEFINITIONS(-pthread) #-pthread
     ADD_DEFINITIONS( -DMUDISP_VERBOSE) #-Verbose 
+    #ADD_DEFINITIONS( -DMUDISP_DEBUG_VERBOSE) #-System Runtime Message 
     ADD_DEFINITIONS( -DOLD_PORT) # Deprecate version of port
     ADD_DEFINITIONS( -DMUDISP_REALTIME) # Real time
     #ADD_DEFINITIONS(-std=gnu++0x)

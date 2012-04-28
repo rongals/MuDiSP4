@@ -271,8 +271,10 @@ public:
     deliv_list.push_front( &dest );
      for (int i=0; i<GetRate()*GetRuns(); i++){
 		    dest.PutDataObj(init); // Istanzia almeno il primo.
-	} std::cout << "Fine del Delay Connect " << endl;
- 
+	} 
+	#ifdef MUDISP_DEBUG_VERBOSE
+	std::cout << "Fine del Delay Connect " << endl;
+	#endif
  }
   
   

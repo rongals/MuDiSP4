@@ -105,9 +105,9 @@ void Block::AddToRunSequence(Block& newblock, int N) {
 // finds the run sequence of the registered blocks
 //
 void Block::SequenceFinder() {
-	#ifdef MUDISP_DEBUG   
-    std::cout << " Entro ora nel SequenceFinder() " << std::cout << this << std::endl;
-#endif
+	#ifdef MUDISP_DEBUG_VERBOSE   
+		std::cout << " Entro ora nel SequenceFinder() " << std::cout << this << std::endl;
+	#endif
 
 //
 // I propagate the Sequence Finder through the
@@ -264,7 +264,10 @@ void Block::SequenceFinder() {
     }
   }
   /*!  Qui dovrei sbloccare il mio thread settando la variabile condizionale */
-  std::cout<< "esco dal SequenceFinder " <<  std::endl; 
+#ifdef MUDISP_DEBUG_VERBOSE
+  std::cout<< "Esco dal SequenceFinder " <<  std::endl; 
+#endif   
+
    stable_br.notify_all(); // <<-- Manda il segnale broadcast a tutti i threads interrorri dalla variabile condizionale
 }
 

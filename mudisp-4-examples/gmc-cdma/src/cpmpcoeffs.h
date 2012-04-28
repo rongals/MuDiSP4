@@ -24,7 +24,7 @@ class CPMPCoeffs : public Block {
 
   ////////   Parameters instances
 
-  IntParam N; 
+  IntParam N,L; 
   FloatParam PTau;
   FloatParam Ricean;
 
@@ -46,12 +46,14 @@ public:
   CPMPCoeffs():Block("CPMPCoeffs")
     ////////  parameters initializazion
     ,N("Carriers",16,"number of carriers")
+    ,L("ChanTaps",2,"number of channel taps")
     ,PTau("PowerTau",1.0,"decay factor of delay spread")
     ,Ricean("RiceFact",0.0,"Ricean factor of channel")
     {
 
       //////// local parameter registration
       AddParameter(N);
+      AddParameter(L);
       AddParameter(PTau);
       AddParameter(Ricean);
 

@@ -231,6 +231,9 @@ void BlockUser::Run() {
 #endif
 
 #ifdef SHOW_MATRIX
+
+  cout << endl << BlockName << endl;
+
   //
   // compute the trace of coding_mat
   //
@@ -249,8 +252,7 @@ void BlockUser::Run() {
     trace=gsl_complex_add(trace,ctmp);
   }
 
-
-  cout << "coding matrix = " << endl;
+  cout << endl << "coding matrix (theta) = " << endl;
   gsl_matrix_complex_show(coding_mat);
 
   cout << "T^h*T matrix = " << endl;
@@ -264,6 +266,7 @@ void BlockUser::Run() {
 
   gsl_matrix_complex_free(THT);
 #endif
+
 
 //
 //
@@ -303,8 +306,8 @@ void BlockUser::Run() {
 		 tmpout);
 
 
-//   cout << "\n\n symbols (user " << Cd() << ") = " << endl;
-//   gsl_vector_complex_fprintf(stdout,tmp,"%f");
+  //   cout << "\n\n symbols (user " << Cd() << ") = " << endl;
+  //   gsl_vector_complex_fprintf(stdout,tmp,"%f");
 
 #ifdef SHOW_MATRIX
   cout << "\n\n symbols (user " << Cd() << ") = " << endl;

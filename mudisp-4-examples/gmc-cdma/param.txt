@@ -2,11 +2,11 @@
 ;  Parameters for System_1
 ;
 System_1.Iterations:                    10000              ; Main iterations
-System_1.EbNo:                          15              ; SNR (dB)
+System_1.EbNo:                          3              ; SNR (dB)
 System_1.BitSymb:                       1              ; bits per symbol (PSK mapping)
 System_1.SourceSymbs:                   2              ; source symbols
-System_1.CodedSymbs:                    8              ; coded symbols
-System_1.Carriers:                      64             ; number of carriers
+System_1.CodedSymbs:                    4              ; coded symbols
+System_1.Carriers:                      32             ; number of carriers
 
 
 ;
@@ -14,10 +14,20 @@ System_1.Carriers:                      64             ; number of carriers
 ;
 System_1.CPMPCoeffs_1.RiceFact:         0              ; Ricean factor of channel
 System_1.CPMPCoeffs_1.PowerTau:         1              ; decay factor of delay spread
+System_1.CPMPCoeffs_1.ChanTaps:         2              ; number of channel taps
+
+
+;
+;  Parameters for Allocator_1
+;
+System_1.Allocator_1.AllocatorMode:     1              ; 0=fca,1=bst,2=swp,3=ovl
 
 
 ;
 ;  Parameters for BitBer_1
 ;
-System_1.BitBer_1.OutFile:              cout 
+System_1.BitBer_1.OutFile:              cout            
 System_1.BitBer_1.Ignore:               0              ; leading bits to ignore (0=shift)
+
+
+

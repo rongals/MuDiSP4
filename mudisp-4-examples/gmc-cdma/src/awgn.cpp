@@ -14,10 +14,11 @@
 void AWGN::Setup() {
 
 //////// initialization of dynamic data structures
-
+  gsl_rng_env_setup();
   noisestd = sqrt( noisevar() );
   ran = gsl_rng_alloc( gsl_rng_default );
 
+  cout << BlockName << ".gsl_rng_default_seed=" << gsl_rng_default_seed << endl;
 
 //////// rate declaration for ports
 

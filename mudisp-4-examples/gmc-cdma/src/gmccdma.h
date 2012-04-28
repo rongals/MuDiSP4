@@ -18,8 +18,11 @@
 
 //
 // uncomment for original Giannakis setting 
-// for theta matrix
-//
+// for theta matrix. The Vandermonde matrix is suitable
+// for FCA subcarrier allocation only. For other subcarrier
+// allocation methods the proposed Vandermonde encoding is
+// preferred.
+// 
 //#define GIANNAKIS_PRECODING
 
 

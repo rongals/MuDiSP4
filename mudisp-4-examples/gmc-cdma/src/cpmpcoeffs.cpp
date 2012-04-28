@@ -19,11 +19,14 @@ void CPMPCoeffs::Setup() {
 
   //////// initialization of dynamic data structures
 
+  gsl_rng_env_setup();
+  cout << BlockName << ".gsl_rng_default_seed=" << gsl_rng_default_seed << endl;
+
   ch = gsl_matrix_complex_alloc(USERS,N());
   ran = gsl_rng_alloc( gsl_rng_default );
 
   double pwr=0.0;
-  for (int j=0; j<N(); j++) {
+  for (int j=0; j<L(); j++) {
     pwr += exp(-j*2.0/PTau());
   }
   
@@ -65,8 +68,9 @@ void CPMPCoeffs::Run() {
 // Exponentially decaying power profile
 //
 //
+  gsl_matrix_complex_set_all(ch,z);
   for (int i=0; i<USERS; i++) {
-    for (int j=0; j<N(); j++) {
+    for (int j=0; j<L(); j++) {
       double coeffstd=gain*exp(-j/PTau())/sqrt(2.0);
       if (j==0) { 
 	gsl_complex chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd)+gainrice,

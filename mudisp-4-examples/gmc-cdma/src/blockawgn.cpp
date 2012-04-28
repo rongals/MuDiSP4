@@ -14,7 +14,7 @@
 void BlockAWGN::Setup() {
 
 //////// initialization of dynamic data structures
-
+  gsl_rng_env_setup();
   noisestd = sqrt( noisevar() );
   ran = gsl_rng_alloc( gsl_rng_default );
 

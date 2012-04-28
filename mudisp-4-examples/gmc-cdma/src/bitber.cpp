@@ -144,7 +144,7 @@ void BitBer::Finish() {
   ofs.close();
 
   double ebnol=pow(10.0,(value()/10.0));
-  cout << "\n BPSK reference BER = " << gsl_cdf_ugaussian_Q(sqrt(2*ebnol)) << endl;
+  cout << "\n BPSK reference BER (AWGN) = " << gsl_cdf_ugaussian_Q(sqrt(2*ebnol)) << endl;
   
 
 }

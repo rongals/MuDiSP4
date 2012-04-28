@@ -8,13 +8,29 @@
 
 #include "allocator.h"
 #include "gmccdma.h"
-#include "gsl/gsl_matrix.h"
-#include "gsl/gsl_sort_vector.h"
 
-#define FIXED_ALLOCATION
-//#define GIVE_BEST_CARR
-//#define SWAP_BAD_GOOD
-//#define BEST_OVERLAP
+// FIXED_ALLOCATION
+// each user is assigned a fixed set of carriers chosen with the modulus function
+// sig(mu,j)=(j M + mu)
+//
+// GIVE_BEST_CARR
+// first we sort the channel responses of each user, then a first user is selected randomly and the best J carriers 
+// are assigned in roud-robin fashion (give N > JM)
+// 
+//
+// SWAP_BAD_GOOD
+// starting from a fixed allocation, we swap the worst carrier of current users with the best carrier used by others.
+// Users served in round-robin with random start.
+//
+//
+// BEST_OVERLAP
+// each user takes her best J carriers possibly overlapping with others
+//
+//
+
+
+
+
 
 //#define SHOW_POWER
 //#define SHOW_MATRIX
@@ -30,20 +46,24 @@ extern void gsl_matrix_complex_show(gsl_matrix_complex *mat);
 
 void Allocator::Setup() {
 
-
-
 //////// initialization of dynamic data structures
+
   Hchan = gsl_vector_complex_alloc(N());
   Hmat = gsl_matrix_complex_alloc(N(),USERS);
+  Hperm = gsl_matrix_uint_alloc(N(),USERS);
+  p = gsl_permutation_alloc(N());
+  huserabs = gsl_vector_alloc(N());
+  nextcarr = gsl_vector_uint_alloc(USERS);
+  usedcarr = gsl_vector_uint_alloc(N());
+  habs = gsl_matrix_alloc(N(),USERS);
 
   //
   // Random Generator
   //
   ran = gsl_rng_alloc( gsl_rng_default );
 
-
-
   // SIGNATURE FREQUENCIES INITIAL SETUP
+
   signature_frequencies = gsl_matrix_uint_alloc(USERS,J());
   signature_frequencies_init = gsl_matrix_uint_alloc(USERS,J());
 
@@ -70,6 +90,26 @@ void Allocator::Setup() {
   for (int i=0; i<N(); i++)
     for (int j=0; j<N(); j++)
       gsl_matrix_complex_set(transform_mat, i,j, gsl_complex_polar(fftamp,fftarg*i*j) );
+
+
+  switch (Mode()) {
+  case 0:
+    cout << BlockName << " - Allocator type FIXED_ALLOCATION selected" << endl;
+    break;
+  case 1:
+    cout << BlockName << " - Allocator type GIVE_BEST_CARR selected" << endl;
+    break;
+  case 2:
+    cout << BlockName << " - Allocator type SWAP_BAD_GOOD selected" << endl;
+    break;
+  case 3:
+    cout << BlockName << " - Allocator type BEST_OVERLAP selected" << endl;
+    break;
+  default:
+    cerr << BlockName << " - Unhandled allocator type !" << endl;
+    exit(1);
+  }
+
 
   
 //////// rate declaration for ports
@@ -102,25 +142,20 @@ void Allocator::Run() {
   // CARRIER ALLOCATION STRATEGIES
   // ***********************************************************
   //
+    gsl_matrix_uint_memcpy(signature_frequencies,
+			   signature_frequencies_init);
 
+  switch (Mode()) {
 
-#ifdef FIXED_ALLOCATION
+  case 0: // FIXED_ALLOCATION
 
-  gsl_matrix_uint_memcpy(signature_frequencies,
-			 signature_frequencies_init);
+    break;
 
-#endif // FIXED_ALLOCATION
-
-
-#ifdef GIVE_BEST_CARR
-
+  case 1: // GIVE_BEST_CARR
 
   //
   // SORT CARRIERS OF EACH USERS
   //
-  gsl_matrix_uint *Hperm = gsl_matrix_uint_alloc(N(),USERS);
-  gsl_permutation *p = gsl_permutation_alloc(N());
-  gsl_vector *huserabs = gsl_vector_alloc(N());
 
   for(int u=0; u<USERS; u++) {
 
@@ -144,14 +179,12 @@ void Allocator::Run() {
   //
   // FIND INITIAL USER RANDOMLY
   //
-  unsigned int curruser = gsl_rng_uniform_int(ran,USERS);
+  curruser = gsl_rng_uniform_int(ran,USERS);
   
  
   //
   // ASSIGN FREQUENCIES
   //
-  gsl_vector_uint *nextcarr = gsl_vector_uint_alloc(USERS);
-  gsl_vector_uint *usedcarr = gsl_vector_uint_alloc(N());
   gsl_vector_uint_set_all(nextcarr,0);
   gsl_vector_uint_set_all(usedcarr,0);
   for (int j=0; j<J(); j++) {
@@ -177,45 +210,31 @@ void Allocator::Run() {
   //
   // sort signatures 
   //
-//   for (int u=0; u<USERS; u++) {
-//     gsl_vector_uint_view signature_u = 
-//       gsl_matrix_uint_row(signature_frequencies,u);
-//     gsl_sort_vector_uint(&signature_u.vector);
-//   }
+  //   for (int u=0; u<USERS; u++) {
+  //     gsl_vector_uint_view signature_u = 
+  //       gsl_matrix_uint_row(signature_frequencies,u);
+  //     gsl_sort_vector_uint(&signature_u.vector);
+  //   }
   
  
   //
   // show channels and permutations 
   //
-  //gsl_matrix_complex_show(Hmat);
+  //  gsl_matrix_complex_show(Hmat);
   //gsl_matrix_uint_show(Hperm);
   //gsl_matrix_uint_show(signature_frequencies);
 
-  //
-  // FREE ALLOCATIONS
-  //
-  gsl_vector_free(huserabs);
-  gsl_permutation_free(p);
-  gsl_matrix_uint_free(Hperm);
-  gsl_vector_uint_free(nextcarr);
-  gsl_vector_uint_free(usedcarr);
+    break;
 
-#endif // GIVE_BEST_CARR
-  
+  case 2: // SWAP_BAD_GOOD
 
-
-#ifdef SWAP_BAD_GOOD
-
-
- 
   //
   // HPERM CONSTRUCTION
   //
+
   // SORT CARRIERS OF EACH USERS
   //
-  gsl_matrix_uint *Hperm = gsl_matrix_uint_alloc(N(),USERS);
-  gsl_permutation *p = gsl_permutation_alloc(N());
-  gsl_matrix *habs = gsl_matrix_alloc(N(),USERS);
+
 
   for(int u=0; u<USERS; u++) {
 
@@ -242,7 +261,6 @@ void Allocator::Run() {
 
   }
 
-  // here
   //
   // Hperm(N,USERS) contains sorted channels index for each users
   // habs(N,USERS) contains channel energy per each user
@@ -251,7 +269,7 @@ void Allocator::Run() {
   //
   // FIND INITIAL USER RANDOMLY for fairness
   //
-  unsigned int curruser = gsl_rng_uniform_int(ran,USERS);
+  curruser = gsl_rng_uniform_int(ran,USERS);
   
  
   //
@@ -317,26 +335,12 @@ void Allocator::Run() {
   }
 
 
-  //
-  // FREE ALLOCATIONS
-  //
-  gsl_matrix_free(habs);
-  gsl_permutation_free(p);
-  gsl_matrix_uint_free(Hperm);
-
-
-#endif // SWAP_BAD_GOOD
-
-
-#ifdef BEST_OVERLAP
-
+  break;
+  case 3:   //  BEST_OVERLAP
 
   //
   // SORT CARRIERS OF EACH USERS
   //
-  gsl_matrix_uint *Hperm = gsl_matrix_uint_alloc(N(),USERS);
-  gsl_permutation *p = gsl_permutation_alloc(N());
-  gsl_vector *huserabs = gsl_vector_alloc(N());
 
   for(int u=0; u<USERS; u++) {
 
@@ -367,7 +371,6 @@ void Allocator::Run() {
       gsl_matrix_uint_set(signature_frequencies,u,j,carrier);
     }
   }
-
  
   //
   // show channels and permutations 
@@ -376,38 +379,30 @@ void Allocator::Run() {
   //gsl_matrix_uint_show(Hperm);
   //gsl_matrix_uint_show(signature_frequencies);
 
-  //
-  // FREE ALLOCATIONS
-  //
-  gsl_vector_free(huserabs);
-  gsl_permutation_free(p);
-  gsl_matrix_uint_free(Hperm);
-
-
-#endif // BEST_OVERLAP
-  
+    break;
+  }
 
 
   //#ifdef SHOW_MATRIX
   //  gsl_matrix_complex_show(Hmat);
-  //   gsl_matrix_uint_show(signature_frequencies);
-    //#endif
+  //  gsl_matrix_uint_show(signature_frequencies);
+  //#endif
   
   //
   // SHOW POWER USER 0
   //
-//   double power = 0.0;
-//   for (int j=0; j<J(); j++) {
-//     int carrier = gsl_matrix_uint_get(signature_frequencies,0,j);
-//     power += gsl_complex_abs2(gsl_matrix_complex_get(Hmat,carrier,0));
-//   }
-//   cout << "\ncurrent allocated power user 0 = " << power << endl;
-//   power = 0.0;
-//   for (int j=0; j<J(); j++) {
-//     int carrier = gsl_matrix_uint_get(signature_frequencies_init,0,j);
-//     power += gsl_complex_abs2(gsl_matrix_complex_get(Hmat,carrier,0));
-//   }
-//   cout << "fixed  allocated power user 0 = " << power << endl;
+  //   double power = 0.0;
+  //   for (int j=0; j<J(); j++) {
+  //     int carrier = gsl_matrix_uint_get(signature_frequencies,0,j);
+  //     power += gsl_complex_abs2(gsl_matrix_complex_get(Hmat,carrier,0));
+  //   }
+  //   cout << "\ncurrent allocated power user 0 = " << power << endl;
+  //   power = 0.0;
+  //   for (int j=0; j<J(); j++) {
+  //     int carrier = gsl_matrix_uint_get(signature_frequencies_init,0,j);
+  //     power += gsl_complex_abs2(gsl_matrix_complex_get(Hmat,carrier,0));
+  //   }
+  //   cout << "fixed  allocated power user 0 = " << power << endl;
 
   //////// production of data
   mout1.DeliverDataObj( *signature_frequencies );

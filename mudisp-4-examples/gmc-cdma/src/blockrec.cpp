@@ -14,7 +14,6 @@
 #define PI 3.1415926536
 
 
-
 extern void  gsl_matrix_complex_show( gsl_matrix_complex *);
 
 
@@ -123,7 +122,14 @@ void BlockRec::Run() {
 		 gsl_complex_rect(0,0), 
 		 Hchan);
 
+  //  cout << "\n\n channel time response = " << endl;
+  // gsl_vector_complex_fprintf(stdout,&(hchan.vector),"%f");
+
+
 #ifdef SHOW_MATRIX
+
+  cout << endl << BlockName << endl;
+
   cout << "\n\n channel frequency response = " << endl;
   gsl_vector_complex_fprintf(stdout,Hchan,"%f");
 #endif
@@ -160,10 +166,10 @@ void BlockRec::Run() {
   //
   gsl_vector_complex_free(Hchan);
 
-#ifdef SHOW_MATRIX
+  #ifdef SHOW_MATRIX
   cout << "\n\nEquivalent Channel+Coding mat:" << endl;
   gsl_matrix_complex_show(coding_mat);
-#endif 
+  #endif 
 
   // fetch a received block
   //gsl_vector_complex_memcpy(tmp,&vin1.GetDataObj());
@@ -223,7 +229,8 @@ void BlockRec::Run() {
 			       tmpout);
 
    #ifdef SHOW_MATRIX
-   cout << "\n\nresult of pseudoinversion  = " << svdres << endl;
+   cout << "\n\nrank of A matrix  = " << svdres << endl;
+   cout << "\n\ndetected symbols =" << endl;
    gsl_vector_complex_fprintf(stdout,tmpout,"%f");
 
    
@@ -236,7 +243,7 @@ void BlockRec::Run() {
    
    double residual = gsl_blas_dznrm2(tmp2);
    
-   cout << "svd residual error = " << residual << endl;
+   cout << "\n\nsvd residual error = " << residual << endl;
    gsl_vector_complex_fprintf(stdout,tmp2,"%f");
    #endif 
    

@@ -148,7 +148,7 @@ int gsl_lapack_solveSVD_complex(gsl_vector_complex *vecb,
   free(rwork);
   
 
-  return(rval);
+  return(rank);
 
 }
 

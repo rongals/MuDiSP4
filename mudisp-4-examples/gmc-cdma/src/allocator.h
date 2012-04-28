@@ -15,6 +15,7 @@
 #include "gsl/gsl_blas.h"
 #include "gsl/gsl_math.h"
 #include "gsl/gsl_rng.h"
+#include "gsl/gsl_sort_vector.h"
 
 ////////
 ////////   Here put your personal includes
@@ -28,10 +29,20 @@ class Allocator : public Block {
 
   ////////   Parameters instances
 
-  IntParam J,N; 
+  IntParam J,N,Mode; 
   
   ////////   Local Attributes
  
+  unsigned int curruser;
+  gsl_matrix_uint *Hperm;
+  gsl_permutation *p; 
+  gsl_vector *huserabs;
+  gsl_vector_uint *nextcarr;
+  gsl_vector_uint *usedcarr;
+  gsl_matrix *habs; 
+
+
+
   // Carrier Allocation Matrix
   gsl_matrix_uint * signature_frequencies, * signature_frequencies_init; 
   gsl_matrix_complex * transform_mat, * Hmat;
@@ -58,11 +69,13 @@ public:
     ////////  parameters initializazion
     ,N("Carriers",16,"number of carriers")
     ,J("CodedSymbs",16,"coded symbols")
+    ,Mode("AllocatorMode",0,"0=fca,1=bst,2=swp,3=ovl")
     {
 
       //////// local parameter registration
       AddParameter(N);
       AddParameter(J);
+      AddParameter(Mode);
 
     }
 

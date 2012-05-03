@@ -26,13 +26,22 @@ USERPROJECT = gmc-cdma-ai
 
 ##########################################
 # USER SOURCES DIR (es. SRC SRC1 SRC2) 
-USERDIRS = src src_gmccdma_ai
-
+USERDIRS = src src_gmccdma src_coding
+#USERDIRS = src src_testcoding src_coding
 
 
 
 ##########################################
 # USER SOURCES FILES
+#USERSRC = convencode.cpp \
+	  blocksrc.cpp \
+	  pskmapper.cpp \
+	  blockawgn.cpp \
+          softdemapper.cpp \
+	  viterbidecoder.cpp \
+	  perfeval.cpp \
+	  gsl_mudisp.cpp \
+	  convolutional.cpp
 
 USERSRC = blockuser.cpp \
 	  bitsrc.cpp \

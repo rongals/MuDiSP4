@@ -1,7 +1,7 @@
 ;
 ;  Parameters for System_1
 ;
-System_1.Iterations:                    10000              ; Main iterations
+System_1.Iterations:                    1              ; Main iterations
 System_1.EbNo:                          3              ; SNR (dB)
 System_1.BitSymb:                       1              ; bits per symbol (PSK mapping)
 System_1.SourceSymbs:                   2              ; source symbols
@@ -18,9 +18,9 @@ System_1.CPMPCoeffs_1.ChanTaps:         2              ; number of channel taps
 
 
 ;
-;  Parameters for Allocator_1
+;  Parameters for AIAllocator_1
 ;
-System_1.Allocator_1.AllocatorMode:     1              ; 0=fca,1=bst,2=swp,3=ovl
+System_1.AIAllocator_1.AllocatorMode:   4              ; 0=fca,1=bst,2=swp,3=ovl,4=SOAR
 
 
 ;

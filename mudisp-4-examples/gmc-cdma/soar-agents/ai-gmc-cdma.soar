@@ -1,0 +1,3 @@
+pushd ai-gmc-cdma
+source ai-gmc-cdma_source.soar
+popd

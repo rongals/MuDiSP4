@@ -1,0 +1,27 @@
+sp {propose*initialize-ai-gmc-cdma
+   (state <s> ^superstate nil
+             -^name)
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name initialize-ai-gmc-cdma)
+}
+
+sp {apply*initialize-ai-gmc-cdma
+   (state <s> ^operator <op>)
+   (<op> ^name initialize-ai-gmc-cdma)
+-->
+   (<s> ^name ai-gmc-cdma)
+   (<s> ^carrier <c1>)
+   (<s> ^carrier <c2>)
+   (<s> ^carrier <c3>)
+   (<s> ^carrier <c4>)
+   (<c1> ^cid 1 ^type carrier ^used no)
+   (<c2> ^cid 2 ^type carrier ^used no)
+   (<c3> ^cid 3 ^type carrier ^used no)
+   (<c4> ^cid 4 ^type carrier ^used no)
+   (<s> ^user <u1>)
+   (<s> ^user <u2>)
+   (<u1> ^uid 1 ^requires 2)
+   (<u2> ^uid 2 ^requires 2)
+}
+

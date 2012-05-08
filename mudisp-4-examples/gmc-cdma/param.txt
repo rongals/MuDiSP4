@@ -1,7 +1,7 @@
 ;
 ;  Parameters for System_1
 ;
-System_1.Iterations:                    1              ; Main iterations
+System_1.Iterations:                    5              ; Main iterations
 System_1.EbNo:                          3              ; SNR (dB)
 System_1.BitSymb:                       1              ; bits per symbol (PSK mapping)
 System_1.SourceSymbs:                   2              ; source symbols

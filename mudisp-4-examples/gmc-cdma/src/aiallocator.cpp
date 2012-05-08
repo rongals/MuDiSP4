@@ -27,6 +27,10 @@
 // each user takes her best J carriers possibly overlapping with others
 //
 //
+// SOAR_AI
+// artificial intelligence SOAR connection
+//
+//
 
 
 
@@ -107,64 +111,66 @@ void AIAllocator::Setup() {
     break;
   case 4:
     cout << BlockName << " - Allocator type SOAR_AI selected" << endl;
-    break;  default:
+
+    //
+    //
+    // SOAR INITIALIZATION
+    //
+    //
+    // Create an instance of the Soar kernel in our process
+    //pKernel = Kernel::CreateKernelInNewThread() ;
+    pKernel = Kernel::CreateRemoteConnection() ;
+    
+    // Check that nothing went wrong.  We will always get back a kernel object
+    // even if something went wrong and we have to abort.
+    if (pKernel->HadError())
+      {
+	cerr << BlockName << ".SOAR - " << pKernel->GetLastErrorDescription() << endl ;
+	exit(1);
+      }
+    
+    // We check if an agent has been prevoiusly created, otherwise we create it 
+    // NOTE: We don't delete the agent pointer.  It's owned by the kernel
+    pAgent = pKernel->GetAgent("AIAllocator") ;
+    if (! pKernel->IsAgentValid(pAgent)) {
+      pAgent = pKernel->CreateAgent("AIAllocator") ;
+    }
+    
+    
+    // Check that nothing went wrong
+    // NOTE: No agent gets created if there's a problem, so we have to check for
+    // errors through the kernel object.
+    if (pKernel->HadError())
+      {
+	cerr << BlockName << ".SOAR - " << pKernel->GetLastErrorDescription() << endl ;
+	exit(1);
+      }
+    
+    //
+    // load productions
+    //
+    pAgent->LoadProductions("/usr/local/sandbox_ronga/git/MuDiSP4/mudisp-4-examples/gmc-cdma/aiallocator.soar");
+    
+    // Check that nothing went wrong
+    // NOTE: No agent gets created if there's a problem, so we have to check for
+    // errors through the kernel object.
+    if (pKernel->HadError())
+      {
+	cerr << BlockName << ".SOAR - " << pKernel->GetLastErrorDescription() << endl ;
+	exit(1);
+      }
+    
+    //
+    // END OF SOAR INITIALIZAZION
+    //
+    
+    break;  
+  default:
     cerr << BlockName << " - Unhandled allocator type !" << endl;
     exit(1);
   }
+  
 
-
-  //
-  //
-  // SOAR INITIALIZATION
-  //
-  //
-  // Create an instance of the Soar kernel in our process
-  //pKernel = Kernel::CreateKernelInNewThread() ;
-  pKernel = Kernel::CreateRemoteConnection() ;
-
-  // Check that nothing went wrong.  We will always get back a kernel object
-  // even if something went wrong and we have to abort.
-  if (pKernel->HadError())
-    {
-      cerr << BlockName << ".SOAR - " << pKernel->GetLastErrorDescription() << endl ;
-      exit(1);
-    }
-  
-  // We check if an agent has been prevoiusly created, otherwise we create it 
-  // NOTE: We don't delete the agent pointer.  It's owned by the kernel
-  pAgent = pKernel->GetAgent("AIAllocator") ;
-  if (! pKernel->IsAgentValid(pAgent)) {
-    pAgent = pKernel->CreateAgent("AIAllocator") ;
-  }
-  
-  
-  // Check that nothing went wrong
-  // NOTE: No agent gets created if there's a problem, so we have to check for
-  // errors through the kernel object.
-  if (pKernel->HadError())
-    {
-      cerr << BlockName << ".SOAR - " << pKernel->GetLastErrorDescription() << endl ;
-      exit(1);
-    }
-  
-  //
-  // load productions
-  //
-  pAgent->LoadProductions("/usr/local/sandbox_ronga/git/MuDiSP4/mudisp-4-examples/gmc-cdma/aiallocator.soar");
-
-    // Check that nothing went wrong
-  // NOTE: No agent gets created if there's a problem, so we have to check for
-  // errors through the kernel object.
-  if (pKernel->HadError())
-    {
-      cerr << BlockName << ".SOAR - " << pKernel->GetLastErrorDescription() << endl ;
-      exit(1);
-    }
-  
-  //
-  // END OF SOAR INITIALIZAZION
-  //
-  
   //////// rate declaration for ports
 
 
@@ -439,13 +445,12 @@ void AIAllocator::Run() {
     // SOAR - we populate the input link with elements from Hperm
     //
     Identifier* pInputLink = pAgent->GetInputLink();
-    Identifier* pID = pAgent->CreateIdWME(pInputLink,"myworld");
+    Identifier* pID = pAgent->CreateIdWME(pInputLink,"spectrum");
 
-    IntElement* pWME1 = pAgent->CreateIntWME(pID,"n-users",USERS);
-    IntElement* pWME2 = pAgent->CreateIntWME(pID,"n-ucarr",J());
-    IntElement* pWME3 = pAgent->CreateIntWME(pID,"n-carriers",N());
-
-    Identifier* pID2 = pAgent->CreateIdWME(pInputLink,"hperm");
+    //    IntElement* pWME1 = pAgent->CreateIntWME(pID,"n-users",USERS);
+    //    IntElement* pWME2 = pAgent->CreateIntWME(pID,"n-ucarr",J());
+    // IntElement* pWME3 = pAgent->CreateIntWME(pID,"n-carriers",N());
+    // Identifier* pID2 = pAgent->CreateIdWME(pInputLink,"hperm");
 
     //
     // SORT CARRIERS OF EACH USERS
@@ -469,16 +474,16 @@ void AIAllocator::Run() {
 
 	// String identifierName("hperm-");
 
-	CACCA;
+	ostringstream idName;
 
-	// identifierName += itoa("user");
+	idName << "helem-" << j << "-" << u; 
 
-	// cout << identifierName << endl;
-	// Identifier* pIDn = pAgent->CreateIdWME(pID2,);
+	//cout << idName.str() << endl;
+	Identifier* pID2 = pAgent->CreateIdWME(pID,idName.str().c_str());
 	
-	// IntElement* pWMEu =  pAgent->CreateIntWME(pID2,"user",u);
-	// IntElement* pWMEj =  pAgent->CreateIntWME(pID2,"carrier",j);
-	// IntElement* pWMEv =  pAgent->CreateIntWME(pID2,"index",currindex);
+	IntElement* pWMEu =  pAgent->CreateIntWME(pID2,"user",u);
+	IntElement* pWMEj =  pAgent->CreateIntWME(pID2,"carrier",j);
+	IntElement* pWMEv =  pAgent->CreateIntWME(pID2,"index",currindex);
 
       }
       
@@ -488,8 +493,7 @@ void AIAllocator::Run() {
     //    pAgent->Commit();
     pAgent->RunSelf(1);
 
-    //  char c;
-    //cin >> c;
+    
    
     //
     // show channels and permutations 
@@ -530,8 +534,13 @@ void AIAllocator::Run() {
 
 void AIAllocator::Finish() {
 
-  // destroy the Agent
-  pKernel->Shutdown() ;
-  delete pKernel;
+  switch (Mode()) {
+    
+  case 4:
+    // destroy the Agent
+    pKernel->Shutdown() ;
+    delete pKernel;    
+    break;
+  }    
 
 }

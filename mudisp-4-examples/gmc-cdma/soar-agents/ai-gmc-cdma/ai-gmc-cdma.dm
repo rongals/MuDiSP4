@@ -1,0 +1,34 @@
+16
+SOAR_ID 0
+SOAR_ID 1
+SOAR_ID 2
+SOAR_ID 3
+SOAR_ID 4
+ENUMERATION 5 1 state
+ENUMERATION 6 1 nil
+ENUMERATION 7 1 ai-gmc-cdma
+ENUMERATION 8 1 initialize-ai-gmc-cdma
+SOAR_ID 9
+INTEGER_RANGE 10 -2147483648 2147483647
+ENUMERATION 11 1 carrier
+ENUMERATION 12 1 no
+SOAR_ID 13
+INTEGER_RANGE 14 -2147483648 2147483647
+INTEGER_RANGE 15 -2147483648 2147483647
+16
+0 carrier 9
+0 io 1
+0 name 7
+0 operator 4
+0 superstate 6
+0 top-state 0
+0 type 5
+0 user 13
+1 input-link 2
+1 output-link 3
+4 name 8
+9 cid 10
+9 type 11
+9 used 12
+13 requires 15
+13 uid 14

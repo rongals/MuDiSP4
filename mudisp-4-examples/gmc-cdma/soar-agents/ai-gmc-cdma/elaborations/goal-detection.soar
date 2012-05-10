@@ -1,0 +1,10 @@
+sp {elaborations*elaborate*state
+   (state <s> ^name ai-gmc-cdma)
+   -{(<s> ^carrier <c>)
+   (<c> ^used no)}
+-->
+   (write (crlf) |Problem Solved!|)
+   (halt)
+}
+
+

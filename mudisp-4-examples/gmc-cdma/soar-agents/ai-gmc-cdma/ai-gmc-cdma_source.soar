@@ -5,4 +5,5 @@ popd
 pushd elaborations
 source elaborations_source.soar
 popd
+source allocate-carrier.soar
 source initialize-ai-gmc-cdma.soar

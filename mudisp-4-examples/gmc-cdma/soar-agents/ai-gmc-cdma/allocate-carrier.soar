@@ -1,0 +1,45 @@
+sp {ai-gmc-cdma*propose*allocate-carrier
+   (state <s> ^name ai-gmc-cdma
+              ^user <u>
+              ^carrier <c>
+              ^channel <h>)
+   (<u> ^requires > 0
+       -^allocate <c>)
+   (<c> ^used no)
+   (<h> ^carrier <c> ^user <u> ^value <v>)
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name allocate-carrier
+         ^alloc-user <u>
+         ^alloc-carr <c>
+         ^alloc-value <v>)
+}
+
+
+sp {ai-gmc-cdma*elaborate*allocate-carrier
+   (state <s> ^name ai-gmc-cdma
+              ^operator <o1> + <o2> +)
+   (<o1> ^name allocate-carrier
+         ^alloc-user <u1>
+         ^alloc-value <v1>)
+   (<o2> ^name allocate-carrier
+         ^alloc-user <u1>
+         ^alloc-value { <v2> > <v1> })
+-->
+   (<s> ^operator <o1> < <o2>)
+}
+
+
+sp {apply*allocate-carrier
+   (state <s> ^operator <op>)
+   (<op> ^name allocate-carrier
+         ^alloc-user <u>
+         ^alloc-carr <c>)
+   (<u> ^requires <i> > 0)
+-->
+   (<u> ^allocate <c>
+        ^requires (- <i> 1)
+        ^requires <i> -)
+   (<c> ^used yes
+        ^used no -)
+}

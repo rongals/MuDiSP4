@@ -1,4 +1,4 @@
-sp {elaborations*elaborate*state
+sp {elaborations*goal-detection
    (state <s> ^name ai-gmc-cdma)
    -{(<s> ^carrier <c>)
    (<c> ^used no)}
@@ -6,5 +6,3 @@ sp {elaborations*elaborate*state
    (write (crlf) |Problem Solved!|)
    (halt)
 }
-
-

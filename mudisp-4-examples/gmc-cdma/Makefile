@@ -4,14 +4,14 @@
 
 ##########################################
 #  SOAR support
-SOARHOME=/usr/local/sandbox_ronga/SoarSuite-9.3.1-linux-x86_64
-SOARLIBS=-L $(SOARHOME)/lib -lClientSML -lConnectionSML -lElementXML
+SOARHOME=/usr/local/sandbox_ronga/SOAR
+SOARLIBS=-L $(SOARHOME)/bin -lSoar
 #
 
 ##########################################
 #  C++  COMPILER
 #CC = g++ -DSHOW_MATRIX
-CC = g++ -I $(SOARHOME)/include
+CC = g++ -I $(SOARHOME)/bin/include
 
 
 ##########################################

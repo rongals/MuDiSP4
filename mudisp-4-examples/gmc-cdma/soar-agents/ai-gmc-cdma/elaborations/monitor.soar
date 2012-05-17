@@ -1,0 +1,11 @@
+#sp {elaborations*monitor*allocations
+#   (state <s> ^operator <o>)
+#   (<o> ^name allocate-carrier
+#        ^alloc-user <u>
+#        ^alloc-carr <c>)
+#   (<u> ^uid <uid>)
+#   (<c> ^cid <cid>)
+#-->
+#   (write (crlf) |User u:| <uid> | allocates carrier c:| <cid> )
+#}
+#

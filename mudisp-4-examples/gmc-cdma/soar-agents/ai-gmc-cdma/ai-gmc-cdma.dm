@@ -1,4 +1,4 @@
-37
+41
 SOAR_ID 0
 SOAR_ID 1
 SOAR_ID 2
@@ -36,7 +36,11 @@ SOAR_ID 33
 SOAR_ID 34
 ENUMERATION 35 1 no
 FLOAT_RANGE 36 -Infinity Infinity
-37
+SOAR_ID 37
+SOAR_ID 38
+SOAR_ID 39
+SOAR_ID 40
+41
 0 carrier 9
 0 channel 15
 0 goal-reached 35
@@ -69,8 +73,12 @@ FLOAT_RANGE 36 -Infinity Infinity
 21 allocate 28
 21 requires 26
 21 requires 32
+21 uid 38
 22 allocate 27
 22 requires 25
 22 requires 31
+22 uid 37
+23 cid 39
 23 used 30
+24 cid 40
 24 used 29

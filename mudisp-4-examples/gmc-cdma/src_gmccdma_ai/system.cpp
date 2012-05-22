@@ -17,20 +17,21 @@ void System::Build() {
   //////// parameters reading.
   ////////
 
-  Connect(coeffs1,coeffs1.mout1,aialloc1,aialloc1.min1);
-  
-  for (int i=0;i<USERS;i++) {
-    Connect(coeffs1,coeffs1.mout1,channel[i],channel[i].min2);
-    Connect(aialloc1,aialloc1.mout1,blockuser[i],blockuser[i].min2);
-    Connect(bitsource[i],bitsource[i].out1,blockuser[i],blockuser[i].in1);
-    Connect(blockuser[i],blockuser[i].vout1,channel[i],channel[i].vin1);
-    Connect(channel[i],channel[i].vout1,awgn1,awgn1.in[i]);
-  }   
-  Connect(awgn1,awgn1.vout1,blockrec1,blockrec1.vin1);
-  Connect(blockrec1,blockrec1.out1,bitber1,bitber1.in2);
-  Connect(coeffs1,coeffs1.mout1,blockrec1,blockrec1.min2);
-  Connect(aialloc1,aialloc1.mout1,blockrec1,blockrec1.min3);
-  Connect(bitsource[0],bitsource[0].out1,bitber1,bitber1.in1);
+  Connect(mcoeffs1,mcoeffs1.mout1,maialloc1,maialloc1.min1);
+  // Connect(mcoeffs1,mcoeffs1.mout1,mchannel1,mchannel1.min2);
+
+  Connect(maialloc1,maialloc1.mout1,mblockuser1,mblockuser1.min2);
+  Connect(bitsource1,bitsource1.out1,mblockuser1,mblockuser1.in1);
+
+  // Connect(mblockuser1,mblockuser1.vout1,mchannel1,mchannel1.vin1);
+  // Connect(mchannel1,mchannel1.vout1,mawgn1,mawgn1.in1);  
+  // Connect(mawgn1,mawgn1.vout1,mblockrec1,mblockrec1.vin1);
+  // Connect(mblockrec1,mblockrec1.out1,bitber1,bitber1.in2);
+
+  // Connect(coeffs1,coeffs1.mout1,blockrec1,blockrec1.min2);
+  // Connect(aialloc1,aialloc1.mout1,blockrec1,blockrec1.min3);
+
+  // Connect(bitsource1,bitsource1.out1,bitber1,bitber1.in1);
 
   ////////
   ////////
@@ -60,16 +61,12 @@ void System::Setup(){
   // variance_N = ------------------------   
   //                 N * ebnol * Nb
   //
-  awgn1.SetParameter("Variance",1.0/(2.0*ebnol*Nb()));
 
-  for (int i=0;i<USERS;i++) {
-    channel[i].SetParameter("CodeNum",i);
-    blockuser[i].SetParameter("CodeNum",i);
-  }
+  //  awgn1.SetParameter("Variance",1.0/(2.0*ebnol*Nb()));
 
-    blockrec1.SetParameter("CodeNum",0);
-    bitber1.SetParameter("Shift1",0);
-    bitber1.SetParameter("Value",Ebno());
+
+  //bitber1.SetParameter("Shift1",0);
+  //bitber1.SetParameter("Value",Ebno());
     
 
 

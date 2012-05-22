@@ -16,15 +16,17 @@
 ////////
 
 #include "gmccdma.h"
-#include "blockuser.h"
+#include "mblockuser.h"
 #include "bitsrc.h"
-//#include "gslwrite.h"
-#include "blockrec.h"
-#include "bitber.h"
-#include "awgn.h"
-#include "cpmpchan.h"
-#include "cpmpcoeffs.h"
-#include "aiallocator.h"
+#include "maiallocator.h"
+#include "mcpmpcoeffs.h"
+
+//#include "blockrec.h"
+//#include "bitber.h"
+//#include "awgn.h"
+//#include "cpmpchan.h"
+
+
 
 ////////
 ////////
@@ -40,23 +42,30 @@ private:
   ///////// your personal system wide parameters go here
   ///////// along with the block instances of your system
   ///////// 
-  /////////
+  ////////
+  ////////
+  ////////
+  //
+  //
+  //
 
-  IntParam K,J,N,Nb;
+
+  IntParam K,J,N,Nb,M;
   FloatParam Ebno;
 
 
-  CPMPCoeffs coeffs1;
+  MCPMPCoeffs mcoeffs1;
 
-  AIAllocator aialloc1;
+  MAIAllocator maialloc1;
 
-  BitSource *bitsource;
-  BlockUser *blockuser;
-  CPMPChan  *channel;
+  BitSource bitsource1;
+  MBlockUser mblockuser1;
 
-  AWGN      awgn1;
-  BlockRec  blockrec1;
-  BitBer    bitber1;
+  //  MCPMPChan  mchannel1;
+
+  //  MAWGN      mawgn1;
+  //  MBlockRec  mblockrec1;
+  //  BitBer     bitber1;
 
   /////////
   /////////
@@ -66,16 +75,16 @@ private:
 public:
 
   System():Block("System")
-	  ,awgn1(USERS)
 	  ,_runs("Iterations",1,"Main iterations")
 	  ,Ebno("EbNo",3,"SNR (dB)")
 	  ,K("SourceSymbs",2,"source symbols")
 	  ,J("CodedSymbs",4,"coded symbols")
 	  ,N("Carriers",32,"number of carriers")
 	  ,Nb("BitSymb",1,"bits per symbol (PSK mapping)")
+	  ,M("NumUsers",2,"number of users")
   {
 
-
+    AddParameter(M);
     AddParameter(N);
     AddParameter(J);
     AddParameter(K);
@@ -83,32 +92,31 @@ public:
     AddParameter(Ebno);    
     AddParameter(_runs);
 
-    bitsource = new BitSource[USERS];
-    blockuser = new BlockUser[USERS];
-    channel = new CPMPChan[USERS];
 
-
-    for (int i=0; i<USERS; i++) {
-
-      blockuser[i].ExportParameter("SourceSymbs");
-      blockuser[i].ExportParameter("CodedSymbs");
-      blockuser[i].ExportParameter("Carriers");
-      blockuser[i].ExportParameter("BitSymb");
+    mblockuser1.ExportParameter("SourceSymbs");
+    mblockuser1.ExportParameter("CodedSymbs");
+    mblockuser1.ExportParameter("Carriers");
+    mblockuser1.ExportParameter("BitSymb");
+    mblockuser1.ExportParameter("NumUsers");
         
-      channel[i].ExportParameter("Carriers");
-    }
+    /* mchannel1.ExportParameter("Carriers"); */
+    /* mchannel1.ExportParameter("NumUsers"); */
 
-      blockrec1.ExportParameter("SourceSymbs");
-      blockrec1.ExportParameter("CodedSymbs");
-      blockrec1.ExportParameter("Carriers");
-      blockrec1.ExportParameter("BitSymb");
+    /* mblockrec1.ExportParameter("SourceSymbs"); */
+    /* mblockrec1.ExportParameter("CodedSymbs"); */
+    /* mblockrec1.ExportParameter("Carriers"); */
+    /* mblockrec1.ExportParameter("BitSymb"); */
+    /* mblockrec1.ExportParameter("NumUsers"); */
 
+    /* mawgn1.ExportParameter("NumUsers"); */
+    
+    mcoeffs1.ExportParameter("Carriers");
+    mcoeffs1.ExportParameter("NumUsers");
 
-    coeffs1.ExportParameter("Carriers");
-
-    aialloc1.ExportParameter("CodedSymbs");
-    aialloc1.ExportParameter("Carriers");
-
+    maialloc1.ExportParameter("CodedSymbs");
+    maialloc1.ExportParameter("Carriers");
+    maialloc1.ExportParameter("NumUsers");
+    
 
   }
   

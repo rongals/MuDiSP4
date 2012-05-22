@@ -34,16 +34,19 @@ USERDIRS = src src_gmccdma_ai
 ##########################################
 # USER SOURCES FILES
 
-USERSRC = blockuser.cpp \
-	  bitsrc.cpp \
-	  gslwrite.cpp \
-	  blockrec.cpp \
+USERSRC = mblockuser.cpp \
+	bitsrc.cpp \
+	maiallocator.cpp \
+	mcpmpcoeffs.cpp
+
+#
+#	 \
+#	  blockrec.cpp \
 	  bitber.cpp \
 	  awgn.cpp \
 	  cpmpchan.cpp \
 	  cpmpcoeffs.cpp \
 	  gsllapack.cpp  \
-	  allocator.cpp \
 	  aiallocator.cpp
 
 

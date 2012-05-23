@@ -20,11 +20,12 @@
 #include "bitsrc.h"
 #include "maiallocator.h"
 #include "mcpmpcoeffs.h"
+#include "mcpmpchan.h"
 
 //#include "blockrec.h"
 //#include "bitber.h"
 //#include "awgn.h"
-//#include "cpmpchan.h"
+
 
 
 
@@ -61,7 +62,7 @@ private:
   BitSource bitsource1;
   MBlockUser mblockuser1;
 
-  //  MCPMPChan  mchannel1;
+  MCPMPChan  mchannel1;
 
   //  MAWGN      mawgn1;
   //  MBlockRec  mblockrec1;
@@ -99,8 +100,8 @@ public:
     mblockuser1.ExportParameter("BitSymb");
     mblockuser1.ExportParameter("NumUsers");
         
-    /* mchannel1.ExportParameter("Carriers"); */
-    /* mchannel1.ExportParameter("NumUsers"); */
+    mchannel1.ExportParameter("Carriers");
+    mchannel1.ExportParameter("NumUsers");
 
     /* mblockrec1.ExportParameter("SourceSymbs"); */
     /* mblockrec1.ExportParameter("CodedSymbs"); */

@@ -1,7 +1,7 @@
 ;
 ;  Parameters for System_1
 ;
-System_1.Iterations:                    1000              ; Main iterations
+System_1.Iterations:                    1              ; Main iterations
 System_1.EbNo:                          3              ; SNR (dB)
 System_1.BitSymb:                       1              ; bits per symbol (PSK mapping)
 System_1.SourceSymbs:                   2              ; source symbols
@@ -15,7 +15,7 @@ System_1.NumUsers:                      2              ; number of users
 ;
 System_1.MCPMPCoeffs_1.RiceFact:        0              ; Ricean factor of channel
 System_1.MCPMPCoeffs_1.PowerTau:        1              ; decay factor of delay spread
-System_1.MCPMPCoeffs_1.ChanTaps:        2              ; number of channel taps
+System_1.MCPMPCoeffs_1.ChanTaps:        32             ; number of channel taps
 
 
 ;

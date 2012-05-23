@@ -5,64 +5,57 @@
 // 
 //
 
-#ifndef __MUDISP2_MCPMPCOEFFS_H 
-#define __MUDISP2_MCPMPCOEFFS_H
+#ifndef __MUDISP2_MCPMPCHAN_H 
+#define __MUDISP2_MCPMPCHAN_H
 
 #include "mudisp.h"
 #include "gsl/gsl_vector.h"
 #include "gsl/gsl_matrix.h"
-#include "gsl/gsl_rng.h"
 
 
 ////////
 ////////   Here put your personal includes
 ////////
 
+// Channel Matrix 
+//
 
-class MCPMPCoeffs : public Block {
+class MCPMPChan : public Block {
  private:
 
   ////////   Parameters instances
 
-  IntParam N,L,M; 
-  FloatParam PTau;
-  FloatParam Ricean;
-
-
+  IntParam N, M; 
+  
   ////////   Local Attributes
-
-  double gain, gainrice;
-  gsl_matrix_complex *ch;
-  gsl_rng * ran; 
-  unsigned int _M;
-
+ 
+  gsl_matrix_complex *user_chan, *outmat;
+ 
+  
 public:
 
 ////////   InPorts and OutPorts
 
-  OutPort < gsl_matrix_complex > mout1;  // complex mat MxMxN 
+  InPort < gsl_matrix_complex > min1; // input signal matrix NxM complex
+  InPort < gsl_matrix_complex > min2; // input channel coefficient matrix M**2 x N complex
+  
+  OutPort < gsl_matrix_complex > mout1;  // output signal matrix NxM
 
 
 
-  MCPMPCoeffs():Block("MCPMPCoeffs")
+  MCPMPChan():Block("MCPMPChan")
     ////////  parameters initializazion
     ,M("NumUsers",2,"number of users")
     ,N("Carriers",16,"number of carriers")
-    ,L("ChanTaps",2,"number of channel taps")
-    ,PTau("PowerTau",1.0,"decay factor of delay spread")
-    ,Ricean("RiceFact",0.0,"Ricean factor of channel")
     {
 
       //////// local parameter registration
       AddParameter(N);
       AddParameter(M);
-      AddParameter(L);
-      AddParameter(PTau);
-      AddParameter(Ricean);
 
     }
 
-  ~MCPMPCoeffs() {
+  ~MCPMPChan() {
   }
 
   void Setup();

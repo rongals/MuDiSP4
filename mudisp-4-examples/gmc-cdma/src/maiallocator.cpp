@@ -180,10 +180,27 @@ void MAIAllocator::Setup() {
 void MAIAllocator::Run() {
 
   // fetch data objects
-  gsl_matrix_complex cmat  =  min1.GetDataObj();
+  gsl_matrix_complex hmm  =  min1.GetDataObj();
+  gsl_matrix_complex_view hm1 = gsl_matrix_complex_submatrix(&hmm,0,0,M(),N());
 
-
-
+  // 
+  // we are interested in M --> 1 channel (uplink, co-location of all Rxi)
+  //
+  //  hm1 matrix structure
+  //
+  //   +-                 -+
+  //   | h(0) . . . . h(n) |
+  //   |  11           11  |
+  //   |                   |
+  //   | h(0) . . . . h(n) |
+  //   |  12           12  |
+  //   +-                 -+
+  // 
+  //   where h(n) represents the channel impulse response
+  //          1j
+  //
+  //   at time n, from tx 1 to rx j
+  //   the matrix has M rows and N comumns.
 
   //
   // Hmat = Fourier( cmat )
@@ -192,7 +209,7 @@ void MAIAllocator::Run() {
 		 CblasTrans,
 		 gsl_complex_rect(sqrt(double(N())),0),
 		 transform_mat,
-		 &cmat,
+		 &hm1.matrix,
 		 gsl_complex_rect(0,0),
 		 Hmat);
 

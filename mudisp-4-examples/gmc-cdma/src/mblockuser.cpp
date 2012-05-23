@@ -12,7 +12,7 @@
 #define MAXNUMLEN 128
 #define PI 3.1415926536
 
-#define SHOW_MATRIX
+//#define SHOW_MATRIX
 
 //
 //
@@ -305,7 +305,7 @@ void MBlockUser::Run() {
 
   } // close user loop
 
-    vout1.DeliverDataObj(*outmat);
+    mout1.DeliverDataObj(*outmat);
 
 }
 

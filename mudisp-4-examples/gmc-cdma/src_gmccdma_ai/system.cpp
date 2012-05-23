@@ -18,12 +18,13 @@ void System::Build() {
   ////////
 
   Connect(mcoeffs1,mcoeffs1.mout1,maialloc1,maialloc1.min1);
-  // Connect(mcoeffs1,mcoeffs1.mout1,mchannel1,mchannel1.min2);
+  Connect(mcoeffs1,mcoeffs1.mout1,mchannel1,mchannel1.min2);
 
   Connect(maialloc1,maialloc1.mout1,mblockuser1,mblockuser1.min2);
   Connect(bitsource1,bitsource1.out1,mblockuser1,mblockuser1.in1);
 
-  // Connect(mblockuser1,mblockuser1.vout1,mchannel1,mchannel1.vin1);
+  Connect(mblockuser1,mblockuser1.mout1,mchannel1,mchannel1.min1);
+
   // Connect(mchannel1,mchannel1.vout1,mawgn1,mawgn1.in1);  
   // Connect(mawgn1,mawgn1.vout1,mblockrec1,mblockrec1.vin1);
   // Connect(mblockrec1,mblockrec1.out1,bitber1,bitber1.in2);

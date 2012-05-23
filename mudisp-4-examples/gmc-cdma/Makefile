@@ -37,7 +37,8 @@ USERDIRS = src src_gmccdma_ai
 USERSRC = mblockuser.cpp \
 	bitsrc.cpp \
 	maiallocator.cpp \
-	mcpmpcoeffs.cpp
+	mcpmpcoeffs.cpp \
+	mcpmpchan.cpp
 
 #
 #	 \

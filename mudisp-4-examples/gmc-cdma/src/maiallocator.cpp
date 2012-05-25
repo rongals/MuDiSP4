@@ -183,6 +183,10 @@ void MAIAllocator::Run() {
   gsl_matrix_complex hmm  =  min1.GetDataObj();
   gsl_matrix_complex_view hm1 = gsl_matrix_complex_submatrix(&hmm,0,0,M(),N());
 
+  //
+  // NOT CORRECT !!!!
+  // 
+
   // 
   // we are interested in M --> 1 channel (uplink, co-location of all Rxi)
   //
@@ -197,9 +201,9 @@ void MAIAllocator::Run() {
   //   +-                 -+
   // 
   //   where h(n) represents the channel impulse response
-  //          1j
+  //          i1
   //
-  //   at time n, from tx 1 to rx j
+  //   at time n, from tx i to rx 1
   //   the matrix has M rows and N comumns.
 
   //
@@ -550,6 +554,23 @@ void MAIAllocator::Run() {
 }
 
 void MAIAllocator::Finish() {
+
+  gsl_vector_complex_free(Hchan);
+  gsl_matrix_complex_free(Hmat);
+  gsl_matrix_uint_free(Hperm);
+  gsl_permutation_free(p);
+  gsl_vector_free(huserabs);
+  gsl_vector_uint_free(nextcarr);
+  gsl_vector_uint_free( usedcarr);
+  gsl_matrix_free(habs);
+
+  gsl_matrix_uint_free(signature_frequencies);
+  gsl_matrix_uint_free(signature_frequencies_init);
+
+  gsl_rng_free(ran);
+
+  gsl_matrix_complex_free(transform_mat);
+
 
   switch (Mode()) {
     

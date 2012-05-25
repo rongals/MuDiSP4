@@ -38,17 +38,10 @@ USERSRC = mblockuser.cpp \
 	bitsrc.cpp \
 	maiallocator.cpp \
 	mcpmpcoeffs.cpp \
-	mcpmpchan.cpp
-
-#
-#	 \
-#	  blockrec.cpp \
-	  bitber.cpp \
-	  awgn.cpp \
-	  cpmpchan.cpp \
-	  cpmpcoeffs.cpp \
-	  gsllapack.cpp  \
-	  aiallocator.cpp
+	mcpmpchan.cpp \
+	mblockrec.cpp \
+	gsllapack.cpp \
+	mbitber.cpp
 
 
 ##########################################

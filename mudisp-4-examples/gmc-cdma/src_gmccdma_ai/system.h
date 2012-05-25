@@ -15,16 +15,47 @@
 ////////   Here put your personal includes
 ////////
 
+/*
+                                      +----------+
+                                      |bitsource1|
+                                      +----------+
+                                            |
+                                            |
+                  +-------------+     +----------+
+                +-|maiallocator1|-+---|blockuser1|
+                | +-------------+ |   +----------+
+                |                 |         |
+                |                 |         |
+  +-----------+ |                 |   +----------+
+  |mcpchcoeff1|++-----------------+-+-|mchannel1 |
+  +-----------+                   | | +----------+
+                                  | |       |
+                                  | |       |
+                                  | | +----------+
+                                  | | |  mawgn1  |
+                                  | | +----------+
+                                  | |       |
+                                  | |       |
+                                  | |_+----------+
+                                  |___|mblockrec1|
+                                      +----------+
+                                            |
+                                            |
+                                      +----------+
+                                      | bitber1  |
+                                      +----------+
+
+*/
+
+
 #include "gmccdma.h"
 #include "mblockuser.h"
 #include "bitsrc.h"
 #include "maiallocator.h"
 #include "mcpmpcoeffs.h"
 #include "mcpmpchan.h"
-
-//#include "blockrec.h"
-//#include "bitber.h"
-//#include "awgn.h"
+#include "mblockrec.h"
+#include "mbitber.h"
 
 
 
@@ -64,9 +95,9 @@ private:
 
   MCPMPChan  mchannel1;
 
-  //  MAWGN      mawgn1;
-  //  MBlockRec  mblockrec1;
-  //  BitBer     bitber1;
+  MBlockRec  mblockrec1;
+
+  MBitBer     mbitber1;
 
   /////////
   /////////
@@ -103,13 +134,12 @@ public:
     mchannel1.ExportParameter("Carriers");
     mchannel1.ExportParameter("NumUsers");
 
-    /* mblockrec1.ExportParameter("SourceSymbs"); */
-    /* mblockrec1.ExportParameter("CodedSymbs"); */
-    /* mblockrec1.ExportParameter("Carriers"); */
-    /* mblockrec1.ExportParameter("BitSymb"); */
-    /* mblockrec1.ExportParameter("NumUsers"); */
+    mblockrec1.ExportParameter("SourceSymbs");
+    mblockrec1.ExportParameter("CodedSymbs");
+    mblockrec1.ExportParameter("Carriers");
+    mblockrec1.ExportParameter("BitSymb");
+    mblockrec1.ExportParameter("NumUsers");
 
-    /* mawgn1.ExportParameter("NumUsers"); */
     
     mcoeffs1.ExportParameter("Carriers");
     mcoeffs1.ExportParameter("NumUsers");
@@ -117,6 +147,8 @@ public:
     maialloc1.ExportParameter("CodedSymbs");
     maialloc1.ExportParameter("Carriers");
     maialloc1.ExportParameter("NumUsers");
+
+    mbitber1.ExportParameter("NumUsers");
     
 
   }

@@ -81,7 +81,7 @@ public:
     ,M("NumUsers",2,"number of users")
     ,N("Carriers",16,"number of carriers")
     ,J("CodedSymbs",16,"coded symbols")
-    ,Mode("AllocatorMode",4,"0=fca,1=bst,2=swp,3=ovl,4=SOAR")
+    ,Mode("AllocatorMode",0,"0=fca,1=bst,2=swp,3=ovl,4=SOAR") // note: leave default to non SOAR mode
     {
 
       //////// local parameter registration

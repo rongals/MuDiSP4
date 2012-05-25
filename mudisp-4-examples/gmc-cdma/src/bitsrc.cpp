@@ -31,3 +31,7 @@ void BitSource::Run() {
 
 }
 
+
+void BitSource::Finish() {
+  gsl_rng_free( ran );
+}

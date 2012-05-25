@@ -6,8 +6,8 @@
 #define MUDISP_GMCCDMA_H 
 //
 //
-//
-//
+// NOTE: not used in gmc-cdma-ai
+// 
 #define USERS 8
 
 

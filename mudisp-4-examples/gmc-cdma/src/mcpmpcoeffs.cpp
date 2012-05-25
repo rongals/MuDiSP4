@@ -22,21 +22,22 @@ void MCPMPCoeffs::Setup() {
   gsl_rng_env_setup();
   cout << BlockName << ".gsl_rng_default_seed=" << gsl_rng_default_seed << endl;
 
-  //
-  //  ch matrix structure
+  // ch : channel coeffs matrix h(n) (M**2xN)
+  //                               ij 
+  // ch matrix structure
   //
   //   +-                 -+
-  //   | h(0) . . . . h(n) |
-  //   |  11           11  |
+  //   | h(0) . . . . h(n) | |
+  //   |  11           11  | |
+  //   |                   | | Rx1
+  //   | h(0) . . . . h(n) | |
+  //   |  12           12  | |
   //   |                   |
-  //   | h(0) . . . . h(n) |
-  //   |  12           12  |
-  //   |                   |
-  //   | h(0) . . . . h(n) |
-  //   |  21           21  |
-  //   |                   |
-  //   | h(0) . . . . h(n) |
-  //   |  22           22  |
+  //   | h(0) . . . . h(n) | |
+  //   |  21           21  | |
+  //   |                   | | Rx2
+  //   | h(0) . . . . h(n) | |
+  //   |  22           22  | |
   //   +-                 -+
   // 
   //   where h(n) represents the channel impulse response
@@ -44,8 +45,11 @@ void MCPMPCoeffs::Setup() {
   //
   //   at time n, from tx i to rx j
   //   the matrix has MxM rows and N comumns.
-  //   The (i,j) channel is locater at row (i-1)*M+(j-1)
-  //   with i,j in the range [1,M] and rows counting from 0
+  //   The (i,j) channel is locater at row i*M+j
+  //   with i,j in the range [0,M-1] and rows counting from 0
+  //
+  //
+
 
   _M = M();
   ch = gsl_matrix_complex_alloc(_M*_M,N());
@@ -100,12 +104,16 @@ void MCPMPCoeffs::Run() {
     for (int ii=0;ii<_M;ii++) {
       for (int j=0; j<L(); j++) {
 	double coeffstd=gain*exp(-j/PTau())/sqrt(2.0);
-	if (j==0) { 
-	  chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd)+gainrice,
-				      gsl_ran_gaussian(ran,coeffstd));
+	if (j==0 && i==ii) { 
+	  // chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd)+gainrice,
+	  // 			      gsl_ran_gaussian(ran,coeffstd));
+	  chcoeff = o;
+	  
 	} else { 
-	  chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd),
-						  gsl_ran_gaussian(ran,coeffstd));
+	  // chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd),
+	  // 					  gsl_ran_gaussian(ran,coeffstd));
+	  chcoeff = z;
+
 	} // if
 
 	gsl_matrix_complex_set(ch,i*_M+ii,j,chcoeff);	
@@ -114,11 +122,16 @@ void MCPMPCoeffs::Run() {
     } // ii loop
   } // i loop
   
-//   cout << "channel:" << endl;
-//   gsl_matrix_complex_show(ch);
+   // cout << "channel:" << endl;
+   // gsl_matrix_complex_show(ch);
+
  
   //////// production of data
   mout1.DeliverDataObj( *ch );
 
 }
 
+void MCPMPCoeffs::Finish() {
+  gsl_matrix_complex_free(ch);
+  gsl_rng_free( ran );
+}

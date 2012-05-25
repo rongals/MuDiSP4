@@ -211,7 +211,7 @@ void MBlockUser::Run() {
 
 #ifdef SHOW_MATRIX
 
-    cout << endl << BlockName << endl;
+    cout << endl << BlockName << " user: " << u << endl;
 
     //
     // compute the trace of coding_mat
@@ -313,6 +313,19 @@ void MBlockUser::Run() {
 void MBlockUser::Finish() {
 
 //////// post processing
+
+  gsl_vector_uint_free(gray_encoding);
+				
+  gsl_matrix_complex_free(coding_mat);
+  gsl_matrix_complex_free(selection_mat);
+  gsl_matrix_complex_free(transform_mat);
+  gsl_matrix_complex_free(outmat);
+
+  gsl_vector_complex_free(tmp);
+  gsl_vector_complex_free(tmp1);
+  gsl_vector_complex_free(tmp2);
+
+
 
 }
 

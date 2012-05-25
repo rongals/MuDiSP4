@@ -11,6 +11,8 @@
 #include "mudisp.h"
 #include "gsl/gsl_vector.h"
 #include "gsl/gsl_matrix.h"
+#include "gsl/gsl_rng.h"
+#include "gsl/gsl_randist.h"
 
 
 ////////
@@ -26,10 +28,14 @@ class MCPMPChan : public Block {
   ////////   Parameters instances
 
   IntParam N, M; 
-  
+  FloatParam noisevar;
+    
   ////////   Local Attributes
  
   gsl_matrix_complex *user_chan, *outmat;
+
+  double noisestd;
+  gsl_rng * ran; 
  
   
 public:
@@ -47,11 +53,13 @@ public:
     ////////  parameters initializazion
     ,M("NumUsers",2,"number of users")
     ,N("Carriers",16,"number of carriers")
+    ,noisevar("Variance",0.5,"gaussian noise variance (linear)")
     {
 
       //////// local parameter registration
       AddParameter(N);
       AddParameter(M);
+      AddParameter(noisevar);
 
     }
 
@@ -60,6 +68,7 @@ public:
 
   void Setup();
   void Run();
+  void Finish();
 
 
   

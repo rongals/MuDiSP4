@@ -19,6 +19,12 @@ void MCPMPChan::Setup() {
 
 //////// initialization of dynamic data structures
 
+  gsl_rng_env_setup();
+  noisestd = sqrt( noisevar() );
+  ran = gsl_rng_alloc( gsl_rng_default );
+
+  cout << BlockName << ".gsl_rng_default_seed=" << gsl_rng_default_seed << endl;
+
   outmat = gsl_matrix_complex_calloc(N(),M());
   user_chan = gsl_matrix_complex_calloc(N(),N());
 
@@ -43,17 +49,17 @@ void MCPMPChan::Run() {
   // cmat matrix structure
   //
   //   +-                 -+
-  //   | h(0) . . . . h(n) |
-  //   |  11           11  |
+  //   | h(0) . . . . h(n) | |
+  //   |  11           11  | |
+  //   |                   | | Rx1
+  //   | h(0) . . . . h(n) | |
+  //   |  12           12  | |
   //   |                   |
-  //   | h(0) . . . . h(n) |
-  //   |  12           12  |
-  //   |                   |
-  //   | h(0) . . . . h(n) |
-  //   |  21           21  |
-  //   |                   |
-  //   | h(0) . . . . h(n) |
-  //   |  22           22  |
+  //   | h(0) . . . . h(n) | |
+  //   |  21           21  | |
+  //   |                   | | Rx2
+  //   | h(0) . . . . h(n) | |
+  //   |  22           22  | |
   //   +-                 -+
   // 
   //   where h(n) represents the channel impulse response
@@ -61,11 +67,10 @@ void MCPMPChan::Run() {
   //
   //   at time n, from tx i to rx j
   //   the matrix has MxM rows and N comumns.
-  //   The (i,j) channel is locater at row (i-1)*M+(j-1)
-  //   with i,j in the range [1,M] and rows counting from 0
+  //   The (i,j) channel is locater at row i*M+j
+  //   with i,j in the range [0,M-1] and rows counting from 0
   //
   //
-  gsl_vector_complex *tmp = gsl_vector_complex_alloc(N());
   gsl_matrix_complex_set_zero(outmat);
 
   for (int rx=0;rx<M();rx++) { //loop through Rx
@@ -86,6 +91,7 @@ void MCPMPChan::Run() {
       // input signal from tx
       //
       gsl_vector_complex_view x = gsl_matrix_complex_column(&inmat,tx);
+      gsl_vector_complex *tmp = gsl_vector_complex_alloc(N());
 
       //
       //
@@ -117,13 +123,23 @@ void MCPMPChan::Run() {
       // sum for each tx
       //
       gsl_vector_complex_add(&outvec.vector,tmp);
+
+      gsl_vector_complex_free(tmp);
       
     } // tx loop 
+
+    for (int i=0; i< N(); i++) {
+      gsl_complex noisesample = gsl_complex_rect( gsl_ran_gaussian(ran,noisestd),
+						  gsl_ran_gaussian(ran,noisestd));
+      gsl_complex ctmp = gsl_complex_add(gsl_vector_complex_get(&outvec.vector,i),noisesample);
+      gsl_vector_complex_set(&outvec.vector,i,ctmp);
+    }
+    
     
   } // rx loop
   
-  cout << "received signals matrix (" << N() << "x" << M() << ")" << endl;
-  gsl_matrix_complex_show(outmat);
+  // cout << "received signals matrix (" << N() << "x" << M() << ")" << endl;
+  // gsl_matrix_complex_show(outmat);
   
 
   //////// production of data
@@ -131,3 +147,9 @@ void MCPMPChan::Run() {
   
 }
 
+void MCPMPChan::Finish() {
+  gsl_rng_free( ran );
+  gsl_matrix_complex_free(outmat);
+  gsl_matrix_complex_free(user_chan);
+  
+}

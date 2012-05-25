@@ -67,6 +67,7 @@ public:
 
   void Setup();
   void Run();
+  void Finish();
 
 
   

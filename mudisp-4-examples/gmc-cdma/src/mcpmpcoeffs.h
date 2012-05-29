@@ -12,7 +12,13 @@
 #include "gsl/gsl_vector.h"
 #include "gsl/gsl_matrix.h"
 #include "gsl/gsl_rng.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
+#define GEO_AREA_CENTER_LON 11.252945
+#define GEO_AREA_CENTER_LAT 43.799908
+#define GEO_AREA_SIZE 0.000010
 
 ////////
 ////////   Here put your personal includes
@@ -24,10 +30,10 @@ class MCPMPCoeffs : public Block {
 
   ////////   Parameters instances
 
-  IntParam N,L,M; 
+  IntParam N,L,M;
   FloatParam PTau;
   FloatParam Ricean;
-
+  StringParam GeoFn;
 
   ////////   Local Attributes
 
@@ -36,7 +42,15 @@ class MCPMPCoeffs : public Block {
   gsl_rng * ran; 
   unsigned int _M;
 
-public:
+  // Geo Model
+
+  gsl_vector_complex *geoPositions; // node coordinates
+  unsigned int geoEnabled;
+  ostringstream kmlhead,kmlobject,kmlheadend;
+  ofstream ofs;
+
+
+ public:
 
 ////////   InPorts and OutPorts
 
@@ -51,6 +65,7 @@ public:
     ,L("ChanTaps",2,"number of channel taps")
     ,PTau("PowerTau",1.0,"decay factor of delay spread")
     ,Ricean("RiceFact",0.0,"Ricean factor of channel")
+    ,GeoFn("GeoFName","none","kml for georendering (none to disable)")
     {
 
       //////// local parameter registration
@@ -59,6 +74,7 @@ public:
       AddParameter(L);
       AddParameter(PTau);
       AddParameter(Ricean);
+      AddParameter(GeoFn);
 
     }
 
@@ -69,6 +85,11 @@ public:
   void Run();
   void Finish();
 
+ protected:
+
+  void GeoInit();
+  void GeoUpdate(double seconds=1.0);
+  void GeoRender();
 
   
 };

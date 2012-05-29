@@ -7,5 +7,32 @@
 
      Model from Wang Giannakis "Wireless Multicarrier Comm"
 
+This model provides a general framework for OFDM-based wireless
+communications. It is derived from the work from Wang-Giannakis
+adapted to a general representation of more recent wireless 
+standards. The set of multiple access schemes which can be 
+represented with this model are:
+
+OFDMA
+CDMA
+MC-CDMA
+SC-FDMA
+
+The represented environment is a set of M transmitters and M
+receivers, with MxM wide set of time-domain impulse responses
+representing many of the possible SISO/MIMO combinations of a 
+reference systems. Depending on the relative location of the
+receivers and transmitters, the following situation can be 
+modeled:
+
+Uplink for a cellular system
+(rx co-located at basestation and tx scattered around)
+
+Downlink for a cellular system
+(tx co-located at BS and rx scattered)
+
+MIMO systems
+(tx and rx grouped)
+
 
 

@@ -1,7 +1,7 @@
 ;
 ;  Parameters for System_1
 ;
-System_1.Iterations:                    1000              ; Main iterations
+System_1.Iterations:                    1000000              ; Main iterations
 System_1.EbNo:                          3              ; SNR (dB)
 System_1.BitSymb:                       1              ; bits per symbol (PSK mapping)
 System_1.SourceSymbs:                   2              ; source symbols
@@ -13,7 +13,8 @@ System_1.NumUsers:                      8              ; number of users
 ;
 ;  Parameters for MCPMPCoeffs_1
 ;
-System_1.MCPMPCoeffs_1.GeoFName:        /home/ronga/archive/GoogleEarth/realtime/track.kml               ; kml for georendering (none to disable)
+System_1.MCPMPCoeffs_1.ZeroDb:          1.0            ; zero dB distance for path loss (km)
+System_1.MCPMPCoeffs_1.GeoFName:        /home/ronga/public_html/track.kml        ; kml for georendering (none to disable)
 System_1.MCPMPCoeffs_1.RiceFact:        0              ; Ricean factor of channel
 System_1.MCPMPCoeffs_1.PowerTau:        1              ; decay factor of delay spread
 System_1.MCPMPCoeffs_1.ChanTaps:        2              ; number of channel taps
@@ -22,7 +23,7 @@ System_1.MCPMPCoeffs_1.ChanTaps:        2              ; number of channel taps
 ;
 ;  Parameters for MAIAllocator_1
 ;
-System_1.MAIAllocator_1.AllocatorMode:  0              ; 0=fca,1=bst,2=swp,3=ovl,4=SOAR
+System_1.MAIAllocator_1.AllocatorMode:  1              ; 0=fca,1=bst,2=swp,3=ovl,4=SOAR
 
 
 ;

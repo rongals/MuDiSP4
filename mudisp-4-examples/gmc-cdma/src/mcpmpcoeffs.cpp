@@ -124,11 +124,11 @@ void MCPMPCoeffs::Run() {
   // Update Positions 
   //
   if (geoEnabled && (runCount++ == GEO_UPDATE_INTERVAL)) {
-    GeoUpdate(5.0);
+    GeoUpdate(5.0); // each GEO_UPDATE_INTERVAL runs are equivalent to x seconds
     GeoRender();
     PathLossUpdate();
     runCount = 0;
-    cout << "UPDATING!" << endl;
+    cout << "Updating node positions." << endl;
     // gsl_matrix_show(pathLoss);
 
   }

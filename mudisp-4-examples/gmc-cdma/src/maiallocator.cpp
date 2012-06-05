@@ -32,10 +32,6 @@
 //
 //
 
-
-
-
-
 //#define SHOW_POWER
 //#define SHOW_MATRIX
 
@@ -59,7 +55,10 @@ void MAIAllocator::Setup() {
   huserabs = gsl_vector_alloc(N());
   nextcarr = gsl_vector_uint_alloc(M());
   usedcarr = gsl_vector_uint_alloc(N());
+  errs = gsl_vector_uint_alloc(M());
   habs = gsl_matrix_alloc(N(),M());
+
+  framecount = 0;
 
   //
   // Random Generator
@@ -182,6 +181,20 @@ void MAIAllocator::Run() {
   // fetch data objects
   gsl_matrix_complex hmm  =  min1.GetDataObj();
   gsl_matrix_complex_view hm1 = gsl_matrix_complex_submatrix(&hmm,0,0,M(),N());
+
+  if (++framecount % ERROR_REPORT_INTERVAL == 0) { // once every ERI
+    gsl_vector_uint temperr  =  vin2.GetDataObj();
+    framecount = 0;
+    if (temperr.size == M()) {
+      gsl_vector_uint_memcpy(errs,&temperr);
+      for (int i=0;i<M();i++) {
+	cout << "u[" << i << "]= " << gsl_vector_uint_get(errs,i) << endl; 
+      }
+    }
+  } 
+  
+
+
 
   //
   // NOT CORRECT !!!!
@@ -562,6 +575,7 @@ void MAIAllocator::Finish() {
   gsl_vector_free(huserabs);
   gsl_vector_uint_free(nextcarr);
   gsl_vector_uint_free( usedcarr);
+  gsl_vector_uint_free( errs );
   gsl_matrix_free(habs);
 
   gsl_matrix_uint_free(signature_frequencies);

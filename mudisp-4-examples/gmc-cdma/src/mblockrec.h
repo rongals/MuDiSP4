@@ -41,6 +41,7 @@ private:
   gsl_vector_uint * gray_encoding; 
   gsl_matrix_complex * coding_mat, * selection_mat, * transform_mat;
   gsl_vector_complex * tmp, * tmp1, * tmp2, *tmpout;
+  gsl_matrix_uint *outmat;
 
   double distance(unsigned int, gsl_complex);
 
@@ -57,7 +58,8 @@ public:
   // Allocation Matrix
   InPort <gsl_matrix_uint> min3; 
 
-  OutPort < unsigned int > out1;
+  // decided bit
+  OutPort < gsl_matrix_uint > mout1;
 
 
 ////////   constructor

@@ -40,12 +40,12 @@ class MAIAllocator : public Block {
   
   ////////   Local Attributes
  
-  unsigned int curruser;
+  unsigned int curruser,framecount;
   gsl_matrix_uint *Hperm;
   gsl_permutation *p; 
   gsl_vector *huserabs;
   gsl_vector_uint *nextcarr;
-  gsl_vector_uint *usedcarr;
+  gsl_vector_uint *usedcarr, *errs;
   gsl_matrix *habs; 
 
 
@@ -68,6 +68,12 @@ public:
   // Channel coefficient 
   //
   InPort < gsl_matrix_complex > min1;
+
+  //
+  // Error reports (once every ERROR_REPORT_INTERVAL frames, i.e. runs) 
+  //
+  InPort < gsl_vector_uint > vin2;
+
   
   //
   // Allocation Matrix

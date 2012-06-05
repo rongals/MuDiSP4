@@ -32,8 +32,6 @@ void MBlockRec::Setup() {
 
   symbol_arg = 2.0*double(PI/Ns);
   
-
-
   count=0;
 				
   coding_mat = gsl_matrix_complex_calloc(J(),K());
@@ -45,7 +43,7 @@ void MBlockRec::Setup() {
   tmp2 = gsl_vector_complex_calloc(J());
   tmpout = gsl_vector_complex_calloc(K());
 
-
+  outmat = gsl_matrix_uint_calloc(M(),Nb()*K());
   
 
   //
@@ -62,7 +60,7 @@ void MBlockRec::Setup() {
 
   //////// rate declaration for ports
   
-  out1.SetRate( Nb()*K()*M() ); // M users K symbols Nb bits 
+  //  out1.SetRate( Nb()*K()*M() ); // M users K symbols Nb bits 
   
   
 ///////// Gray Decoder SetUp
@@ -305,11 +303,14 @@ void MBlockRec::Run() {
       
       for (int i=0; i<Nb(); i++) { //bit loop
 	outbit=( gsl_vector_uint_get(gray_encoding, symbol_id) >> (Nb()-i-1) ) & 0x1;
-	out1.DeliverDataObj( outbit );
+	gsl_matrix_uint_set(outmat,rx,j*Nb()+i,outbit);
 	
       } // bit loop
     } // K loop
   }  // M loop 
+
+  mout1.DeliverDataObj(*outmat);
+
 }
 
 inline double MBlockRec::distance(unsigned int symbol_id, gsl_complex ycorr) {
@@ -318,8 +319,20 @@ inline double MBlockRec::distance(unsigned int symbol_id, gsl_complex ycorr) {
 }
 
 void MBlockRec::Finish() {
-
 //////// post processing
+
+  gsl_vector_uint_free(gray_encoding);
+
+  gsl_matrix_complex_free(coding_mat);
+  gsl_matrix_complex_free(selection_mat);
+  gsl_matrix_complex_free(transform_mat);
+
+  gsl_vector_complex_free(tmp); 
+  gsl_vector_complex_free(tmp1);
+  gsl_vector_complex_free(tmp2);
+  gsl_vector_complex_free(tmpout);
+
+  gsl_matrix_uint_free(outmat);
 
 }
 

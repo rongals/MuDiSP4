@@ -49,7 +49,7 @@ public:
 
 ////////   InPorts and OutPorts
 
-  InPort < unsigned int > in1;
+  InPort < gsl_matrix_uint  > min1;
   InPort < gsl_matrix_uint > min2;
   OutPort < gsl_matrix_complex > mout1;  
 

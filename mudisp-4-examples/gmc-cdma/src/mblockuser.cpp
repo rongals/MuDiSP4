@@ -112,7 +112,7 @@ void MBlockUser::Setup() {
 
   //////// rate declaration for ports
   
-  in1.SetRate( Nb()*K()*M() ); // M users K symbols Nb bits 
+  //  in1.SetRate( Nb()*K()*M() ); // M users K symbols Nb bits 
   
   
   ///////// Gray Encoder SetUp
@@ -137,6 +137,10 @@ void MBlockUser::Run() {
   //
   gsl_matrix_uint signature_frequencies=min2.GetDataObj();
 
+  //
+  // input bits
+  //
+  gsl_matrix_uint inputbits = min1.GetDataObj();
 
   //
   // outer loop: the users 
@@ -159,7 +163,8 @@ void MBlockUser::Run() {
       
       for (int i=0;i<Nb();i++) {
 	symbol_id = (symbol_id << 1);
-	symbol_id += in1.GetDataObj();
+	//	symbol_id += in1.GetDataObj();
+	symbol_id += gsl_matrix_uint_get(&inputbits,u,j*Nb()+i);
       }
       
       new_symbol = gsl_complex_polar(1.0,

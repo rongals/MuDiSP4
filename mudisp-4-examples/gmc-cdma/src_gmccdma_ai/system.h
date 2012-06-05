@@ -16,41 +16,42 @@
 ////////
 
 /*
-                                      +----------+
-                                      |bitsource1|
-                                      +----------+
-                                            |
-                                            |
-                  +-------------+     +----------+
-                +-|maiallocator1|-+---|blockuser1|
-                | +-------------+ |   +----------+
-                |                 |         |
-                |                 |         |
-  +-----------+ |                 |   +----------+
-  |mcpchcoeff1|++-----------------+-+-|mchannel1 |
-  +-----------+                   | | +----------+
-                                  | |       |
-                                  | |       |
-                                  | | +----------+
-                                  | | |  mawgn1  |
-                                  | | +----------+
-                                  | |       |
-                                  | |       |
-                                  | |_+----------+
-                                  |___|mblockrec1|
-                                      +----------+
-                                            |
-                                            |
-                                      +----------+
-                                      | bitber1  |
-                                      +----------+
+                                          +-----------+
+                                          |mbitsource1|
+                                          +-----------+
+                                                |
+                                                v
+                     +-------------+      +-----------+
+                 +-->|maiallocator1|-+--->|mblockuser1|
+                 |   +-------------+ |    +-----------+
+                 |     ^             |          |
+                 |     |             |          v
+   +-----------+ |     |             |    +-----------+
+   |mcpchcoeff1|++-------------------+-+->| mchannel1 |
+   +-----------+       |             | |  +-----------+
+         |             |             | |        |
+         |             |             | |        v
+         v             |             | |  +-----------+
+     track.kml         |             | |  |  mawgn1   |
+         |             |             | |  +-----------+
+         v             |             | |        |
+ +--------------+      |             | |        v
+ | Google Earth |      |             | ..>+-----------+
+ +--------------+      |             |...>|mblockrec11|
+                       |                  +-----------+
+                       |                        |
+                       |                        v
+                       |                  +-----------+
+                       -<--DelayConnect-<-| mbitber1  |
+                                          +-----------+
+
 
 */
 
 
 #include "gmccdma.h"
 #include "mblockuser.h"
-#include "bitsrc.h"
+#include "mbitsrc.h"
 #include "maiallocator.h"
 #include "mcpmpcoeffs.h"
 #include "mcpmpchan.h"
@@ -90,7 +91,7 @@ private:
 
   MAIAllocator maialloc1;
 
-  BitSource bitsource1;
+  MBitSource mbitsource1;
   MBlockUser mblockuser1;
 
   MCPMPChan  mchannel1;
@@ -149,6 +150,7 @@ public:
     maialloc1.ExportParameter("NumUsers");
 
     mbitber1.ExportParameter("NumUsers");
+    mbitsource1.ExportParameter("NumUsers");
     
 
   }

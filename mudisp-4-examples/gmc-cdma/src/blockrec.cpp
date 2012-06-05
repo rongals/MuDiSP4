@@ -292,6 +292,19 @@ inline double BlockRec::distance(unsigned int symbol_id, gsl_complex ycorr) {
 
 void BlockRec::Finish() {
 
+
+  gsl_vector_uint_free(gray_encoding);
+
+  gsl_matrix_complex_free(coding_mat);
+  gsl_matrix_complex_free(selection_mat);
+  gsl_matrix_complex_free(transform_mat);
+
+  gsl_vector_complex_free(tmp);
+  gsl_vector_complex_free(tmp1);
+  gsl_vector_complex_free(tmp2);
+  gsl_vector_complex_free(tmpout);
+
+
 //////// post processing
 
 }

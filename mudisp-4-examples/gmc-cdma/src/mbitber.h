@@ -10,8 +10,8 @@
 #define __MUDISP2_MBITBER_H
 
 #include "mudisp.h"
-#include <deque>
 #include "gsl/gsl_vector.h"
+#include "gsl/gsl_matrix.h"
 
 
 ////////
@@ -24,33 +24,33 @@ private:
 
 ////////   Parameters instances
 
-  IntParam shift, ignore, M, bpu;
+  IntParam M, bpu;
   FloatParam value;
   StringParam fname;
 
 ////////   Local Attributes
 
   gsl_vector_uint *errcount, *lasterrs;
-  gsl_vector_uint *bitcount;
+  gsl_vector_uint *bitcount, *dumperrs;
   
 
-  unsigned int ignorecount, framepos, framelenght;
+  unsigned int framecount;
 
-  deque <unsigned int> shreg; // delay before demultiplexing 
 
 public:
 
 ////////   InPorts and OutPorts
 
-  InPort <unsigned int> in1; // reference stream
-  InPort <unsigned int> in2; // received stream 
+  InPort < gsl_matrix_uint > min1; // reference stream
+  InPort < gsl_matrix_uint > min2; // received stream 
+
+  OutPort < gsl_vector_uint > vout1; // receiver errors reports 
+
   
   MBitBer():Block("MBitBer")
     
 ////////  parameters initializazion
-
-    ,shift("Shift1",0,"input 1 delay")
-    ,ignore("Ignore",0,"leading bits to ignore (0=shift)")
+    ,framecount(0)
     ,value("Value",0.0,"index value")
     ,fname("OutFile","cout")
     ,M("NumUsers",2,"number of users")
@@ -59,9 +59,7 @@ public:
 
 //////// local parameter registration
 
-      AddParameter(shift);
       AddParameter(value);
-      AddParameter(ignore);
       AddParameter(fname);
       AddParameter(M);
       AddParameter(bpu);

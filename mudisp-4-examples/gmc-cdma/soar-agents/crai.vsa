@@ -1,0 +1,13 @@
+VERSION 4
+/crai/crai.dm
+0	ROOT crai crai 1
+1	0	FOPERATOR _firstload _firstload.soar 2
+2	0	FOLDER all all 3
+3	0	FOLDER elaborations elaborations 4
+4	3	FOPERATOR _all _all.soar 5
+5	3	FOPERATOR nochange nochange.soar 13
+6	3	FOPERATOR top-state top-state.soar 6
+7	0	OPERATOR allocate-carrier allocate-carrier.soar 7
+8	0	OPERATOR copy-input copy-input.soar 8
+9	0	OPERATOR initialize-crai initialize-crai.soar 11
+END

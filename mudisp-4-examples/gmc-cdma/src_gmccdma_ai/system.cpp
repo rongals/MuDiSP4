@@ -22,6 +22,7 @@ void System::Build() {
   Connect(mcoeffs1,mcoeffs1.mout1,mchannel1,mchannel1.min2);
 
   Connect(maialloc1,maialloc1.mout1,mblockuser1,mblockuser1.min2);
+  Connect(maialloc1,maialloc1.mout2,mblockuser1,mblockuser1.min3);
   Connect(mbitsource1,mbitsource1.mout1,mblockuser1,mblockuser1.min1);
 
   Connect(mblockuser1,mblockuser1.mout1,mchannel1,mchannel1.min1);

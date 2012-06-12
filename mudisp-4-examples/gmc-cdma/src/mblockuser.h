@@ -51,6 +51,7 @@ public:
 
   InPort < gsl_matrix_uint  > min1;
   InPort < gsl_matrix_uint > min2;
+  InPort < gsl_matrix > min3;
   OutPort < gsl_matrix_complex > mout1;  
 
 

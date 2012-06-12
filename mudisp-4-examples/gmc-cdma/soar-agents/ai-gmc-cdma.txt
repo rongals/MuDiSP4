@@ -1,0 +1,47 @@
+   ____   ___    _    ____
+  / ___| / _ \  / \  |  _ \
+  \___ \| | | |/ _ \ | |_) |
+   ___) | |_| / ___ \|  _ <
+  |____/ \___/_/   \_\_| \_\
+
+  Intelligent Agent for Cognitive Radio
+
+
+1) Input/Output links
+
+^io
+  ^input-link
+
+    ^settings
+      ^nusers
+      ^ncarrs 
+      ^nalloc 
+      ^maxerr 
+      ^pstep
+
+    ^chantable  # only the hii channel here
+      ^coeff # multi-valued 
+        ^carr
+	^user
+	^value
+
+    ^alloctable
+      ^alloc # multi-valued 
+	^user
+	^carr
+	^power
+
+    ^errortable
+      ^error  # multi-value
+	^user
+      	^errs
+
+^io
+  ^output-link
+    ^alloctable
+      ^alloc  # multi-value
+	^user
+	^carr
+	^power
+    ^executed yes/no
+

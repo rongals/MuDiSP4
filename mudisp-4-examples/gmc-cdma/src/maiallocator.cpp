@@ -69,6 +69,8 @@ void MAIAllocator::Setup() {
 
   signature_frequencies = gsl_matrix_uint_alloc(M(),J());
   signature_frequencies_init = gsl_matrix_uint_alloc(M(),J());
+  signature_powers = gsl_matrix_alloc(M(),J());
+
 
   for (int i=0; i<M(); i++)
     for (int j=0; j<J(); j++)
@@ -80,6 +82,7 @@ void MAIAllocator::Setup() {
   gsl_matrix_uint_memcpy(signature_frequencies,
 			 signature_frequencies_init);
 
+  gsl_matrix_set_all(signature_powers,1.0); // maximum initial powers for all carriers
 
   //
   //
@@ -187,9 +190,11 @@ void MAIAllocator::Run() {
     framecount = 0;
     if (temperr.size == M()) {
       gsl_vector_uint_memcpy(errs,&temperr);
-      for (int i=0;i<M();i++) {
-	cout << "u[" << i << "]= " << gsl_vector_uint_get(errs,i) << endl; 
-      }
+
+      // for (int i=0;i<M();i++) {
+      // 	cout << "u[" << i << "]= " << gsl_vector_uint_get(errs,i) << endl; 
+      // }
+
     }
   } 
   
@@ -528,7 +533,6 @@ void MAIAllocator::Run() {
     pAgent->RunSelf(1);
 
     
-   
     //
     // show channels and permutations 
     //
@@ -563,6 +567,8 @@ void MAIAllocator::Run() {
 
   //////// production of data
   mout1.DeliverDataObj( *signature_frequencies );
+  mout2.DeliverDataObj( *signature_powers );
+
 
 }
 
@@ -580,6 +586,8 @@ void MAIAllocator::Finish() {
 
   gsl_matrix_uint_free(signature_frequencies);
   gsl_matrix_uint_free(signature_frequencies_init);
+
+  gsl_matrix_free(signature_powers);
 
   gsl_rng_free(ran);
 

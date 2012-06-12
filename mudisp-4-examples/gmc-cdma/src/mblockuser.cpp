@@ -133,9 +133,10 @@ void MBlockUser::Setup() {
 void MBlockUser::Run() {
 
   //
-  // Allocation Matrix
+  // Allocation Matrices
   //
   gsl_matrix_uint signature_frequencies=min2.GetDataObj();
+  gsl_matrix signature_powers=min3.GetDataObj();
 
   //
   // input bits
@@ -178,14 +179,15 @@ void MBlockUser::Run() {
     
     //
     //
-    // SELECTION MATRIX UPDATE
+    // SELECTION MATRIX UPDATE and POWER
     //
     //
     //  gsl_matrix_complex_set_identity(selection_mat);
     gsl_matrix_complex_set_zero(selection_mat);
     for (int i=0;i<J(); i++) {
       unsigned int carrier=gsl_matrix_uint_get(&signature_frequencies,u,i);
-      gsl_complex one=gsl_complex_polar(1.0,0.0);
+      double power=gsl_matrix_get(&signature_powers,u,i);
+      gsl_complex one=gsl_complex_polar(power,0.0);
       gsl_matrix_complex_set(selection_mat,carrier,i,one);
     }
     

@@ -1,0 +1,7 @@
+sp {elaborations*elaborate*nochange
+   (state <s> ^attribute state
+              ^choices none)
+-->
+   (write (crlf) | No more choices to think about.|)
+   (interrupt)
+}

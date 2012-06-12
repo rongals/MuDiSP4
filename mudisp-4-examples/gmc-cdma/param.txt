@@ -23,7 +23,7 @@ System_1.MCPMPCoeffs_1.ChanTaps:        32              ; number of channel taps
 ;
 ;  Parameters for MAIAllocator_1
 ;
-System_1.MAIAllocator_1.AllocatorMode:  0              ; 0=fca,1=bst,2=swp,3=ovl,4=SOAR
+System_1.MAIAllocator_1.AllocatorMode:  1              ; 0=fca,1=bst,2=swp,3=ovl,4=SOAR
 
 
 ;

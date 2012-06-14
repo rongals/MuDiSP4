@@ -1,3 +1,5 @@
 source _all.soar
+source allocation-preference.soar
+source goal-detection.soar
 source nochange.soar
 source top-state.soar

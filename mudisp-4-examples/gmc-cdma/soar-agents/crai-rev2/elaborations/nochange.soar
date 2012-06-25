@@ -1,0 +1,7 @@
+sp {elaborations*elaborate*nochange
+   (state <s> ^attribute state
+              ^choices none)
+-->
+   (write (crlf) | State-no-change impasse encountered !|)
+   (interrupt)
+}

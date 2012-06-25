@@ -1,0 +1,14 @@
+sp {crai*elaborate*populate-allocation-map
+   :o-support
+   (state <s> ^name crai
+              ^io.input-link.usrmap <um>
+              ^allocation-map <am>)
+   (<um> ^user <u>)
+   (<u> ^uid <uid> 
+        ^requires <req>)
+  -{(<am> ^user.uid <uid>)} # if the uid is not in allocation-map
+-->
+   (<am> ^user <newu>) # I create it for you
+   (<newu> ^uid <uid> 
+           ^needs <req>)
+}

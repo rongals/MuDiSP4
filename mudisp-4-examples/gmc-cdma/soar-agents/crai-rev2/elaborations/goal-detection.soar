@@ -1,0 +1,13 @@
+sp {crai*elaborate*goal-detection
+   (state <s> ^name crai ^io.output-link <ol>
+              ^usrmap <um>
+              ^carmap <cm>
+              ^allmap <am>  
+              ^input-copied yes)
+  -{(<um> ^user.requires > 0) # if there's no (a user with req > 0 AND
+    (<cm> ^carr.used no)} # an available carrier) then I'm finished
+-->
+   (write (crlf) |Work finished! (creating command)|)
+   (<ol> ^allmap <am>)
+   (interrupt)
+}

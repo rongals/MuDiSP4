@@ -1,0 +1,11 @@
+source _firstload.soar
+pushd all
+source all_source.soar
+popd
+pushd elaborations
+source elaborations_source.soar
+popd
+source create-input.soar
+source allocate-carrier.soar
+source copy-input.soar
+source initialize-crai.soar

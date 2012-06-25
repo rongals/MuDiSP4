@@ -1,0 +1,12 @@
+sp {crai*elaborate*allocation-preference
+   (state <s> ^name crai
+              ^operator <o1> + <o2> +)
+   (<o1> ^name allocate-carrier
+         ^allusr <u>
+         ^allval <val1>)
+   (<o2> ^name allocate-carrier
+         ^allusr <u>
+         ^allval {<val2> > <val1>})
+-->
+   (<s> ^operator <o1> < <o2>)
+}

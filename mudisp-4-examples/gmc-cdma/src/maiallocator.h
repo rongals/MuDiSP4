@@ -37,6 +37,7 @@ class MAIAllocator : public Block {
   ////////   Parameters instances
 
   IntParam J,N,Mode,M; 
+  StringParam SoarFn;
   
   ////////   Local Attributes
  
@@ -60,6 +61,17 @@ class MAIAllocator : public Block {
   // SOAR related
   Kernel *pKernel;
   Agent *pAgent;
+
+  /* Identifier *inputLinkId, *carMapId, *usrMapId, *channelsId, *allMapId; */
+  /* IntElement *ncarrIntWme; */
+  /* vector <Identifier *> carrIdVec; */
+  /* vector <IntElement *> cidIntWmeVec; */
+  /* vector <StringElement *> usedStringWmeVec; */
+
+  Identifier *pInputLink, *carrMapID, *userMapID, *channelsID, *allMapID;
+  IntElement *wmeNcarrs, *wmeNusers, *wmeMaxerr;
+  StringElement  *wmeFresh;
+  FloatElement  *wmePstep;
 
 public:
 
@@ -90,6 +102,7 @@ public:
     ,N("Carriers",16,"number of carriers")
     ,J("CodedSymbs",16,"coded symbols")
     ,Mode("AllocatorMode",0,"0=fca,1=bst,2=swp,3=ovl,4=SOAR") // note: leave default to non SOAR mode
+    ,SoarFn("SoarFn","./soar-agents/crai.soar","SOAR agent filename")
     {
 
       //////// local parameter registration
@@ -97,6 +110,7 @@ public:
       AddParameter(N);
       AddParameter(J);
       AddParameter(Mode);
+      AddParameter(SoarFn);
 
     }
 

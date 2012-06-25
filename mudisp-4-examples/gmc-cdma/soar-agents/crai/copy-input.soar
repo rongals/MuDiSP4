@@ -1,8 +1,13 @@
 sp {crai*propose*copy-input
-   (state <s> ^name crai 
-              ^io.input-link.fresh yes)
+   (state <s> ^name crai
+              ^io.input-link <il>
+              -^input-copied yes)
+   (<il> ^usrmap <um>
+         ^carmap <cm>
+         ^allmap <am>
+         ^channels <chs>) #thereis imput to be copied 
 -->
-   (<s> ^operator <op> + =)
+   (<s> ^operator <op> +)
    (<op> ^name copy-input)
 }
 
@@ -18,6 +23,6 @@ sp {apply*copy-input
    (<s>  ^usrmap <um>
          ^carmap <cm>
          ^allmap <am>
-         ^channels <chs>)
-   (<il> ^fresh yes -)
+         ^channels <chs> 
+         ^input-copied yes)
 }

@@ -3,35 +3,42 @@ sp {crai*propose*allocate-carrier
               ^usrmap <um>
               ^carmap <cm>
               ^allmap <am>
-              ^channels <chs>)
+              ^channels <chs>
+              ^input-copied yes)
    (<um> ^user <u>)
-   (<u> ^requires > 0) # the user u requires a carrier
+   (<u> ^uid <uid> ^requires > 0) # the user u requires a carrier
    (<cm> ^carr <c>)
-   (<c> ^used no) # the carrier c is not used
-   (<am> ^res <r>) 
-  -(<r> ^user <u> ^carr <c>) # c is not already assigned to u
+   (<c> ^cid <cid> ^used no) # the carrier c is not used
+  -{(<am> ^res <r>)
+    (<r> ^user <uid> ^carr <cid>)} # c is not already assigned to u
    (<chs> ^coeff <ch>)
-   (<ch> ^user <u> ^carr <c> ^value <val>)
+   (<ch> ^user <uid> ^carr <cid> ^value <val>)
 -->
    (<s> ^operator <op> + =)
    (<op> ^name allocate-carrier
-         ^allcar <c>
-         ^allusr <u>
+         ^allcar <cid>
+         ^allusr <uid>
          ^allval <val>)
 }
 
 sp {apply*allocate-carrier
    (state <s> ^operator <op> )
-   (<s>  ^allmap <am>)
    (<op> ^name allocate-carrier
-         ^allcar <c>
-         ^allusr <u>)
-   (<u> ^requires <req>)
+         ^allcar <cid>
+         ^allusr <uid>)
+   (<s>  ^allmap <am>
+         ^usrmap <um>
+         ^carmap <cm>)
+   (<um> ^user <u>)
+   (<u> ^uid <uid> 
+        ^requires <req>)
+   (<cm> ^carr <c>)
+   (<c> ^cid <cid>)   
 -->
    (<am> ^res <res>)
-   (<res> ^user <u> ^carr <c> ^power (/ 1 1))
+   (<res> ^user <uid> ^carr <cid> ^power (/ 1 1))
    (<c> ^used yes
         ^used no -)
-   (<u> ^requires (- <req> 1)
-        ^requires <req> -)
+   (<u> ^requires <req> -)
+   (<u> ^requires (- <req> 1))
 }

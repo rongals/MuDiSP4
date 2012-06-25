@@ -10,16 +10,19 @@
 #include "gmccdma.h"
 
 // FIXED_ALLOCATION
-// each user is assigned a fixed set of carriers chosen with the modulus function
+// each user is assigned a fixed set of carriers chosen with the modulus 
+// function
 // sig(mu,j)=(j M + mu)
 //
 // GIVE_BEST_CARR
-// first we sort the channel responses of each user, then a first user is selected randomly and the best J carriers 
+// first we sort the channel responses of each user, then a first user is 
+// selected randomly and the best J carriers 
 // are assigned in roud-robin fashion (give N > JM)
 // 
 //
 // SWAP_BAD_GOOD
-// starting from a fixed allocation, we swap the worst carrier of current users with the best carrier used by others.
+// starting from a fixed allocation, we swap the worst carrier of current 
+// users with the best carrier used by others.
 // Users served in round-robin with random start.
 //
 //
@@ -81,8 +84,8 @@ void MAIAllocator::Setup() {
   //
   gsl_matrix_uint_memcpy(signature_frequencies,
 			 signature_frequencies_init);
-
-  gsl_matrix_set_all(signature_powers,1.0); // maximum initial powers for all carriers
+  // maximum initial powers for all carriers
+  gsl_matrix_set_all(signature_powers,1.0); 
 
   //
   //
@@ -95,7 +98,18 @@ void MAIAllocator::Setup() {
 
   for (int i=0; i<N(); i++)
     for (int j=0; j<N(); j++)
-      gsl_matrix_complex_set(transform_mat, i,j, gsl_complex_polar(fftamp,fftarg*i*j) );
+      gsl_matrix_complex_set(transform_mat,i,j,
+			     gsl_complex_polar(fftamp,fftarg*i*j) );
+
+
+  //
+  //
+  //
+  Identifier *pInputLink;
+  Identifier *pID1, *pID2;
+  IntElement *pWMEint1, *pWMEint2, *pWMEint3, *pWMEint4;
+  StringElement *pWMEstr1;
+
 
 
   switch (Mode()) {
@@ -127,7 +141,8 @@ void MAIAllocator::Setup() {
     // even if something went wrong and we have to abort.
     if (pKernel->HadError())
       {
-	cerr << BlockName << ".SOAR - " << pKernel->GetLastErrorDescription() << endl ;
+	cerr << BlockName << ".SOAR - " 
+	     << pKernel->GetLastErrorDescription() << endl ;
 	exit(1);
       }
     
@@ -151,17 +166,79 @@ void MAIAllocator::Setup() {
     //
     // load productions
     //
-    pAgent->LoadProductions("/usr/local/sandbox_ronga/git/MuDiSP4/mudisp-4-examples/gmc-cdma/aiallocator.soar");
+    pAgent->LoadProductions(SoarFn());
     
     // Check that nothing went wrong
     // NOTE: No agent gets created if there's a problem, so we have to check for
     // errors through the kernel object.
     if (pKernel->HadError())
       {
-	cerr << BlockName << ".SOAR - " << pKernel->GetLastErrorDescription() << endl ;
+	cerr << BlockName << ".SOAR - " 
+	     << pKernel->GetLastErrorDescription() << endl ;
 	exit(1);
       }
+
+    //
+    // generate initial input link structure
+    //
+    //
+    // Identifier *pInputLink;
+    // Identifier *pID1, *pID2;
+    // IntElement *pWMEint1, *pWMEint2, *pWMEint3, *pWMEint4;
+    // StringElement *pWMEstr1;
+
+
+    // Input link
+    pInputLink = pAgent->GetInputLink();
+
+    // I2 ^fresh yes
+    wmeFresh = pAgent->CreateStringWME(pInputLink,"fresh","yes");
+
+
+    //
+    carrMapID = pAgent->CreateIdWME(pInputLink,"carmap");
+    wmeNcarrs = pAgent->CreateIntWME(carrMapID,"ncarrs",N());
+
+    userMapID = pAgent->CreateIdWME(pInputLink,"usrmap");
+    wmeNusers = pAgent->CreateIntWME(userMapID,"nusers",M());
+    wmeMaxerr = pAgent->CreateIntWME(userMapID,"maxerr",100);
+    wmePstep = pAgent->CreateFloatWME(userMapID,"pstep",0.01);
+
+    channelsID = pAgent->CreateIdWME(pInputLink,"channels");
+
+    allMapID = pAgent->CreateIdWME(pInputLink,"allmap");
+
+
+    for (int i=0;i<N();i++) { // carmap population
+
+      Identifier *carrID = pAgent->CreateIdWME(carrMapID,"carr");
+      IntElement *wmeCid = pAgent->CreateIntWME(carrID,"cid",i);
+      StringElement *wmeUsed = pAgent->CreateStringWME(carrID,"used","no");
+
+    } // carmap
+
+    for (int j=0;j<M();j++) { // usrmap population
+
+      Identifier *userID=pAgent->CreateIdWME(userMapID,"user"); 
+      IntElement *wmeUid = pAgent->CreateIntWME(userID,"uid",j);
+      IntElement *wmeRequires = pAgent->CreateIntWME(userID,"requires",J());
+      IntElement *wmeErrs = pAgent->CreateIntWME(userID,"errs",0);
+
+    } // usrmap
+
+    for (int i=0;i<M();i++) { // i loop
+      for (int j=0;j<N();j++) { // j loop
+
+	Identifier *coeffID = pAgent->CreateIdWME(channelsID,"coeff");
+	IntElement *wmeUser = pAgent->CreateIntWME(coeffID,"user",i);
+	IntElement *wmeCarr = pAgent->CreateIntWME(coeffID,"carr",j);
+	FloatElement *wmeValue = pAgent->CreateFloatWME(coeffID,"value",1.0);
+	
+      } // end j
+    } // end i
     
+
+     
     //
     // END OF SOAR INITIALIZAZION
     //
@@ -192,7 +269,8 @@ void MAIAllocator::Run() {
       gsl_vector_uint_memcpy(errs,&temperr);
 
       // for (int i=0;i<M();i++) {
-      // 	cout << "u[" << i << "]= " << gsl_vector_uint_get(errs,i) << endl; 
+      // 	cout << "u[" << i << "]= " 
+      //             << gsl_vector_uint_get(errs,i) << endl; 
       // }
 
     }
@@ -257,11 +335,15 @@ void MAIAllocator::Run() {
 
   for(int u=0; u<M(); u++) {
 
-    gsl_vector_complex_const_view huser = gsl_matrix_complex_const_column(Hmat,u);
+    gsl_vector_complex_const_view huser 
+      = gsl_matrix_complex_const_column(Hmat,u);
+
     gsl_vector_uint_view sortindu = gsl_matrix_uint_column(Hperm,u);
 
     for (int j=0; j<N(); j++) {
-      double currpower = gsl_complex_abs2(gsl_vector_complex_get(&huser.vector,j));
+      double currpower 
+	= gsl_complex_abs2(gsl_vector_complex_get(&huser.vector,j));
+
       gsl_vector_set(huserabs,j,currpower);
     }
 
@@ -336,12 +418,14 @@ void MAIAllocator::Run() {
 
   for(int u=0; u<M(); u++) {
 
-    gsl_vector_complex_const_view huser = gsl_matrix_complex_const_column(Hmat,u);
+    gsl_vector_complex_const_view huser 
+      = gsl_matrix_complex_const_column(Hmat,u);
     gsl_vector_uint_view sortindu = gsl_matrix_uint_column(Hperm,u);
     gsl_vector_view huserabs = gsl_matrix_column(habs,u);
 
     for (int j=0; j<N(); j++) {
-      double currpower = gsl_complex_abs2(gsl_vector_complex_get(&huser.vector,j));
+      double currpower 
+	= gsl_complex_abs2(gsl_vector_complex_get(&huser.vector,j));
       gsl_vector_set(&huserabs.vector,j,currpower);
     }
 
@@ -405,7 +489,8 @@ void MAIAllocator::Run() {
     for (int uuu=0; uuu<M()-1; uuu++) {
       unsigned int otheru = (uuu+u) % M();
       for (int j=0; j<J(); j++) {
-	unsigned int chind = gsl_matrix_uint_get(signature_frequencies,otheru,j);
+	unsigned int chind 
+	  = gsl_matrix_uint_get(signature_frequencies,otheru,j);
 	double currh = gsl_matrix_get(habs,chind,otheru);
 	if (currh > bestvalue) {
 	  bestvalue = currh;
@@ -419,9 +504,11 @@ void MAIAllocator::Run() {
     //
     // finally the swap !
     //
-    unsigned int chind = gsl_matrix_uint_get(signature_frequencies,u,worstjindex);
+    unsigned int chind 
+      = gsl_matrix_uint_get(signature_frequencies,u,worstjindex);
     gsl_matrix_uint_set(signature_frequencies,u,worstjindex,
-			gsl_matrix_uint_get(signature_frequencies,bestuser,bestjindex));
+			gsl_matrix_uint_get(signature_frequencies,
+					    bestuser,bestjindex));
     gsl_matrix_uint_set(signature_frequencies,bestuser,bestjindex,chind);
 
 
@@ -442,11 +529,13 @@ void MAIAllocator::Run() {
 
   for(int u=0; u<M(); u++) {
 
-    gsl_vector_complex_const_view huser = gsl_matrix_complex_const_column(Hmat,u);
+    gsl_vector_complex_const_view huser 
+      = gsl_matrix_complex_const_column(Hmat,u);
     gsl_vector_uint_view sortindu = gsl_matrix_uint_column(Hperm,u);
 
     for (int j=0; j<N(); j++) {
-      double currpower = gsl_complex_abs2(gsl_vector_complex_get(&huser.vector,j));
+      double currpower = gsl_complex_abs2(gsl_vector_complex_get(&huser.vector,
+								 j));
       gsl_vector_set(huserabs,j,currpower);
     }
 
@@ -483,8 +572,8 @@ void MAIAllocator::Run() {
     //
     // SOAR - we populate the input link with elements from Hperm
     //
-    Identifier* pInputLink = pAgent->GetInputLink();
-    Identifier* pID = pAgent->CreateIdWME(pInputLink,"spectrum");
+    // Identifier* pInputLink = pAgent->GetInputLink();
+    // Identifier* pID = pAgent->CreateIdWME(pInputLink,"spectrum");
 
     //    IntElement* pWME1 = pAgent->CreateIntWME(pID,"n-users",M());
     //    IntElement* pWME2 = pAgent->CreateIntWME(pID,"n-ucarr",J());
@@ -497,11 +586,13 @@ void MAIAllocator::Run() {
     //   
     for(int u=0; u<M(); u++) {
       
-      gsl_vector_complex_const_view huser = gsl_matrix_complex_const_column(Hmat,u);
+      gsl_vector_complex_const_view huser 
+	= gsl_matrix_complex_const_column(Hmat,u);
       gsl_vector_uint_view sortindu = gsl_matrix_uint_column(Hperm,u);
 
       for (int j=0; j<N(); j++) {
-	double currpower = gsl_complex_abs2(gsl_vector_complex_get(&huser.vector,j));
+	double currpower 
+	  = gsl_complex_abs2(gsl_vector_complex_get(&huser.vector,j));
 	gsl_vector_set(huserabs,j,currpower);
       }
       
@@ -518,19 +609,19 @@ void MAIAllocator::Run() {
 	idName << "helem-" << j << "-" << u; 
 
 	//cout << idName.str() << endl;
-	Identifier* pID2 = pAgent->CreateIdWME(pID,idName.str().c_str());
+	// Identifier* pID2 = pAgent->CreateIdWME(pID,idName.str().c_str());
 	
-	IntElement* pWMEu =  pAgent->CreateIntWME(pID2,"user",u);
-	IntElement* pWMEj =  pAgent->CreateIntWME(pID2,"carrier",j);
-	IntElement* pWMEv =  pAgent->CreateIntWME(pID2,"index",currindex);
+	// IntElement* pWMEu =  pAgent->CreateIntWME(pID2,"user",u);
+	// IntElement* pWMEj =  pAgent->CreateIntWME(pID2,"carrier",j);
+	// IntElement* pWMEv =  pAgent->CreateIntWME(pID2,"index",currindex);
 
       }
       
     }
     
- 
     //    pAgent->Commit();
-    pAgent->RunSelf(1);
+    //    pAgent->RunSelfTilOutput();
+    //    pAgent->RunSelf(1);
 
     
     //

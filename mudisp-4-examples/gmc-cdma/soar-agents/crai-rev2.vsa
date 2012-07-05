@@ -8,11 +8,11 @@ VERSION 4
 5	3	FOPERATOR allocation-preference allocation-preference.soar 6
 6	3	FOPERATOR goal-detection goal-detection.soar 7
 7	3	FOPERATOR nochange nochange.soar 8
-8	3	FOPERATOR populate-spectrum-map populate-spectrum-map.soar 17
-9	3	FOPERATOR top-state top-state.soar 9
-10	3	FOPERATOR update-usedby update-usedby.soar 16
-11	3	FOPERATOR populate-allocation-map populate-allocation-map.soar 18
-12	0	OPERATOR allocate-carrier allocate-carrier.soar 11
+8	3	FOPERATOR populate-allocation-map populate-allocation-map.soar 9
+9	3	FOPERATOR populate-spectrum-map populate-spectrum-map.soar 10
+10	3	FOPERATOR top-state top-state.soar 11
+11	3	FOPERATOR update-usedby update-usedby.soar 12
+12	0	OPERATOR allocate-carrier allocate-carrier.soar 13
 13	0	OPERATOR create-input create-input.soar 14
-14	0	OPERATOR initialize-crai initialize-crai.soar 13
+14	0	OPERATOR initialize-crai initialize-crai.soar 15
 END

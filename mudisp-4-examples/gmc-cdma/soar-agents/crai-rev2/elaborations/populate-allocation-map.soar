@@ -12,3 +12,12 @@ sp {crai*elaborate*populate-allocation-map
    (<newu> ^uid <uid> 
            ^needs <req>)
 }
+
+# 
+# giving O-support to this we cannot change
+# number of users and needs during agent life
+#
+# probably ok for uids but no for needs.
+#
+#
+

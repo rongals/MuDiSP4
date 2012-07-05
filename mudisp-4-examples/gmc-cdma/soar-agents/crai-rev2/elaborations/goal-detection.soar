@@ -1,13 +1,25 @@
+#
+# if state is crai, it has an allocation-map and a spectrum-map,
+# there is at least a user in the allocation map and 
+# at least a carrier in the spectrum map,
+# and no users has needs > 0 WHEN there is a free carrier
+#
+# then goal-reached
+#
+
+
 sp {crai*elaborate*goal-detection
-   (state <s> ^name crai ^io.output-link <ol>
-              ^usrmap <um>
-              ^carmap <cm>
-              ^allmap <am>  
-              ^input-copied yes)
-  -{(<um> ^user.requires > 0) # if there's no (a user with req > 0 AND
-    (<cm> ^carr.used no)} # an available carrier) then I'm finished
+   (state <s> ^name crai 
+              ^io.output-link <ol>
+              ^spectrum-map <sm>
+              ^allocation-map <am>)
+   (<am> ^user)
+   (<sm> ^carr)
+  -{(<am> ^user.needs > 0)
+    (<sm> ^carr <c>)
+    (<c> -^used-by)}
 -->
    (write (crlf) |Work finished! (creating command)|)
-   (<ol> ^allmap <am>)
+   (<ol> ^allocation-map <am>)
    (interrupt)
 }

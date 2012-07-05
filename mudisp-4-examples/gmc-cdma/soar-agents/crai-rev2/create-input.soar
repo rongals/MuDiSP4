@@ -30,3 +30,28 @@ sp {apply*create-input
    (<c1> ^cid 1)
    (<il> ^input-time 1)
 }
+
+#
+# <s> ^io.input-link
+#
+# usrmap
+#   nusers 0
+#   maxerr 0
+#   pstep 0.0
+#   *user
+#     uid 0
+#     requires 0
+#     errs 0
+#
+# channels
+#   *coeff
+#     user 0
+#     carr 0
+#     value 0.0
+#
+# carmap
+#   *carr
+#     cid 0
+#
+# input-time 0
+#

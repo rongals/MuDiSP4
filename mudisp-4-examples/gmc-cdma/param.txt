@@ -23,7 +23,7 @@ System_1.MCPMPCoeffs_1.ChanTaps:        2              ; number of channel taps
 ;
 ;  Parameters for MAIAllocator_1
 ;
-System_1.MAIAllocator_1.SoarFn:         /usr/local/sandbox_ronga/git/MuDiSP4/mudisp-4-examples/gmc-cdma/soar-agents/crai.soar    ; SOAR agent filename
+System_1.MAIAllocator_1.SoarFn:         /usr/local/sandbox_ronga/git/MuDiSP4/mudisp-4-examples/gmc-cdma/soar-agents/crai-rev2.soar    ; SOAR agent filename
 System_1.MAIAllocator_1.AllocatorMode:  4              ; 0=fca,1=bst,2=swp,3=ovl,4=SOAR
 
 

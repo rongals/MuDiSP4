@@ -7,7 +7,7 @@ sp {crai*propose*allocate-carrier
    (<u> ^uid <uid> ^needs > 0) # the user u requires a carrier
    (<sm> ^carr <c>)
    (<c> ^cid <cid>)
-   (<c> -^usedby ) # the carrier c is not used
+   (<c> -^used-by ) # the carrier c is not used
    (<chs> ^coeff <ch>)
    (<ch> ^user <uid> ^carr <cid> ^value <val>)
 -->

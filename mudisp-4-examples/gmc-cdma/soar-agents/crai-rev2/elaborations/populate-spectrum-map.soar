@@ -8,3 +8,8 @@ sp {crai*elaborate*populate-spectrum-map
    (<sm> ^carr <c>)
    (<c> ^cid <icid>)
 }
+
+#
+# giving O-support to this we cannot change carrier 
+# number during agent life
+#

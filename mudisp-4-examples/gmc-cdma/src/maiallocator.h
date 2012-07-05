@@ -68,10 +68,26 @@ class MAIAllocator : public Block {
   /* vector <IntElement *> cidIntWmeVec; */
   /* vector <StringElement *> usedStringWmeVec; */
 
-  Identifier *pInputLink, *carrMapID, *userMapID, *channelsID, *allMapID;
-  IntElement *wmeNcarrs, *wmeNusers, *wmeMaxerr;
-  StringElement  *wmeFresh;
+  Identifier *pInputLink, *carrMapID, *userMapID, *channelsID;
+  IntElement *wmeNusers, *wmeMaxerr, *wmeTime;
   FloatElement  *wmePstep;
+
+  struct SoarUserMapStruct {
+    vector < Identifier * > userIDVec;
+    vector < IntElement * > wmeUidVec;
+    vector < IntElement * > wmeRequiresVec;
+    vector < IntElement * > wmeErrsVec;
+  };
+
+  struct SoarChannelStruct {
+    vector < Identifier * >    coeffIDMat;
+    vector < IntElement * >    wmeUserMat;
+    vector < IntElement * >    wmeCarrMat;
+    vector < FloatElement * >  wmeValueMat;
+  };
+
+  SoarUserMapStruct soarUserMap;
+  SoarChannelStruct soarChannelMap;
 
 public:
 
@@ -102,7 +118,7 @@ public:
     ,N("Carriers",16,"number of carriers")
     ,J("CodedSymbs",16,"coded symbols")
     ,Mode("AllocatorMode",0,"0=fca,1=bst,2=swp,3=ovl,4=SOAR") // note: leave default to non SOAR mode
-    ,SoarFn("SoarFn","./soar-agents/crai.soar","SOAR agent filename")
+    ,SoarFn("SoarFn","./soar-agents/crai-rev2.soar","SOAR agent filename")
     {
 
       //////// local parameter registration

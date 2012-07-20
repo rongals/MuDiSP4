@@ -665,8 +665,8 @@ void MAIAllocator::Run() {
     } // user loop
 
 
-    // commit changes
-    pAgent->Commit();
+    // commit changes no longer needed
+    //pAgent->Commit();
 
     // run agent till output
     numberCommands=0; 
@@ -674,20 +674,16 @@ void MAIAllocator::Run() {
     while (! numberCommands) {
       pAgent->RunSelf(1);
       numberCommands = pAgent->GetNumberCommands() ;
-    // char c;
-    // cin >> c;
+
+    // keypress 
+    cin.ignore();
+
     }
 
     cout << "Found " << numberCommands << " commands." << endl;
-    char c;
-    cin >> c;
 
-
-  //  ____   ___  _   _  ___     ___  _   _ ___ _
-  // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
-  // \___ \| | | |  \| | | | | | | | | | | || || |
-  //  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
-  // |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
+    // keypress 
+    cin.ignore();
 
 
 
@@ -781,40 +777,24 @@ void MAIAllocator::Run() {
       
       // Then mark the command as completed
       pCommand->AddStatusComplete() ;
-      
+      pAgent->Commit();
     }
     
     break;
   }
   
   
-  //#ifdef SHOW_MATRIX
-  //  gsl_matrix_complex_show(Hmat);
-  //  gsl_matrix_uint_show(signature_frequencies);
-  //#endif
-  
-  //
-  // SHOW POWER USER 0
-  //
-  //   double power = 0.0;
-  //   for (int j=0; j<J(); j++) {
-  //     int carrier = gsl_matrix_uint_get(signature_frequencies,0,j);
-  //     power += gsl_complex_abs2(gsl_matrix_complex_get(Hmat,carrier,0));
-  //   }
-  //   cout << "\ncurrent allocated power user 0 = " << power << endl;
-  //   power = 0.0;
-  //   for (int j=0; j<J(); j++) {
-  //     int carrier = gsl_matrix_uint_get(signature_frequencies_init,0,j);
-  //     power += gsl_complex_abs2(gsl_matrix_complex_get(Hmat,carrier,0));
-  //   }
-  //   cout << "fixed  allocated power user 0 = " << power << endl;
+  //  ____   ___  _   _  ___     ___  _   _ ___ _
+  // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
+  // \___ \| | | |  \| | | | | | | | | | | || || |
+  //  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
+  // |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
+
 
   //////// production of data
 
   mout1.DeliverDataObj( *signature_frequencies );
   mout2.DeliverDataObj( *signature_powers );
-
-  gsl_matrix_uint_show(signature_frequencies);
 
 }
 

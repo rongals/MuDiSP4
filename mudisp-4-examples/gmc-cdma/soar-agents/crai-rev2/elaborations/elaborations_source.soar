@@ -4,5 +4,6 @@ source goal-detection.soar
 source nochange.soar
 source populate-allocation-map.soar
 source populate-spectrum-map.soar
+source reset-command.soar
 source top-state.soar
 source update-usedby.soar

@@ -1,0 +1,15 @@
+#
+# if state is crai, it has allocation-map <am> and
+# ^io.output-link has an allocation-map <oam>
+# and <oam> has a status complete
+#
+# then remove <am> and <oam>
+#
+
+
+sp {crai*elaborate*reset-command
+   (state <s> ^io.output-link <ol>)
+   (<ol> ^allocation-map.status complete)
+-->
+   (<ol> ^allocation-map <am> -)
+}

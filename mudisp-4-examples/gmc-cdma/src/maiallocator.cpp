@@ -109,7 +109,7 @@ void MAIAllocator::Setup() {
   // Identifier *pID1, *pID2;
   // IntElement *pWMEint1, *pWMEint2, *pWMEint3, *pWMEint4;
   // StringElement *pWMEstr1;
-  int numberCommands;
+  //  int numberCommands;
 
 
   switch (Mode()) {
@@ -261,13 +261,13 @@ void MAIAllocator::Setup() {
 
     // channels
     channelsID = pAgent->CreateIdWME(pInputLink,"channels");
-    for (int i=0;i<M();i++) { // i loop
-      for (int j=0;j<N();j++) { // j loop
-	Identifier *coeffID = soarChannelMap.coeffIDMat[i*M()+j] 
+    for (int i=0;i<M();i++) { // i loop (users)
+      for (int j=0;j<N();j++) { // j loop (time)
+	Identifier *coeffID = soarChannelMap.coeffIDMat[i*N()+j] 
 	  = pAgent->CreateIdWME(channelsID,"coeff");
-	soarChannelMap.wmeUserMat[i*M()+j] = pAgent->CreateIntWME(coeffID,"user",i);
-	soarChannelMap.wmeCarrMat[i*M()+j] = pAgent->CreateIntWME(coeffID,"carr",j);
-	soarChannelMap.wmeValueMat[i*M()+j] = pAgent->CreateFloatWME(coeffID,"value",1.0);
+	soarChannelMap.wmeUserMat[i*N()+j] = pAgent->CreateIntWME(coeffID,"user",i);
+	soarChannelMap.wmeCarrMat[i*N()+j] = pAgent->CreateIntWME(coeffID,"carr",j);
+	soarChannelMap.wmeValueMat[i*N()+j] = pAgent->CreateFloatWME(coeffID,"value",1.0);
       } // end j
     } // end i
     
@@ -279,16 +279,16 @@ void MAIAllocator::Setup() {
     // TEST TEST TEST 
 
 
-    numberCommands=0; 
+    // numberCommands=0; 
 
-    while (! numberCommands) {
-      pAgent->RunSelf(1);
-      numberCommands = pAgent->GetNumberCommands() ;
-    }
+    // while (! numberCommands) {
+    //   pAgent->RunSelf(1);
+    //   numberCommands = pAgent->GetNumberCommands() ;
+    // }
 
-    cout << "Found " << numberCommands << " commands." << endl;
-    char c;
-    cin >> c;
+    // cout << "Found " << numberCommands << " commands." << endl;
+    // char c;
+    // cin >> c;
 
     // TEST TEST TEST
     
@@ -621,7 +621,7 @@ void MAIAllocator::Run() {
   case 4:   //  SOAR_AI
 
     //
-    // SOAR - we populate the input link with elements from Hperm
+    // SOAR
     //
     // we base the decisions on the channels tx_m --> rx_m extracted from hmm
 
@@ -629,25 +629,65 @@ void MAIAllocator::Run() {
 
     // extract frequency response for all users and all carriers
     // hmm (M**2xN)
-
-    
+    //
+    // for each user 
+    //   we get the hmm time response, 
+    //   then Hmm frequency response,
+    //   update the relevant sections of ^io.input-link
+    //
 
     for (int u=0;u<M();u++) { // user loop
-      
 
+      // extract view from hnn
+      gsl_vector_complex_const_view huu = gsl_matrix_complex_const_row(&hmm,u*M()+u);
+      
+      // FFT(huu) --> Hchan 
+      gsl_blas_zgemv(CblasNoTrans,
+		     gsl_complex_rect(1,0),
+		     transform_mat,
+		     &huu.vector,
+		     gsl_complex_rect(0,0),
+		     Hchan);
+
+      // cout << "Hchan(u=" << u << ")=" << endl; 
+      // gsl_vector_complex_fprintf(stdout,Hchan,"%f");
+
+
+      // update soarUserMap.wmeErrsVec[u]
+      pAgent->Update(soarUserMap.wmeErrsVec[u],gsl_vector_uint_get(errs,u));
+
+      // update soarChannelMap.wmeValueMat[i*M()+j]
+      for (int j=0;j<N();j++) {
+	double coeffVal = gsl_complex_abs2(gsl_vector_complex_get(Hchan,u));
+	pAgent->Update(soarChannelMap.wmeValueMat[u*N()+j],coeffVal);
+      } // j loop
 
     } // user loop
 
 
-    //-----------------------------------------------------------------------
-
-    // update SOAR inputs (coeffs and errs)
-
-
-
-    //-----------------------------------------------------------------------
+    // commit changes
+    pAgent->Commit();
 
     // run agent till output
+    numberCommands=0; 
+
+    while (! numberCommands) {
+      pAgent->RunSelf(1);
+      numberCommands = pAgent->GetNumberCommands() ;
+    // char c;
+    // cin >> c;
+    }
+
+    cout << "Found " << numberCommands << " commands." << endl;
+    char c;
+    cin >> c;
+
+
+  //  ____   ___  _   _  ___     ___  _   _ ___ _
+  // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
+  // \___ \| | | |  \| | | | | | | | | | | || || |
+  //  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
+  // |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
 
 
 
@@ -656,8 +696,93 @@ void MAIAllocator::Run() {
     // collect results and generate signature_frequencies
     // and signature_powers
 
+    //    ^io.output-link.allocation-map
+    //      *user
+    //        uid <num>
+    //        needs <num>
+    //        *allocation
+    //          cid <num>
+    //          power <num>
+    //
+
+    for (int i = 0 ; i < numberCommands ; i++) {
+      Identifier* pCommand = pAgent->GetCommand(i) ;
+      
+      string name  = pCommand->GetCommandName() ;
+      
+      if (name != "allocation-map") {
+	cerr << "uncoherent command received from SOAR agent" << endl;
+	exit(1);
+      } else { // ok proceed
+
+	// only users as children
+	int nusers = pCommand->GetNumberChildren();
+	
+	for (int i=0;i<nusers;i++) { // user loop
+	  
+	  Identifier *pUser = pCommand->GetChild(i)->ConvertToIdentifier();
+	  string sUid = pUser->GetParameterValue("uid");
+	  string sNeeds = pUser->GetParameterValue("needs");
+	  
+	  // only allocations as children
+	  int nallocs = pUser->GetNumberChildren();
+	  
+	  cout << "^io.output-link.allocation-map user id:"
+	       << sUid
+	       << " needs:"
+	       << sNeeds
+	       << " allocations["
+	       << nallocs-2 
+	       << "]= ";
+	  
+	  // iterate among children
+
+	  Identifier::ChildrenIter child;
+	  int allIdx = 0;
+
+	  for (child = pUser->GetChildrenBegin();
+	       child != pUser->GetChildrenEnd();
+	       child++) {
+
+	    string childAttr = (*child)->GetAttribute();
+
+	    if (childAttr == "allocation") { // so it's an identifier
+	      Identifier *alloc = (*child)->ConvertToIdentifier();
+
+	      string sCid = alloc->GetParameterValue("cid");
+	      string sPower = alloc->GetParameterValue("power");
+	      
+	      cout << sCid << "(" << sPower << "), ";
+
+	      gsl_matrix_uint_set(signature_frequencies,
+				  i,
+				  allIdx,
+				  atoi(sCid.c_str()));
+
+	      gsl_matrix_set(signature_powers,
+				  i,
+				  allIdx,
+				  atof(sPower.c_str()));
+
+	      allIdx++;
+	      
+	    } // if is allocation 
+	  } // children loop
+	  
+	  cout << endl;
+
+	} // user (i) loop 
+
+	cout << endl;
+
+      }
 
 
+      
+      // Then mark the command as completed
+      pCommand->AddStatusComplete() ;
+      
+    }
     
     break;
   }
@@ -689,6 +814,7 @@ void MAIAllocator::Run() {
   mout1.DeliverDataObj( *signature_frequencies );
   mout2.DeliverDataObj( *signature_powers );
 
+  gsl_matrix_uint_show(signature_frequencies);
 
 }
 

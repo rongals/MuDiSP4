@@ -41,7 +41,7 @@ class MAIAllocator : public Block {
   
   ////////   Local Attributes
  
-  unsigned int curruser,framecount;
+  unsigned int curruser,framecount, numberCommands;
   gsl_matrix_uint *Hperm;
   gsl_permutation *p; 
   gsl_vector *huserabs;
@@ -55,7 +55,7 @@ class MAIAllocator : public Block {
   gsl_matrix_uint * signature_frequencies, * signature_frequencies_init; 
   gsl_matrix *signature_powers;
   gsl_matrix_complex * transform_mat, * Hmat;
-  gsl_vector_complex * Hchan;
+  gsl_vector_complex *Hchan;
   gsl_rng * ran;
   
   // SOAR related

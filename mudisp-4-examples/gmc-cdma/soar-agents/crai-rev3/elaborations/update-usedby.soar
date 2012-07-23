@@ -1,0 +1,12 @@
+sp {crai*elaborate*update-usedby
+   (state <s> ^name crai
+              ^spectrum-map <sm>
+              ^allocation-map <am>)
+   (<sm> ^carr <c>)
+   (<c> ^cid <cid>)
+   (<am> ^user <u>)
+   (<u> ^uid <uid> 
+        ^allocation.cid <cid>)
+-->
+   (<c> ^used-by <uid>)
+}

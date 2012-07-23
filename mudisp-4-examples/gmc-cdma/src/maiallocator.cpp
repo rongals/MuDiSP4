@@ -238,7 +238,8 @@ void MAIAllocator::Setup() {
     pInputLink = pAgent->GetInputLink();
 
     // input-time
-    wmeTime = pAgent->CreateIntWME(pInputLink,"input-time",0);
+    input_time = 0;
+    wmeTime = pAgent->CreateIntWME(pInputLink,"input-time",input_time);
 
     // usrmap
     userMapID = pAgent->CreateIdWME(pInputLink,"usrmap");
@@ -672,7 +673,10 @@ void MAIAllocator::Run() {
     numberCommands=0; 
 
     while (! numberCommands) {
-      pAgent->RunSelf(1);
+
+      //      pAgent->RunSelf(1);
+      pAgent->RunSelfTilOutput();
+
       numberCommands = pAgent->GetNumberCommands() ;
 
     // keypress 
@@ -683,7 +687,7 @@ void MAIAllocator::Run() {
     cout << "Found " << numberCommands << " commands." << endl;
 
     // keypress 
-    cin.ignore();
+    //cin.ignore();
 
 
 
@@ -701,8 +705,8 @@ void MAIAllocator::Run() {
     //          power <num>
     //
 
-    for (int i = 0 ; i < numberCommands ; i++) {
-      Identifier* pCommand = pAgent->GetCommand(i) ;
+    for (int cmd = 0 ; cmd < numberCommands ; cmd++) {
+      Identifier* pCommand = pAgent->GetCommand(cmd) ;
       
       string name  = pCommand->GetCommandName() ;
       
@@ -771,13 +775,15 @@ void MAIAllocator::Run() {
 
 	cout << endl;
 
-      }
+
+      } // cmd loop
 
 
       
       // Then mark the command as completed
-      pCommand->AddStatusComplete() ;
+      pAgent->Update(wmeTime,++input_time);
       pAgent->Commit();
+
     }
     
     break;

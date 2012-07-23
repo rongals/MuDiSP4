@@ -1,4 +1,4 @@
-66
+74
 SOAR_ID 0
 SOAR_ID 1
 SOAR_ID 2
@@ -65,7 +65,15 @@ SOAR_ID 62
 INTEGER_RANGE 63 -2147483648 2147483647
 SOAR_ID 64
 ENUMERATION 65 1 wait
-66
+SOAR_ID 66
+ENUMERATION 67 1 initialize-allocation-map
+SOAR_ID 68
+ENUMERATION 69 1 initialize-spectrum-map
+SOAR_ID 70
+ENUMERATION 71 1 transmit-decision
+SOAR_ID 72
+ENUMERATION 73 1 forget-allocation
+74
 0 allocation-map 17
 0 attribute 55
 0 choices 56
@@ -77,6 +85,10 @@ ENUMERATION 65 1 wait
 0 operator 13
 0 operator 15
 0 operator 64
+0 operator 66
+0 operator 68
+0 operator 70
+0 operator 72
 0 spectrum-map 18
 0 superstate 6
 0 think-time 50
@@ -132,3 +144,7 @@ ENUMERATION 65 1 wait
 60 cid 61
 60 power 62
 64 name 65
+66 name 67
+68 name 69
+70 name 71
+72 name 73

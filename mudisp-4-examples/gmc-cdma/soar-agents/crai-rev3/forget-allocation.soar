@@ -1,0 +1,26 @@
+sp {crai*propose*forget-allocation
+   (state <s> ^io.input-link.input-time <it> 
+              ^think-time {<tt> <> <it>}
+              ^command issued)
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name forget-allocation
+         ^at-time <it>)
+}
+
+sp {apply*forget-allocation
+   (state <s> ^operator <op>
+              ^io.output-link <ol>
+              ^allocation-map <am>
+              ^think-time <tt>)
+   (<ol> ^allocation-map <oam>)
+   (<am> ^user <u>)
+   (<op> ^name forget-allocation
+         ^at-time <t>)
+-->
+   (<ol> ^allocation-map <oam> -)
+   (<am> ^user <u> -)
+   (<s> ^command issued -
+        ^think-time <tt> -
+        ^think-time <t>)
+}

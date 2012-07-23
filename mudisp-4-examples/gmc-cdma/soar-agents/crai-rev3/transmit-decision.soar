@@ -7,10 +7,8 @@
 # then goal-reached
 #
 
-
-sp {crai*elaborate*goal-detection
-   (state <s> ^name crai 
-              ^io.output-link <ol>
+sp {crai*propose*transmit-decision
+   (state <s> ^name crai
               ^spectrum-map <sm>
               ^allocation-map <am>)
    (<am> ^user)
@@ -18,7 +16,18 @@ sp {crai*elaborate*goal-detection
   -{(<am> ^user.needs > 0)
     (<sm> ^carr <c>)
     (<c> -^used-by)}
+   -(<s> ^command issued)
 -->
-   (write (crlf) |Work finished! (creating command)|)
+   (<s> ^operator <op> + =)
+   (<op> ^name transmit-decision)
+}
+
+sp {apply*transmit-decision
+   (state <s> ^operator <op>
+              ^io.output-link <ol>
+              ^allocation-map <am>)
+   (<op> ^name transmit-decision)
+-->
    (<ol> ^allocation-map <am>)
+   (<s> ^command issued)
 }

@@ -1,0 +1,26 @@
+sp {crai*propose*initialize-allocation-map
+   (state <s> ^name crai
+              ^io.input-link.usrmap <um>
+              ^allocation-map <am>)
+   (<um> ^user <u>)
+   (<u> ^uid <uid>
+        ^requires <req>)
+  -{(<am> ^user.uid <uid>)} # if the uid is not in allocation-map
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name initialize-allocation-map
+         ^new-uid <uid>
+         ^new-needs <req>)
+}
+
+sp {apply*initialize-allocation-map
+   (state <s> ^operator <op>
+              ^allocation-map <am>)
+   (<op> ^name initialize-allocation-map
+         ^new-uid <uid>
+         ^new-needs <req>)
+-->
+   (<am> ^user <newu>) # I create it for you
+   (<newu> ^uid <uid> 
+           ^needs <req>)
+}

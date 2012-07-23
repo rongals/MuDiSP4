@@ -1,0 +1,20 @@
+sp {crai*propose*initialize-spectrum-map
+   (state <s> ^name crai
+              ^spectrum-map <sm>
+              ^io.input-link.carmap.carr.cid <ncid>)
+  -{(<sm> ^carr.cid <ncid>)}
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name initialize-spectrum-map
+         ^ncid <ncid>)
+}
+
+sp {apply*initialize-spectrum-map
+   (state <s> ^operator <op>
+              ^spectrum-map <sm>)
+   (<op> ^name initialize-spectrum-map
+         ^ncid <ncid>)
+-->
+   (<sm> ^carr <c>)
+   (<c> ^cid <ncid>)
+}

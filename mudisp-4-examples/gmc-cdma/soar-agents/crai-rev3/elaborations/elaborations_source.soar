@@ -1,0 +1,5 @@
+source _all.soar
+source allocation-preference.soar
+source initialization-preference.soar
+source top-state.soar
+source update-usedby.soar

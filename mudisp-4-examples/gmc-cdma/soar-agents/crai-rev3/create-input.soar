@@ -1,0 +1,57 @@
+sp {crai*propose*create-input
+   (state <s> ^name crai
+              ^io.input-link <il>)
+  -{(<il> ^usrmap <um>
+          ^channels <chs>)} # if there is no input, I will do it for you
+-->
+   (<s> ^operator <op> +)
+   (<op> ^name create-input)
+}
+
+sp {apply*create-input
+   (state <s> ^operator <op>
+              ^io.input-link <il>)
+   (<op> ^name create-input)
+-->
+   (<il> ^usrmap <umap>)
+   (<umap> ^nusers 2 ^maxerr 100 ^pstep (/ 1 10) ^user <u0> <u1>)
+   (<u0> ^uid 0 ^requires 1 ^errs 0)
+   (<u1> ^uid 1 ^requires 1 ^errs 0)
+   (<il> ^channels <chs>)
+   (<chs> ^coeff <c00> <c01> <c10> <c11>)
+   (<c00> ^user 0 ^carr 0 ^value (/ 1 100))
+   (<c01> ^user 0 ^carr 1 ^value (/ 3 100))
+   (<c10> ^user 1 ^carr 0 ^value (/ 10 100))
+   (<c11> ^user 1 ^carr 1 ^value (/ 9 100))
+   (<il> ^carmap <cm>)
+   (<cm> ^carr <c0>
+         ^carr <c1>)
+   (<c0> ^cid 0)
+   (<c1> ^cid 1)
+   (<il> ^input-time 0)
+}
+
+#
+# <s> ^io.input-link
+#
+# usrmap
+#   nusers 0
+#   maxerr 0
+#   pstep 0.0
+#   *user
+#     uid 0
+#     requires 0
+#     errs 0
+#
+# channels
+#   *coeff
+#     user 0
+#     carr 0
+#     value 0.0
+#
+# carmap
+#   *carr
+#     cid 0
+#
+# input-time 0
+#

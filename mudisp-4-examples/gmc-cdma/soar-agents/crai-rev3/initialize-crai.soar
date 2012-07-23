@@ -1,0 +1,36 @@
+sp {propose*initialize-crai
+   (state <s> ^superstate nil
+             -^name)
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name initialize-crai)
+}
+
+sp {apply*initialize-crai
+   (state <s> ^operator <op>)
+   (<op> ^name initialize-crai)
+-->
+   (<s> ^name crai)
+   (<s> ^spectrum-map <sm>
+        ^allocation-map <am>
+        ^think-time 0)
+}
+
+#
+#
+# spectrum-map
+#   *carr <c>
+#      cid <cid>
+#      [used-by <uid>]
+#
+# allocation-map
+#   *user <u>
+#      uid <uid>
+#      needs <n>
+#      *allocation <al>
+#         cid <cid>
+#         power <pw>
+#
+# think-time <t>
+#
+#

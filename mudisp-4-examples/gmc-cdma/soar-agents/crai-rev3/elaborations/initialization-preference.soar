@@ -1,0 +1,7 @@
+sp {crai*elaborate*initialization-preference
+   (state <s> ^name crai
+              ^operator <o1> +)
+   (<o1> ^name << initialize-spectrum-map initialize-allocation-map >>)
+-->
+   (<s> ^operator <o1> >)
+}

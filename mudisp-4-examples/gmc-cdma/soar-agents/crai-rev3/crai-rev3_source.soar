@@ -7,5 +7,9 @@ source elaborations_source.soar
 popd
 source allocate-carrier.soar
 source create-input.soar
+source forget-allocation.soar
+source initialize-allocation-map.soar
 source initialize-crai.soar
+source initialize-spectrum-map.soar
+source transmit-decision.soar
 source wait.soar

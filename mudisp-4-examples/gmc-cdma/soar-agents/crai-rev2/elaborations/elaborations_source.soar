@@ -1,7 +1,6 @@
 source _all.soar
 source allocation-preference.soar
 source goal-detection.soar
-source nochange.soar
 source populate-allocation-map.soar
 source populate-spectrum-map.soar
 source reset-command.soar

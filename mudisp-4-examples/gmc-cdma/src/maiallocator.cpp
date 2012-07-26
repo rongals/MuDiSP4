@@ -51,8 +51,8 @@ void MAIAllocator::Setup() {
 
 //////// initialization of dynamic data structures
 
-  Hchan = gsl_vector_complex_alloc(N());
   Hmat = gsl_matrix_complex_alloc(N(),M());
+  Hchan = gsl_vector_complex_alloc(N());
   Hperm = gsl_matrix_uint_alloc(N(),M());
   p = gsl_permutation_alloc(N());
   huserabs = gsl_vector_alloc(N());
@@ -60,8 +60,11 @@ void MAIAllocator::Setup() {
   usedcarr = gsl_vector_uint_alloc(N());
   errs = gsl_vector_uint_alloc(M());
   habs = gsl_matrix_alloc(N(),M());
+  huu = gsl_matrix_complex_alloc(N(),M());
 
   framecount = 0;
+
+  ostringstream cmd;
 
   //
   // Random Generator
@@ -233,6 +236,9 @@ void MAIAllocator::Setup() {
     // IntElement *pWMEint1, *pWMEint2, *pWMEint3, *pWMEint4;
     // StringElement *pWMEstr1;
 
+    // adjust max-nil-output-cycle
+    cmd << "max-nil-output-cycles " << 120;
+    pAgent->ExecuteCommandLine(cmd.str().c_str());
 
     // Input link
     pInputLink = pAgent->GetInputLink();
@@ -276,23 +282,7 @@ void MAIAllocator::Setup() {
     //
     // END OF SOAR INITIALIZAZION
     //
-
-    // TEST TEST TEST 
-
-
-    // numberCommands=0; 
-
-    // while (! numberCommands) {
-    //   pAgent->RunSelf(1);
-    //   numberCommands = pAgent->GetNumberCommands() ;
-    // }
-
-    // cout << "Found " << numberCommands << " commands." << endl;
-    // char c;
-    // cin >> c;
-
-    // TEST TEST TEST
-    
+   
     break;  
   default:
     cerr << BlockName << " - Unhandled allocator type !" << endl;
@@ -312,9 +302,6 @@ void MAIAllocator::Run() {
   gsl_matrix_complex hmm  =  min1.GetDataObj();
 
 
-  // extract channels tx_m --> rx_1 only (all carriers)
-  gsl_matrix_complex_view hm1 = gsl_matrix_complex_submatrix(&hmm,0,0,M(),N());
-
   // update error reports at receiver rx_m
   if (++framecount % ERROR_REPORT_INTERVAL == 0) { // once every ERI
     gsl_vector_uint temperr  =  vin2.GetDataObj();
@@ -329,40 +316,49 @@ void MAIAllocator::Run() {
 
     }
   } 
-  
+
+  // extract huu (time domain response of channels tx_u --> rx_u)
+  for (int u=0;u<M();u++) { // user loop
+
+    // extract time domain response from hmm corresponding to txn-->rxn channel
+    gsl_vector_complex_const_view hii = gsl_matrix_complex_const_row(&hmm,u*M()+u);
+
+    // copy the N-sized vector hii into u-th column of huu
+    gsl_matrix_complex_set_col(huu,u,&hii.vector);
+
+  } // user loop
 
 
-
-
-  //  hm1 matrix structure
+  //  huu matrix structure
   //
   //   +-                 -+
-  //   | h(0) . . . . h(n) |
-  //   |  11           11  |
+  //   | h(0) . . . . h(0) |
+  //   |  11           uu  |
   //   |                   |
-  //   | h(0) . . . . h(n) |
-  //   |  12           12  |
+  //   | h(n) . . . . h(n) |
+  //   |  11           uu  |
   //   +-                 -+
   // 
   //   where h(n) represents the channel impulse response
-  //          i1
+  //          ii
   //
-  //   at time n, from tx i to rx 1
-  //   the matrix has M rows and N comumns.
+  //   at time n, from tx_u to rx_u
+  //   the matrix has N rows and M comumns.
   //
   //
   //
-  // Hmat = Fourier( cmat )
-  //
+  // Hmat(NxM) = Fourier( huu(NxM) )
+  // 
 
   gsl_blas_zgemm(CblasNoTrans,
-		 CblasTrans,
-		 gsl_complex_rect(sqrt(double(N())),0),
+		 CblasNoTrans,
+		 gsl_complex_rect(1,0),
 		 transform_mat,
-		 &hm1.matrix,
+		 huu,
 		 gsl_complex_rect(0,0),
 		 Hmat);
 
+//		 gsl_complex_rect(sqrt(double(N())),0),
   //
   // ***********************************************************
   // CARRIER ALLOCATION STRATEGIES
@@ -637,7 +633,11 @@ void MAIAllocator::Run() {
     //   update the relevant sections of ^io.input-link
     //
 
+    //    gsl_matrix_complex_show(Hmat);
+
+
     for (int u=0;u<M();u++) { // user loop
+
 
       // extract view from hnn
       gsl_vector_complex_const_view huu = gsl_matrix_complex_const_row(&hmm,u*M()+u);
@@ -649,23 +649,46 @@ void MAIAllocator::Run() {
 		     &huu.vector,
 		     gsl_complex_rect(0,0),
 		     Hchan);
+      
 
-      // cout << "Hchan(u=" << u << ")=" << endl; 
-      // gsl_vector_complex_fprintf(stdout,Hchan,"%f");
-
-
+      // for (int j=0;j<N();j++) {
+      // 	gsl_complex c1 = gsl_vector_complex_get(Hchan,j);
+      // 	gsl_complex c2 = gsl_matrix_complex_get(Hmat,j,u);
+      // 	cout << setw(10) << "Hchan(" << u << "," << j << ") ";
+      // 	cout << setw(20) << GSL_REAL(c1) << "," << GSL_IMAG(c1);
+      // 	cout << setw(10) << "Hmat(" << u << "," << j << ") ";
+      // 	cout << setw(20) << GSL_REAL(c2) << "," << GSL_IMAG(c2) ;
+      // 	cout << setw(20) << gsl_complex_abs2(c1);
+      // 	cout << setw(20) << gsl_complex_abs2(c2) << endl;
+      // } // j loop 
+     
       // update soarUserMap.wmeErrsVec[u]
       pAgent->Update(soarUserMap.wmeErrsVec[u],gsl_vector_uint_get(errs,u));
-
+      
       // update soarChannelMap.wmeValueMat[i*M()+j]
       for (int j=0;j<N();j++) {
-	double coeffVal = gsl_complex_abs2(gsl_vector_complex_get(Hchan,u));
-	pAgent->Update(soarChannelMap.wmeValueMat[u*N()+j],coeffVal);
+      	double coeffVal = gsl_complex_abs2(gsl_vector_complex_get(Hchan,u));
+      	pAgent->Update(soarChannelMap.wmeValueMat[u*N()+j],coeffVal);
       } // j loop
+      
+      
+
+      //
+      // this is not working but we do not know WHY !!!!
+      //
+      // // update soarUserMap.wmeErrsVec[u]
+      // pAgent->Update(soarUserMap.wmeErrsVec[u],gsl_vector_uint_get(errs,u));
+
+      // // update soarChannelMap.wmeValueMat[i*M()+j]
+      // for (int j=0;j<N();j++) {
+      // 	double coeffVal = gsl_complex_abs2(gsl_matrix_complex_get(Hmat,j,u));
+      // 	cout << coeffVal << endl;
+      // 	pAgent->Update(soarChannelMap.wmeValueMat[u*N()+j],coeffVal);
+      // } // j loop
 
     } // user loop
 
-
+ 
     // commit changes no longer needed
     //pAgent->Commit();
 
@@ -674,21 +697,20 @@ void MAIAllocator::Run() {
 
     while (! numberCommands) {
 
-      //      pAgent->RunSelf(1);
+      //pAgent->RunSelf(1);
       pAgent->RunSelfTilOutput();
-
+      
       numberCommands = pAgent->GetNumberCommands() ;
-
-    // keypress 
-    cin.ignore();
-
+      
+      // keypress 
+      // cin.ignore();
+      
     }
-
-    cout << "Found " << numberCommands << " commands." << endl;
+    
+    // cout << "Found " << numberCommands << " commands." << endl;
 
     // keypress 
     //cin.ignore();
-
 
 
     //-----------------------------------------------------------------------
@@ -727,13 +749,13 @@ void MAIAllocator::Run() {
 	  // only allocations as children
 	  int nallocs = pUser->GetNumberChildren();
 	  
-	  cout << "^io.output-link.allocation-map user id:"
-	       << sUid
-	       << " needs:"
-	       << sNeeds
-	       << " allocations["
-	       << nallocs-2 
-	       << "]= ";
+	  // cout << "^io.output-link.allocation-map user id:"
+	  //      << sUid
+	  //      << " needs:"
+	  //      << sNeeds
+	  //      << " allocations["
+	  //      << nallocs-2 
+	  //      << "]= ";
 	  
 	  // iterate among children
 
@@ -752,7 +774,7 @@ void MAIAllocator::Run() {
 	      string sCid = alloc->GetParameterValue("cid");
 	      string sPower = alloc->GetParameterValue("power");
 	      
-	      cout << sCid << "(" << sPower << "), ";
+	      // cout << sCid << "(" << sPower << "), ";
 
 	      gsl_matrix_uint_set(signature_frequencies,
 				  i,
@@ -768,14 +790,9 @@ void MAIAllocator::Run() {
 	      
 	    } // if is allocation 
 	  } // children loop
-	  
-	  cout << endl;
-
+	  // cout << endl;
 	} // user (i) loop 
-
-	cout << endl;
-
-
+	// cout << endl;
       } // cmd loop
 
 
@@ -808,6 +825,7 @@ void MAIAllocator::Finish() {
 
   gsl_vector_complex_free(Hchan);
   gsl_matrix_complex_free(Hmat);
+  gsl_matrix_complex_free(huu);
   gsl_matrix_uint_free(Hperm);
   gsl_permutation_free(p);
   gsl_vector_free(huserabs);

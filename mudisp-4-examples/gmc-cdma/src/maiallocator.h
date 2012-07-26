@@ -54,7 +54,7 @@ class MAIAllocator : public Block {
   // Carrier Allocation Matrices
   gsl_matrix_uint * signature_frequencies, * signature_frequencies_init; 
   gsl_matrix *signature_powers;
-  gsl_matrix_complex * transform_mat, * Hmat;
+  gsl_matrix_complex * transform_mat, * Hmat, * huu;
   gsl_vector_complex *Hchan;
   gsl_rng * ran;
   

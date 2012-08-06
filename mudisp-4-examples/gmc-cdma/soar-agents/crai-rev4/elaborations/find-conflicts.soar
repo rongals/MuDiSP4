@@ -1,0 +1,16 @@
+#
+# if there are two different users in il
+# that share the same carrier create a conflict
+#
+
+sp {crai*elaborate*find-conflicts
+   (state <s> ^name crai
+              ^io.input-link.usrmap <um>
+              ^conflicts <cfl>)
+   (<um> ^user <u1> ^user {<> <u1> <u2>})
+   (<u1> ^carr.cid <cid>)
+   (<u2> ^carr.cid <cid>)
+-->
+   (<cfl> ^carr <c>)
+   (<c> ^cid <cid> ^user <u1> ^user <u2>)
+}

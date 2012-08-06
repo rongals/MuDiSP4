@@ -1,0 +1,17 @@
+sp {propose*initialize-crai
+   (state <s> ^superstate nil
+             -^name)
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name initialize-crai)
+}
+
+sp {apply*initialize-crai
+   (state <s> ^operator <op>)
+   (<op> ^name initialize-crai)
+-->
+   (<s> ^name crai
+         ^conflicts <cfl>
+         ^free-carriers <fc>)
+}
+

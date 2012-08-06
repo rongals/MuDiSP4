@@ -1,0 +1,14 @@
+source _firstload.soar
+pushd all
+source all_source.soar
+popd
+pushd elaborations
+source elaborations_source.soar
+popd
+source assign-free.soar
+source create-dummy-inputs.soar
+source delete-command.soar
+source implement-assign-free.soar
+source implement-swap-carriers.soar
+source initialize-crai.soar
+source swap-carriers.soar

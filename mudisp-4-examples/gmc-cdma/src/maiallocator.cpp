@@ -638,53 +638,15 @@ void MAIAllocator::Run() {
 
     for (int u=0;u<M();u++) { // user loop
 
-
-      // extract view from hnn
-      gsl_vector_complex_const_view huu = gsl_matrix_complex_const_row(&hmm,u*M()+u);
-      
-      // FFT(huu) --> Hchan 
-      gsl_blas_zgemv(CblasNoTrans,
-		     gsl_complex_rect(1,0),
-		     transform_mat,
-		     &huu.vector,
-		     gsl_complex_rect(0,0),
-		     Hchan);
-      
-
-      // for (int j=0;j<N();j++) {
-      // 	gsl_complex c1 = gsl_vector_complex_get(Hchan,j);
-      // 	gsl_complex c2 = gsl_matrix_complex_get(Hmat,j,u);
-      // 	cout << setw(10) << "Hchan(" << u << "," << j << ") ";
-      // 	cout << setw(20) << GSL_REAL(c1) << "," << GSL_IMAG(c1);
-      // 	cout << setw(10) << "Hmat(" << u << "," << j << ") ";
-      // 	cout << setw(20) << GSL_REAL(c2) << "," << GSL_IMAG(c2) ;
-      // 	cout << setw(20) << gsl_complex_abs2(c1);
-      // 	cout << setw(20) << gsl_complex_abs2(c2) << endl;
-      // } // j loop 
-     
+          
       // update soarUserMap.wmeErrsVec[u]
       pAgent->Update(soarUserMap.wmeErrsVec[u],gsl_vector_uint_get(errs,u));
-      
+
       // update soarChannelMap.wmeValueMat[i*M()+j]
       for (int j=0;j<N();j++) {
-      	double coeffVal = gsl_complex_abs2(gsl_vector_complex_get(Hchan,u));
+      	double coeffVal = gsl_complex_abs2(gsl_matrix_complex_get(Hmat,j,u));
       	pAgent->Update(soarChannelMap.wmeValueMat[u*N()+j],coeffVal);
       } // j loop
-      
-      
-
-      //
-      // this is not working but we do not know WHY !!!!
-      //
-      // // update soarUserMap.wmeErrsVec[u]
-      // pAgent->Update(soarUserMap.wmeErrsVec[u],gsl_vector_uint_get(errs,u));
-
-      // // update soarChannelMap.wmeValueMat[i*M()+j]
-      // for (int j=0;j<N();j++) {
-      // 	double coeffVal = gsl_complex_abs2(gsl_matrix_complex_get(Hmat,j,u));
-      // 	cout << coeffVal << endl;
-      // 	pAgent->Update(soarChannelMap.wmeValueMat[u*N()+j],coeffVal);
-      // } // j loop
 
     } // user loop
 
@@ -697,13 +659,13 @@ void MAIAllocator::Run() {
 
     while (! numberCommands) {
 
-      //pAgent->RunSelf(1);
-      pAgent->RunSelfTilOutput();
+      pAgent->RunSelf(1);
+      //pAgent->RunSelfTilOutput();
       
       numberCommands = pAgent->GetNumberCommands() ;
       
       // keypress 
-      // cin.ignore();
+      cin.ignore();
       
     }
     

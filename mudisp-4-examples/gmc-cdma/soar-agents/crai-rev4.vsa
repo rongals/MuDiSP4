@@ -1,0 +1,18 @@
+VERSION 4
+/crai-rev4/crai-rev4.dm
+0	ROOT crai-rev4 crai-rev4 1
+1	0	FOPERATOR _firstload _firstload.soar 2
+2	0	FOLDER all all 3
+3	0	FOLDER elaborations elaborations 4
+4	3	FOPERATOR _all _all.soar 5
+5	3	FOPERATOR find-conflicts find-conflicts.soar 6
+6	3	FOPERATOR find-free-carriers find-free-carriers.soar 7
+7	3	FOPERATOR top-state top-state.soar 8
+8	0	OPERATOR assign-free assign-free.soar 9
+9	0	OPERATOR create-dummy-inputs create-dummy-inputs.soar 10
+10	0	OPERATOR delete-command delete-command.soar 11
+11	0	OPERATOR implement-assign-free implement-assign-free.soar 12
+12	0	OPERATOR implement-swap-carriers implement-swap-carriers.soar 15
+13	0	OPERATOR initialize-crai initialize-crai.soar 13
+14	0	OPERATOR swap-carriers swap-carriers.soar 14
+END

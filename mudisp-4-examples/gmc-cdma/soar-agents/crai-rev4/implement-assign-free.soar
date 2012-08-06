@@ -1,0 +1,25 @@
+sp {crai*propose*implement-assign-free
+   (state <s> ^name crai
+              ^io.output-link.command.name assign-free
+              -^io.output-link.command.status completed)
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name implement-assign-free)
+}
+
+sp {apply*implement-assign-free
+   (state <s> ^operator <op>
+              ^io.output-link.command <cmd>
+              ^io.input-link <il>)
+   (<op> ^name implement-assign-free)
+   (<cmd> ^uid <uid>
+          ^deassign <bad>
+          ^assign <free>)
+   (<il> ^usrmap.user <u>)
+   (<u> ^uid <uid> ^carr <c>)
+   (<c> ^cid <bad>)
+-->
+   (<cmd> ^status completed)
+   (<c> ^cid <free>
+        ^cid <bad> -)
+}

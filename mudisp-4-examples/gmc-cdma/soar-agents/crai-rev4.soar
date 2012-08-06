@@ -1,0 +1,3 @@
+pushd crai-rev4
+source crai-rev4_source.soar
+popd

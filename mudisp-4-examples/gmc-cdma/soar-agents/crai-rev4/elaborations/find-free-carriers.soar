@@ -1,0 +1,16 @@
+#
+# if there is a carr in carmap which is not 
+# in the usrmap, it is free
+#
+
+sp {crai*elaborate*find-free-carriers
+   (state <s> ^name crai
+              ^io.input-link <il>
+              ^free-carriers <fc>)
+   (<il> ^usrmap <um> ^carmap <cm>)
+   (<cm> ^carr.cid <c>)
+   (<um> -^user.carr.cid <c>)   
+-->
+   (<fc> ^carr <nc>)
+   (<nc> ^cid <c>)
+}

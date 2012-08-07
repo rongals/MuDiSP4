@@ -1,4 +1,4 @@
-25
+29
 SOAR_ID 0
 SOAR_ID 1
 SOAR_ID 2
@@ -24,7 +24,11 @@ SOAR_ID 21
 ENUMERATION 22 1 swap-carriers
 SOAR_ID 23
 ENUMERATION 24 1 implement-swap-carriers
-25
+SOAR_ID 25
+ENUMERATION 26 1 increase-power
+SOAR_ID 27
+ENUMERATION 28 1 implement-increase-power
+29
 0 io 1
 0 name 7
 0 operator 4
@@ -36,6 +40,8 @@ ENUMERATION 24 1 implement-swap-carriers
 0 operator 19
 0 operator 21
 0 operator 23
+0 operator 25
+0 operator 27
 0 superstate 6
 0 top-state 0
 0 type 5
@@ -50,3 +56,5 @@ ENUMERATION 24 1 implement-swap-carriers
 19 name 20
 21 name 22
 23 name 24
+25 name 26
+27 name 28

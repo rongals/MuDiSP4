@@ -1,3 +1,8 @@
+#
+# if the command in OL is completed
+# --> delete it
+#
+
 sp {crai*propose*delete-command
    (state <s> ^name crai
               ^io.output-link.command.status completed)

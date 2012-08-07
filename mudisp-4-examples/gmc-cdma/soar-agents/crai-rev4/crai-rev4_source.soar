@@ -9,6 +9,8 @@ source assign-free.soar
 source create-dummy-inputs.soar
 source delete-command.soar
 source implement-assign-free.soar
+source implement-increase-power.soar
 source implement-swap-carriers.soar
+source increase-power.soar
 source initialize-crai.soar
 source swap-carriers.soar

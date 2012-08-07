@@ -1,0 +1,28 @@
+sp {crai*propose*increase-power
+   (state <s> ^name crai
+              ^io.input-link.usrmap (^maxerr <maxe> ^pmax <pm> ^user
+                                    (<u> ^power < <pm> 
+                                         ^errs > <maxe> 
+                                         ^carr <c>))
+              -^io.output-link.command <cmd>)
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name increase-power
+         ^user <u>
+         ^carr <c>)
+}
+
+sp {apply*increase-power
+   (state <s> ^operator <op>
+              ^io.input-link.usrmap.user (<u> ^uid <uid> ^carr
+                                         (<c> ^cid <cid> ))
+              ^io.output-link <ol>)
+   (<op> ^name increase-power
+         ^user <u>
+         ^carr <c>)
+-->
+   (<ol> ^command <cmd>)
+   (<cmd> ^name increase-power
+          ^uid <uid>
+          ^cid <cid>)
+}

@@ -20,10 +20,10 @@ sp {apply*create-dummy-inputs
    (<il> ^usrmap <umap>)
    (<umap> ^maxerr 100 
            ^pstep (/ 1 10)
-           ^pmax 2.0
+           ^pmax 10.0
            ^user <u0> <u1> )
-   (<u0> ^uid 0 ^errs 0 ^carr <a00> <a01>)
-   (<u1> ^uid 1 ^errs 0 ^carr <a10> <a11>)
+   (<u0> ^uid 0 ^errs   0 ^power 2.0 ^carr <a00> <a01>)
+   (<u1> ^uid 1 ^errs 130 ^power 2.0 ^carr <a10> <a11>)
    (<a00> ^cid 0 ^power 1.0)
    (<a01> ^cid 1 ^power 1.0)
    (<a10> ^cid 1 ^power 1.0)

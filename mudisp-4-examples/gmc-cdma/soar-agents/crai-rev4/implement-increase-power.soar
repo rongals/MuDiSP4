@@ -11,10 +11,12 @@ sp {apply*implement-increase-power
               ^io.output-link.command (<cmd> ^uid <uid> ^cid <cid>)
               ^io.input-link.usrmap (^pstep <inc> ^user 
                                     (<u> ^uid <uid>
+                                         ^errs <e>
                                          ^power <pu>
                                          ^carr (<c> ^cid <cid> ^power <pow>))))
 -->
    (<cmd> ^status completed)
    (<u> ^power (+ <pu> <inc>) <pu> -)
    (<c> ^power (+ <pow> <inc>)<pow> -)
+   (<u> ^errs (+ (- <e> <cid>) 1) ^errs <e> -)
 }

@@ -12,9 +12,9 @@ VERSION 4
 9	0	OPERATOR create-dummy-inputs create-dummy-inputs.soar 10
 10	0	OPERATOR delete-command delete-command.soar 11
 11	0	OPERATOR implement-assign-free implement-assign-free.soar 12
-12	0	OPERATOR implement-increase-power implement-increase-power.soar 17
-13	0	OPERATOR implement-swap-carriers implement-swap-carriers.soar 13
-14	0	OPERATOR increase-power increase-power.soar 16
-15	0	OPERATOR initialize-crai initialize-crai.soar 14
-16	0	OPERATOR swap-carriers swap-carriers.soar 15
+12	0	OPERATOR implement-increase-power implement-increase-power.soar 13
+13	0	OPERATOR implement-swap-carriers implement-swap-carriers.soar 14
+14	0	OPERATOR increase-power increase-power.soar 15
+15	0	OPERATOR initialize-crai initialize-crai.soar 16
+16	0	OPERATOR swap-carriers swap-carriers.soar 17
 END

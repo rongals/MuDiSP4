@@ -1,0 +1,90 @@
+   ____ ____      _    ___
+  / ___|  _ \    / \  |_ _|
+ | |   | |_) |  / _ \  | |
+ | |___|  _ <  / ___ \ | |
+  \____|_| \_\/_/   \_\___|
+
+ COGNITIVE RADIO ARTIFICIAL INTELLIGENCE
+
+Main Modules
+
+ * Mudisp4 Simulation Framework
+ * SOAR Artificial Intelligence Agent
+
+Mudisp4 Blocks
+
+                                         +-----------+
+                     +----------+        |mbitsource1|
+                     |SOAR agent|        +-----------+
+                     +-----+----+              |
+                           |                   v
+                    +------+------+      +-----------+
+                +-->|maiallocator1|-+-2->|mblockuser1|3
+                |   +-------------+ |    +-----------+
+                1     ^             |          | 4
+                |     |             |          v
+  +-----------+ |     |             |    +-----------+
+  |mcpchcoeff1|++---------1---------+-+->| mchannel1 |
+  +-----------+       |             | |  +-----------+
+        |             |             | |        | 4
+        |             |             | |        v
+        v             |             | 1  +-----------+
+    track.kml         |             2 |  |  mawgn1   |
+        |             |             | |  +-----------+
+        v             |             | |        | 4
++--------------+      |             | |        v
+| Google Earth |      |             | ..>+-----------+
++--------------+      |             |...>|mblockrec11|3
+                      |                  +-----------+
+                      |                        |
+                      |                        v
+                      |                  +-----------+
+                      -<--DelayConnect-<-| mbitber1  |
+                                         +-----------+
+
+SOAR Agent [crai-rev4]
+
+
+ ^io                      ^io
+   ^input-link              ^output-link
+     ^usrmap                  ^command
+       ^maxerr                  ^name assign-free
+       ^pstep                   ^uid
+       ^pmax                    ^deassign
+       ^user                    ^assign
+         ^uid                 ^command
+           ^errs                ^name swap-carriers
+           ^power               ^u1
+           ^carr                ^c1
+             ^cid               ^u2
+             ^power             ^c2
+     ^channels                ^command
+       ^coeff                   ^name increase-power
+         ^user                  ^uid
+           ^carr                ^cid
+           ^value             ^command
+     ^carrmap                   ^status
+       ^carr
+         ^cid
+     ^input-time
+
+
+Variables and Data Structures
+
+bpu   bit/user = K x bit/symbol
+K     uncoded information symbols per user
+J     coded information symbols per user
+N     subcarriers per frame
+L     cyclic prefix lenght
+M     active tx and rx
+
+matrix    dimension  ref  note
+
+ch        (M*M x N)  1    channel impulse response matrix from txi to rxj at time n
+coding    (J x K)    3    precoding matrix
+selection (N x J)    3    carrier selection matrix
+(i)fft    (N x N)    3    transform matrix
+signal    (N x M)    4    tx signal matrix
+signature (J x M)    2    carriers assignements, uint
+powers    (J x M)    2    power assignements, double
+

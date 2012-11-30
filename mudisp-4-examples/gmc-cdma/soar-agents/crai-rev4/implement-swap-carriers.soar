@@ -1,7 +1,8 @@
 sp {crai*propose*implement-swap-carriers
    (state <s> ^name crai
               ^io.output-link.command.name swap-carriers
-              -^io.output-link.command.status completed)
+              -^io.output-link.command.status completed
+               ^io.input-link.isdummy yes)
 -->
    (<s> ^operator <op> + =)
    (<op> ^name implement-swap-carriers)

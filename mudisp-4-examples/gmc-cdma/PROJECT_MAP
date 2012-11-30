@@ -88,3 +88,5 @@ signal    (N x M)    4    tx signal matrix
 signature (J x M)    2    carriers assignements, uint
 powers    (J x M)    2    power assignements, double
 
+SOAR crai-rev4 Cognitive engine
+

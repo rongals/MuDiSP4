@@ -16,7 +16,7 @@ CC = g++ -I $(SOARHOME)/bin/include
 
 ##########################################
 # MuDiSP4 SIMULATOR PATH
-MDSP4_SRC=/usr/local/mudisp4
+MDSP4_SRC=/usr/local/mudisp3
 MDSP3_SRC=$(MDSP4_SRC)
 
 

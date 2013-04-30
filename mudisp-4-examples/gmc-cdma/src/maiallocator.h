@@ -58,36 +58,61 @@ class MAIAllocator : public Block {
   gsl_vector_complex *Hchan;
   gsl_rng * ran;
   
-  // SOAR related
+ // SOAR related
+ // ^io                      ^io
+ //   ^input-link              ^output-link
+ //     ^usrmap                  ^command
+ //       ^maxerr                  ^name assign-free
+ //       ^pstep                   ^uid
+ //       ^pmax                    ^deassign
+ //       ^user      []            ^assign
+ //         ^uid     []          ^command
+ //         ^errs    []            ^name swap-carriers
+ //         ^power   []            ^u1
+ //         ^carr    [[]]          ^c1
+ //           ^cid   [[]]          ^u2
+ //           ^power [[]]          ^c2
+ //     ^channels                ^command
+ //       ^coeff     []            ^name increase-power
+ //         ^user    []            ^uid
+ //         ^carr    []            ^cid
+ //         ^value   []          ^command
+ //     ^carrmap                   ^status
+ //       ^carr      []
+ //         ^cid     []
+ //     ^input-time
+
+
   Kernel *pKernel;
   Agent *pAgent;
 
-  /* Identifier *inputLinkId, *carMapId, *usrMapId, *channelsId, *allMapId; */
-  /* IntElement *ncarrIntWme; */
-  /* vector <Identifier *> carrIdVec; */
-  /* vector <IntElement *> cidIntWmeVec; */
-  /* vector <StringElement *> usedStringWmeVec; */
+  Identifier *pInputLink; // from here the input link structure
 
-  Identifier *pInputLink, *carrMapID, *userMapID, *channelsID;
-  IntElement *wmeNusers, *wmeMaxerr, *wmeTime;
-  FloatElement  *wmePstep;
+  Identifier *umap;
+  IntElement *umapMaxerr;
+  FloatElement *umapPstep;
+  FloatElement *umapPmax;
+  vector < Identifier * > umapUserVec;
+  vector < IntElement * > umapUserUidVec;
+  vector < IntElement * > umapUserErrsVec;
+  vector < FloatElement * > umapUserPowerVec;
 
-  struct SoarUserMapStruct {
-    vector < Identifier * > userIDVec;
-    vector < IntElement * > wmeUidVec;
-    vector < IntElement * > wmeRequiresVec;
-    vector < IntElement * > wmeErrsVec;
-  };
+  vector < Identifier * > umapUserCarrMat;
+  vector < IntElement * > umapUserCarrCidMat;
+  vector < FloatElement * > umapUserCarrPowerMat;
 
-  struct SoarChannelStruct {
-    vector < Identifier * >    coeffIDMat;
-    vector < IntElement * >    wmeUserMat;
-    vector < IntElement * >    wmeCarrMat;
-    vector < FloatElement * >  wmeValueMat;
-  };
+  Identifier *chans;
+  vector < Identifier * >    chansCoeffMat;
+  vector < IntElement * >    chansCoeffUserMat;
+  vector < IntElement * >    chansCoeffCarrMat;
+  vector < FloatElement * >  chansCoeffValueMat;
 
-  SoarUserMapStruct soarUserMap;
-  SoarChannelStruct soarChannelMap;
+  Identifier *carmap;
+  vector < Identifier * >    carmapCarrVec;
+  vector < IntElement * >    carmapCarrCidVec;
+
+  IntElement *inputTime;
+
 
 public:
 

@@ -105,15 +105,6 @@ void MAIAllocator::Setup() {
 			     gsl_complex_polar(fftamp,fftarg*i*j) );
 
 
-  //
-  //
-  //
-  // Identifier *pInputLink;
-  // Identifier *pID1, *pID2;
-  // IntElement *pWMEint1, *pWMEint2, *pWMEint3, *pWMEint4;
-  // StringElement *pWMEstr1;
-  //  int numberCommands;
-
 
   switch (Mode()) {
   case 0:
@@ -132,27 +123,34 @@ void MAIAllocator::Setup() {
     cout << BlockName << " - Allocator type SOAR_AI selected" << endl;
 
     //
-    //
     // SOAR INITIALIZATION
     //
 
     //
-    // init pointers to Identifiers and WMEs
+    // first we initialize the vectors and matrices
+    // in the order of appearance in the header file.
     //
-    soarUserMap.userIDVec = vector < Identifier * > (M());
-    soarUserMap.wmeUidVec = vector < IntElement * > (M());
-    soarUserMap.wmeRequiresVec = vector < IntElement * > (M());
-    soarUserMap.wmeErrsVec = vector < IntElement * > (M());
-
-    soarChannelMap.coeffIDMat = vector < Identifier * > (M()*N());
-    soarChannelMap.wmeUserMat = vector < IntElement * > (M()*N());
-    soarChannelMap.wmeCarrMat = vector < IntElement * > (M()*N());
-    soarChannelMap.wmeValueMat = vector < FloatElement * > (M()*N());
-
+    umapUserVec =  vector < Identifier * > (M());
+    umapUserUidVec = vector < IntElement * > (M());
+    umapUserErrsVec = vector < IntElement * > (M());
+    umapUserPowerVec = vector < FloatElement * > (M());
+    umapUserCarrMat  = vector < Identifier * > (M()*J());
+    umapUserCarrCidMat = vector < IntElement * > (M()*J());
+    umapUserCarrPowerMat = vector < FloatElement * > (M()*J());
+    
+    chansCoeffMat = vector < Identifier * > (M()*N());
+    chansCoeffUserMat = vector < IntElement * > (M()*N());
+    chansCoeffCarrMat = vector < IntElement * > (M()*N());
+    chansCoeffValueMat = vector < FloatElement * > (M()*N());
+    
+    carmapCarrVec = vector < Identifier * >  (N());
+    carmapCarrCidVec = vector < IntElement * >   (N());
+    
 
     //
+    // then we create an instance of the Soar kernel in our process
     //
-    // Create an instance of the Soar kernel in our process
+
     pKernel = Kernel::CreateKernelInNewThread() ;
     //pKernel = Kernel::CreateRemoteConnection() ;
     
@@ -201,83 +199,62 @@ void MAIAllocator::Setup() {
 	exit(1);
       }
 
+
     //
-    // generate initial input link structure
+    // we can now generate initial input link structure
     //
-    //
-    // #
-    // # <s> ^io.input-link
-    // #
-    // # usrmap
-    // #   nusers 0
-    // #   maxerr 0
-    // #   pstep 0.0
-    // #   *user
-    // #     uid 0
-    // #     requires 0
-    // #     errs 0
-    // #
-    // # channels
-    // #   *coeff
-    // #     user 0
-    // #     carr 0
-    // #     value 0.0
-    // #
-    // # carmap
-    // #   *carr
-    // #     cid 0
-    // #
-    // # input-time 0
-    // #
 
+    // NO MORE adjust max-nil-output-cycle
+    //cmd << "max-nil-output-cycles " << 120;
+    //pAgent->ExecuteCommandLine(cmd.str().c_str());
 
-    // Identifier *pInputLink;
-    // Identifier *pID1, *pID2;
-    // IntElement *pWMEint1, *pWMEint2, *pWMEint3, *pWMEint4;
-    // StringElement *pWMEstr1;
-
-    // adjust max-nil-output-cycle
-    cmd << "max-nil-output-cycles " << 120;
-    pAgent->ExecuteCommandLine(cmd.str().c_str());
-
-    // Input link
+    // the input-link
     pInputLink = pAgent->GetInputLink();
 
     // input-time
     input_time = 0;
-    wmeTime = pAgent->CreateIntWME(pInputLink,"input-time",input_time);
+    inputTime = pAgent->CreateIntWME(pInputLink,"input-time",input_time);
 
-    // usrmap
-    userMapID = pAgent->CreateIdWME(pInputLink,"usrmap");
-    wmeNusers = pAgent->CreateIntWME(userMapID,"nusers",M());
-    wmeMaxerr = pAgent->CreateIntWME(userMapID,"maxerr",100);
-    wmePstep = pAgent->CreateFloatWME(userMapID,"pstep",0.01);
-    for (int j=0;j<M();j++) { // usrmap population
-      soarUserMap.userIDVec[j] = pAgent->CreateIdWME(userMapID,"user"); 
-      soarUserMap.wmeUidVec[j] = pAgent->CreateIntWME(soarUserMap.userIDVec[j],"uid",j);
-      soarUserMap.wmeRequiresVec[j] = pAgent->CreateIntWME(soarUserMap.userIDVec[j],"requires",J());
-      soarUserMap.wmeErrsVec[j] = pAgent->CreateIntWME(soarUserMap.userIDVec[j],"errs",0);
-    } // usrmap population
+    // the usrmap structure (common wmes)
+    umap = pAgent->CreateIdWME(pInputLink,"usrmap");
+    umapMaxerr = pAgent->CreateIntWME(umap,"maxerr",100);
+    umapPstep = pAgent->CreateFloatWME(umap,"pstep",0.01);
+    umapPmax = pAgent->CreateFloatWME(umap,"pmax",10.0);
+    // the channels
+    chans = pAgent->CreateIdWME(pInputLink,"channels");
+    // the carmap
+    carmap = pAgent->CreateIdWME(pInputLink,"carmap");
+ 
+    // the usrmap structure (users substructure)
+    for (int i=0;i<M();i++) { // user loop
+      umapUserVec[i] = pAgent->CreateIdWME(umap,"user");
+      umapUserUidVec[i] = pAgent->CreateIntWME(umapUserVec[i],"uid",i);
+      umapUserErrsVec[i] = pAgent->CreateIntWME(umapUserVec[i],"errs",0);
+      umapUserPowerVec[i] = pAgent->CreateFloatWME(umapUserVec[i],"power",J());
+      // update the current allocation 
+      for (int j=0;j<J();j++) { // allocated carriers loop
+	unsigned int usedcarr = gsl_matrix_uint_get(signature_frequencies,i,j);
+	double usedpow = gsl_matrix_get(signature_powers,i,j);
+	umapUserCarrMat[i*J()+j] = pAgent->CreateIdWME(umap,"carr");
+	umapUserCarrCidMat[i*J()+j] = 
+	  pAgent->CreateIntWME(umapUserCarrMat[i*J()+j],"cid",usedcarr);
+	umapUserCarrPowerMat[i*J()+j] = 
+	  pAgent->CreateFloatWME(umapUserCarrMat[i*J()+j],"power",usedpow);
+      } // allocated carriers loop
+      // the channels
+      for (int j=0;j<N();j++) { // all channels loop
+	chansCoeffMat[i*N()+j] = pAgent->CreateIdWME(chans,"coeff");
+	chansCoeffUserMat[i*N()+j] = pAgent->CreateIntWME(chansCoeffMat[i,j],"user",i);
+	chansCoeffCarrMat[i*N()+j] = pAgent->CreateIntWME(chansCoeffMat[i,j],"carr",j);
+	chansCoeffValueMat[i*N()+j] = pAgent->CreateFloatWME(chansCoeffMat[i,j],"value",0.0);	
+      } // all channels loop
+    } // user loop
 
-    // carmap
-    carrMapID = pAgent->CreateIdWME(pInputLink,"carmap");
-    for (int i=0;i<N();i++) { // carmap population
-      Identifier *carrID = pAgent->CreateIdWME(carrMapID,"carr");
-      IntElement *wmeCid = pAgent->CreateIntWME(carrID,"cid",i);
-    } // carmap
-
-    // channels
-    channelsID = pAgent->CreateIdWME(pInputLink,"channels");
-    for (int i=0;i<M();i++) { // i loop (users)
-      for (int j=0;j<N();j++) { // j loop (time)
-	Identifier *coeffID = soarChannelMap.coeffIDMat[i*N()+j] 
-	  = pAgent->CreateIdWME(channelsID,"coeff");
-	soarChannelMap.wmeUserMat[i*N()+j] = pAgent->CreateIntWME(coeffID,"user",i);
-	soarChannelMap.wmeCarrMat[i*N()+j] = pAgent->CreateIntWME(coeffID,"carr",j);
-	soarChannelMap.wmeValueMat[i*N()+j] = pAgent->CreateFloatWME(coeffID,"value",1.0);
-      } // end j
-    } // end i
-    
+    // the carmap structure
+    for (int j=0;j<N();j++) { // all carriers loop
+	carmapCarrVec[j] = pAgent->CreateIdWME(carmap,"carr");
+	carmapCarrCidVec[j] = pAgent->CreateIntWME(carmapCarrVec[j],"cid",j);
+      } // all carriers loop
      
     //
     // END OF SOAR INITIALIZAZION
@@ -617,6 +594,7 @@ void MAIAllocator::Run() {
   break;
   case 4:   //  SOAR_AI
 
+
     //
     // SOAR
     //
@@ -640,17 +618,26 @@ void MAIAllocator::Run() {
 
           
       // update soarUserMap.wmeErrsVec[u]
-      pAgent->Update(soarUserMap.wmeErrsVec[u],gsl_vector_uint_get(errs,u));
+      pAgent->Update(umapUserErrsVec[u],gsl_vector_uint_get(errs,u));
 
       // update soarChannelMap.wmeValueMat[i*M()+j]
       for (int j=0;j<N();j++) {
       	double coeffVal = gsl_complex_abs2(gsl_matrix_complex_get(Hmat,j,u));
-      	pAgent->Update(soarChannelMap.wmeValueMat[u*N()+j],coeffVal);
+      	pAgent->Update(chansCoeffValueMat[u*N()+j],coeffVal);
       } // j loop
 
     } // user loop
 
  
+ 
+  //  ____   ___  _   _  ___     ___  _   _ ___ _
+  // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
+  // \___ \| | | |  \| | | | | | | | | | | || || |
+  //  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
+  // |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
+  //
+
+
     // commit changes no longer needed
     //pAgent->Commit();
 
@@ -760,7 +747,7 @@ void MAIAllocator::Run() {
 
       
       // Then mark the command as completed
-      pAgent->Update(wmeTime,++input_time);
+      pAgent->Update(inputTime,++input_time);
       pAgent->Commit();
 
     }
@@ -768,12 +755,6 @@ void MAIAllocator::Run() {
     break;
   }
   
-  
-  //  ____   ___  _   _  ___     ___  _   _ ___ _
-  // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
-  // \___ \| | | |  \| | | | | | | | | | | || || |
-  //  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
-  // |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
 
 
   //////// production of data

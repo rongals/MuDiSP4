@@ -51,21 +51,21 @@ SOAR Agent [crai-rev4]
        ^maxerr                  ^name assign-free
        ^pstep                   ^uid
        ^pmax                    ^deassign
-       ^user                    ^assign
-         ^uid                 ^command
-           ^errs                ^name swap-carriers
-           ^power               ^u1
-           ^carr                ^c1
-             ^cid               ^u2
-             ^power             ^c2
+       ^user      []            ^assign
+         ^uid     []          ^command
+         ^errs    []            ^name swap-carriers
+         ^power   []            ^u1
+         ^carr    [[]]          ^c1
+           ^cid   [[]]          ^u2
+           ^power [[]]          ^c2
      ^channels                ^command
-       ^coeff                   ^name increase-power
-         ^user                  ^uid
-           ^carr                ^cid
-           ^value             ^command
-     ^carrmap                   ^status
-       ^carr
-         ^cid
+       ^coeff     []            ^name increase-power
+       ^user      []            ^uid
+       ^carr      []            ^cid
+       ^value     []          ^command
+     ^carmap                    ^status
+       ^carr      []
+         ^cid     []
      ^input-time
 
 

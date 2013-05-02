@@ -2,7 +2,7 @@ sp {crai*propose*assign-free
    (state <s> ^name crai
               ^conflicts.carr <bad>
               ^free-carriers.carr.cid <free>
-              -^io.output-link.command <cmd>)
+              ^io.output-link (-^<name>))
    (<bad> ^user.uid <uid> ^cid <bc>)
 -->
    (<s> ^operator <op> + =)
@@ -21,9 +21,8 @@ sp {apply*assign-free
          ^deassign <bad>
          ^assign <free>)
 -->
-   (<ol> ^command <cmd>)
-   (<cmd> ^name assign-free
-          ^uid <uid>
+   (<ol> ^assign-free <cmd>)
+   (<cmd> ^uid <uid>
           ^deassign <bad>
           ^assign <free>)
 }

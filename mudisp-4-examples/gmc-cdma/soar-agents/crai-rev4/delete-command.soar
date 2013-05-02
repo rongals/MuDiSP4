@@ -5,7 +5,7 @@
 
 sp {crai*propose*delete-command
    (state <s> ^name crai
-              ^io.output-link.command.status completed)
+              ^io.output-link (^<cmd> (^status completed)))
 -->
    (<s> ^operator <op> + =)
    (<op> ^name delete-command)
@@ -15,9 +15,8 @@ sp {crai*propose*delete-command
 
 sp {apply*delete-command
    (state <s> ^operator <op>
-              ^io.output-link <ol>)
-   (<ol> ^command <cmd>)
+              ^io.output-link (<ol> ^<name> (<cmd> ^status completed)))
    (<op> ^name delete-command)
 -->
-   (<ol> ^command <cmd> -)
+   (<ol> ^<name> <cmd> -)
 }

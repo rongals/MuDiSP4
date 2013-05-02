@@ -4,7 +4,7 @@ sp {crai*propose*increase-power
                                     (<u> ^power < <pm> 
                                          ^errs > <maxe> 
                                          ^carr <c>))
-              -^io.output-link.command <cmd>)
+              ^io.output-link (-^<name>))
 -->
    (<s> ^operator <op> + =)
    (<op> ^name increase-power
@@ -21,8 +21,7 @@ sp {apply*increase-power
          ^user <u>
          ^carr <c>)
 -->
-   (<ol> ^command <cmd>)
-   (<cmd> ^name increase-power
-          ^uid <uid>
+   (<ol> ^increase-power <cmd>)
+   (<cmd> ^uid <uid>
           ^cid <cid>)
 }

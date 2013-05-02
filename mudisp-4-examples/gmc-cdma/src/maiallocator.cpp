@@ -199,6 +199,9 @@ void MAIAllocator::Setup() {
 	exit(1);
       }
 
+    // keypress 
+    // cout << "pause maillocator:203 ... (press ENTER key)" << endl;
+    // cin.ignore();
 
     //
     // we can now generate initial input link structure
@@ -229,13 +232,13 @@ void MAIAllocator::Setup() {
     for (int i=0;i<M();i++) { // user loop
       umapUserVec[i] = pAgent->CreateIdWME(umap,"user");
       umapUserUidVec[i] = pAgent->CreateIntWME(umapUserVec[i],"uid",i);
-      umapUserErrsVec[i] = pAgent->CreateIntWME(umapUserVec[i],"errs",0);
+      umapUserErrsVec[i] = pAgent->CreateIntWME(umapUserVec[i],"errs",int(0));
       umapUserPowerVec[i] = pAgent->CreateFloatWME(umapUserVec[i],"power",J());
       // update the current allocation 
       for (int j=0;j<J();j++) { // allocated carriers loop
 	unsigned int usedcarr = gsl_matrix_uint_get(signature_frequencies,i,j);
 	double usedpow = gsl_matrix_get(signature_powers,i,j);
-	umapUserCarrMat[i*J()+j] = pAgent->CreateIdWME(umap,"carr");
+	umapUserCarrMat[i*J()+j] = pAgent->CreateIdWME(umapUserVec[i],"carr");
 	umapUserCarrCidMat[i*J()+j] = 
 	  pAgent->CreateIntWME(umapUserCarrMat[i*J()+j],"cid",usedcarr);
 	umapUserCarrPowerMat[i*J()+j] = 
@@ -244,9 +247,9 @@ void MAIAllocator::Setup() {
       // the channels
       for (int j=0;j<N();j++) { // all channels loop
 	chansCoeffMat[i*N()+j] = pAgent->CreateIdWME(chans,"coeff");
-	chansCoeffUserMat[i*N()+j] = pAgent->CreateIntWME(chansCoeffMat[i,j],"user",i);
-	chansCoeffCarrMat[i*N()+j] = pAgent->CreateIntWME(chansCoeffMat[i,j],"carr",j);
-	chansCoeffValueMat[i*N()+j] = pAgent->CreateFloatWME(chansCoeffMat[i,j],"value",0.0);	
+	chansCoeffUserMat[i*N()+j] = pAgent->CreateIntWME(chansCoeffMat[i*N()+j],"user",i);
+	chansCoeffCarrMat[i*N()+j] = pAgent->CreateIntWME(chansCoeffMat[i*N()+j],"carr",j);
+	chansCoeffValueMat[i*N()+j] = pAgent->CreateFloatWME(chansCoeffMat[i*N()+j],"value",0.0);	
       } // all channels loop
     } // user loop
 
@@ -613,6 +616,11 @@ void MAIAllocator::Run() {
 
     //    gsl_matrix_complex_show(Hmat);
 
+    // keypress 
+    cout << "pause maillocator:620 ... (press ENTER key)" << endl;
+    cin.ignore();
+
+
 
     for (int u=0;u<M();u++) { // user loop
 
@@ -630,13 +638,6 @@ void MAIAllocator::Run() {
 
  
  
-  //  ____   ___  _   _  ___     ___  _   _ ___ _
-  // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
-  // \___ \| | | |  \| | | | | | | | | | | || || |
-  //  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
-  // |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
-  //
-
 
     // commit changes no longer needed
     //pAgent->Commit();
@@ -646,20 +647,23 @@ void MAIAllocator::Run() {
 
     while (! numberCommands) {
 
-      pAgent->RunSelf(1);
-      //pAgent->RunSelfTilOutput();
+      //pAgent->RunSelf(1);
+      pAgent->RunSelfTilOutput();
       
       numberCommands = pAgent->GetNumberCommands() ;
       
       // keypress 
+      cout << "pause maillocator:663 ... (press ENTER key)" << endl;
       cin.ignore();
-      
+
     }
     
-    // cout << "Found " << numberCommands << " commands." << endl;
+    cout << "Found " << numberCommands << " command/s." << endl;
 
     // keypress 
-    //cin.ignore();
+    cout << "pause maillocator:671 ... (press ENTER key)" << endl;
+    cin.ignore();
+
 
 
     //-----------------------------------------------------------------------
@@ -667,82 +671,130 @@ void MAIAllocator::Run() {
     // collect results and generate signature_frequencies
     // and signature_powers
 
-    //    ^io.output-link.allocation-map
-    //      *user
-    //        uid <num>
-    //        needs <num>
-    //        *allocation
-    //          cid <num>
-    //          power <num>
-    //
+ // ^io
+ //   ^output-link
+ //     ^command
+ //       ^name assign-free
+ //       ^uid
+ //       ^deassign
+ //       ^assign
+ //     ^command
+ //       ^name swap-carriers
+ //       ^u1
+ //       ^c1
+ //       ^u2
+ //       ^c2
+ //     ^command
+ //       ^name increase-power
+ //       ^uid
+ //       ^cid
+ //     ^command
+ //       ^status
+
 
     for (int cmd = 0 ; cmd < numberCommands ; cmd++) {
+
       Identifier* pCommand = pAgent->GetCommand(cmd) ;
-      
       string name  = pCommand->GetCommandName() ;
+
+      cout << "the command is " << name << endl;
+
+
+  //  ____   ___  _   _  ___     ___  _   _ ___ _
+  // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
+  // \___ \| | | |  \| | | | | | | | | | | || || |
+  //  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
+  // |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
+  //
+
+
+      if (name == "assign-free")
+	cout << "assign-free command received" << endl;
+      else if (name == "swap-carriers")
+	cout << "swap-carriers command received" << endl;
+      else if (name == "increase-power")
+	cout << "increase-power power command received" << endl;
+      else
+	cout << "unknown output command from SOAR" << endl;
+
+
+      // switch (name) {
+      // case "assign-free":
+      // 	cout << "assign-free command received" << endl;
+      // 	break;
+      // case "swap-carriers":
+      // 	cout << "swap-carriers command received" << endl;
+      // 	break;
+      // case "increase-power":
+      // 	cout << "increase-power power command received" << endl;
+      // 	break;
+      // default:
+      // 	cout << "unknown output command from SOAR" << endl;
+      // 	break;
+      // }
       
-      if (name != "allocation-map") {
-	cerr << "uncoherent command received from SOAR agent" << endl;
-	exit(1);
-      } else { // ok proceed
+      // if (name != "allocation-map") {
+      // 	cerr << "uncoherent command received from SOAR agent" << endl;
+      // 	exit(1);
+      // } else { // ok proceed
 
-	// only users as children
-	int nusers = pCommand->GetNumberChildren();
+      // 	// only users as children
+      // 	int nusers = pCommand->GetNumberChildren();
 	
-	for (int i=0;i<nusers;i++) { // user loop
+      // 	for (int i=0;i<nusers;i++) { // user loop
 	  
-	  Identifier *pUser = pCommand->GetChild(i)->ConvertToIdentifier();
-	  string sUid = pUser->GetParameterValue("uid");
-	  string sNeeds = pUser->GetParameterValue("needs");
+      // 	  Identifier *pUser = pCommand->GetChild(i)->ConvertToIdentifier();
+      // 	  string sUid = pUser->GetParameterValue("uid");
+      // 	  string sNeeds = pUser->GetParameterValue("needs");
 	  
-	  // only allocations as children
-	  int nallocs = pUser->GetNumberChildren();
+      // 	  // only allocations as children
+      // 	  int nallocs = pUser->GetNumberChildren();
 	  
-	  // cout << "^io.output-link.allocation-map user id:"
-	  //      << sUid
-	  //      << " needs:"
-	  //      << sNeeds
-	  //      << " allocations["
-	  //      << nallocs-2 
-	  //      << "]= ";
+      // 	  // cout << "^io.output-link.allocation-map user id:"
+      // 	  //      << sUid
+      // 	  //      << " needs:"
+      // 	  //      << sNeeds
+      // 	  //      << " allocations["
+      // 	  //      << nallocs-2 
+      // 	  //      << "]= ";
 	  
-	  // iterate among children
+      // 	  // iterate among children
 
-	  Identifier::ChildrenIter child;
-	  int allIdx = 0;
+      // 	  Identifier::ChildrenIter child;
+      // 	  int allIdx = 0;
 
-	  for (child = pUser->GetChildrenBegin();
-	       child != pUser->GetChildrenEnd();
-	       child++) {
+      // 	  for (child = pUser->GetChildrenBegin();
+      // 	       child != pUser->GetChildrenEnd();
+      // 	       child++) {
 
-	    string childAttr = (*child)->GetAttribute();
+      // 	    string childAttr = (*child)->GetAttribute();
 
-	    if (childAttr == "allocation") { // so it's an identifier
-	      Identifier *alloc = (*child)->ConvertToIdentifier();
+      // 	    if (childAttr == "allocation") { // so it's an identifier
+      // 	      Identifier *alloc = (*child)->ConvertToIdentifier();
 
-	      string sCid = alloc->GetParameterValue("cid");
-	      string sPower = alloc->GetParameterValue("power");
+      // 	      string sCid = alloc->GetParameterValue("cid");
+      // 	      string sPower = alloc->GetParameterValue("power");
 	      
-	      // cout << sCid << "(" << sPower << "), ";
+      // 	      // cout << sCid << "(" << sPower << "), ";
 
-	      gsl_matrix_uint_set(signature_frequencies,
-				  i,
-				  allIdx,
-				  atoi(sCid.c_str()));
+      // 	      gsl_matrix_uint_set(signature_frequencies,
+      // 				  i,
+      // 				  allIdx,
+      // 				  atoi(sCid.c_str()));
 
-	      gsl_matrix_set(signature_powers,
-				  i,
-				  allIdx,
-				  atof(sPower.c_str()));
+      // 	      gsl_matrix_set(signature_powers,
+      // 				  i,
+      // 				  allIdx,
+      // 				  atof(sPower.c_str()));
 
-	      allIdx++;
+      // 	      allIdx++;
 	      
-	    } // if is allocation 
-	  } // children loop
-	  // cout << endl;
-	} // user (i) loop 
-	// cout << endl;
-      } // cmd loop
+      // 	    } // if is allocation 
+      // 	  } // children loop
+      // 	  // cout << endl;
+      // 	} // user (i) loop 
+      // 	// cout << endl;
+      // } // cmd loop
 
 
       

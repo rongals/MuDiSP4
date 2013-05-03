@@ -113,6 +113,21 @@ class MAIAllocator : public Block {
 
   IntElement *inputTime;
 
+  //
+  // helper functions
+  //
+  void AssignFree(std::string & sUid, 
+		  std::string & sDeassign,
+		  std::string & aAssign);
+
+  void SwapCarriers(std::string & sU1, 
+		    std::string & sC1,
+		    std::string & sU2,
+		    std::string & sC2);
+
+  void IncreasePower(std::string & sUid, 
+		     std::string & sCid);
+
 
 public:
 

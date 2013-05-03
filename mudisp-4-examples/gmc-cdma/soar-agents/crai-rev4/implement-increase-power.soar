@@ -1,6 +1,6 @@
 sp {crai*propose*implement-increase-power
    (state <s> ^name crai
-              ^io.output-link.increase-power (-^status completed)
+              ^io.output-link.increase-power (-^status complete)
               ^io.input-link.isdummy yes)
 -->
    (<s> ^operator <op> + =)
@@ -16,7 +16,7 @@ sp {apply*implement-increase-power
                                          ^power <pu>
                                          ^carr (<c> ^cid <cid> ^power <pow>))))
 -->
-   (<cmd> ^status completed)
+   (<cmd> ^status complete)
    (<u> ^power (+ <pu> <inc>) <pu> -)
    (<c> ^power (+ <pow> <inc>)<pow> -)
    (<u> ^errs (+ (- <e> <cid>) 1) ^errs <e> -)

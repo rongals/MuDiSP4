@@ -9,6 +9,11 @@
 #include "maiallocator.h"
 #include "gmccdma.h"
 
+#define INIT_CARR_POWER 1.0
+#define POWER_STEP 0.01
+#define MAX_ERRORS 100
+#define MAX_POWER 10.0 
+
 // FIXED_ALLOCATION
 // each user is assigned a fixed set of carriers chosen with the modulus 
 // function
@@ -37,6 +42,7 @@
 
 //#define SHOW_POWER
 //#define SHOW_MATRIX
+#define SPAWN_DEBUGGER
 
 //
 //
@@ -45,6 +51,77 @@
 //
 extern void gsl_matrix_uint_show(gsl_matrix_uint *mat);
 extern void gsl_matrix_complex_show(gsl_matrix_complex *mat);
+
+void MAIAllocator::AssignFree(std::string & sUid, 
+			      std::string & sDeassign,
+			      std::string & sAssign) {
+
+  unsigned int foundj=J();
+  unsigned int u = atoi(sUid.c_str());
+  unsigned int newcarr = atoi(sAssign.c_str());
+  unsigned int lastcarr = atoi(sDeassign.c_str());
+  // we find the index of current allocation
+  for (int j=0; j<J(); j++)
+    if (gsl_matrix_uint_get(signature_frequencies,u,j) == lastcarr) {
+      foundj = j;
+      break;
+    }
+  // we perform the allocation and reset power
+  gsl_matrix_uint_set(signature_frequencies,u,foundj,newcarr);
+  gsl_matrix_set(signature_powers,u,foundj,INIT_CARR_POWER);
+
+}
+
+
+void MAIAllocator::SwapCarriers(std::string & sU1, 
+				std::string & sC1,
+				std::string & sU2,
+				std::string & sC2) {
+
+  unsigned int foundj1=J();
+  unsigned int foundj2=foundj1;
+  unsigned int u1 = atoi(sU1.c_str());
+  unsigned int u2 = atoi(sU2.c_str());
+  unsigned int c1 = atoi(sC1.c_str());
+  unsigned int c2 = atoi(sC2.c_str());
+
+  // we find the indexes of current allocations
+  for (int j=0; j<J(); j++) {
+    if (gsl_matrix_uint_get(signature_frequencies,u1,j) == c1)
+      foundj1 = j;
+    if (gsl_matrix_uint_get(signature_frequencies,u2,j) == c2)
+      foundj2 = j;
+  }
+  // we perform the swap allocation and reset power
+  gsl_matrix_uint_set(signature_frequencies,u1,foundj1,c2);
+  gsl_matrix_uint_set(signature_frequencies,u2,foundj2,c1);
+  gsl_matrix_set(signature_powers,u1,foundj1,INIT_CARR_POWER); 
+  gsl_matrix_set(signature_powers,u1,foundj2,INIT_CARR_POWER); 
+ 
+}
+
+
+void MAIAllocator::IncreasePower(std::string & sUid, 
+				 std::string & sCid) {
+
+  unsigned int foundj=J();
+  unsigned int u = atoi(sUid.c_str());
+  unsigned int c = atoi(sCid.c_str());
+  // we find the index of current allocation
+  for (int j=0; j<J(); j++)
+    if (gsl_matrix_uint_get(signature_frequencies,u,j) == c) {
+      foundj = j;
+      break;
+    }
+  // we perform the allocation and reset power
+  gsl_matrix_set(signature_powers,u,foundj,
+		 gsl_matrix_get(signature_powers,u,foundj)+POWER_STEP);
+
+}
+
+
+
+
 
 
 void MAIAllocator::Setup() {
@@ -88,7 +165,7 @@ void MAIAllocator::Setup() {
   gsl_matrix_uint_memcpy(signature_frequencies,
 			 signature_frequencies_init);
   // maximum initial powers for all carriers
-  gsl_matrix_set_all(signature_powers,1.0); 
+  gsl_matrix_set_all(signature_powers,INIT_CARR_POWER); 
 
   //
   //
@@ -186,8 +263,9 @@ void MAIAllocator::Setup() {
     pAgent->LoadProductions(SoarFn());
 
     // spawn debugger
+#ifdef SPAWN_DEBUGGER
     pAgent->SpawnDebugger();
-
+#endif
     
     // Check that nothing went wrong
     // NOTE: No agent gets created if there's a problem, so we have to check for
@@ -200,8 +278,8 @@ void MAIAllocator::Setup() {
       }
 
     // keypress 
-    // cout << "pause maillocator:203 ... (press ENTER key)" << endl;
-    // cin.ignore();
+    cout << "pause maillocator:203 ... (press ENTER key)" << endl;
+    cin.ignore();
 
     //
     // we can now generate initial input link structure
@@ -220,9 +298,9 @@ void MAIAllocator::Setup() {
 
     // the usrmap structure (common wmes)
     umap = pAgent->CreateIdWME(pInputLink,"usrmap");
-    umapMaxerr = pAgent->CreateIntWME(umap,"maxerr",100);
-    umapPstep = pAgent->CreateFloatWME(umap,"pstep",0.01);
-    umapPmax = pAgent->CreateFloatWME(umap,"pmax",10.0);
+    umapMaxerr = pAgent->CreateIntWME(umap,"maxerr",MAX_ERRORS);
+    umapPstep = pAgent->CreateFloatWME(umap,"pstep",POWER_STEP);
+    umapPmax = pAgent->CreateFloatWME(umap,"pmax",MAX_POWER);
     // the channels
     chans = pAgent->CreateIdWME(pInputLink,"channels");
     // the carmap
@@ -617,8 +695,8 @@ void MAIAllocator::Run() {
     //    gsl_matrix_complex_show(Hmat);
 
     // keypress 
-    cout << "pause maillocator:620 ... (press ENTER key)" << endl;
-    cin.ignore();
+    // cout << "pause maillocator:620 ... (press ENTER key)" << endl;
+    // cin.ignore();
 
 
 
@@ -634,10 +712,15 @@ void MAIAllocator::Run() {
       	pAgent->Update(chansCoeffValueMat[u*N()+j],coeffVal);
       } // j loop
 
+       // update 
+      for (int j=0;j<J();j++) {
+	unsigned int carr = gsl_matrix_uint_get(signature_frequencies,u,j);
+	double power = gsl_matrix_get(signature_powers,u,j);
+      	pAgent->Update(umapUserCarrCidMat[u*J()+j],carr);
+      	pAgent->Update(umapUserCarrPowerMat[u*J()+j],power);
+      } // j loop
     } // user loop
 
- 
- 
 
     // commit changes no longer needed
     //pAgent->Commit();
@@ -653,16 +736,16 @@ void MAIAllocator::Run() {
       numberCommands = pAgent->GetNumberCommands() ;
       
       // keypress 
-      cout << "pause maillocator:663 ... (press ENTER key)" << endl;
-      cin.ignore();
+      // cout << "pause maillocator:663 ... (press ENTER key)" << endl;
+      // cin.ignore();
 
     }
     
-    cout << "Found " << numberCommands << " command/s." << endl;
+    // cout << "Found " << numberCommands << " command/s." << endl;
 
     // keypress 
-    cout << "pause maillocator:671 ... (press ENTER key)" << endl;
-    cin.ignore();
+    // cout << "pause maillocator:671 ... (press ENTER key)" << endl;
+    // cin.ignore();
 
 
 
@@ -673,22 +756,19 @@ void MAIAllocator::Run() {
 
  // ^io
  //   ^output-link
- //     ^command
- //       ^name assign-free
+ //     ^assign-free
  //       ^uid
  //       ^deassign
  //       ^assign
- //     ^command
- //       ^name swap-carriers
+ //     ^swap-carriers
  //       ^u1
  //       ^c1
  //       ^u2
  //       ^c2
- //     ^command
- //       ^name increase-power
+ //     ^increase-power
  //       ^uid
  //       ^cid
- //     ^command
+ //     ^<command>
  //       ^status
 
 
@@ -697,7 +777,7 @@ void MAIAllocator::Run() {
       Identifier* pCommand = pAgent->GetCommand(cmd) ;
       string name  = pCommand->GetCommandName() ;
 
-      cout << "the command is " << name << endl;
+      //      cout << "the command is " << name << endl;
 
 
   //  ____   ___  _   _  ___     ___  _   _ ___ _
@@ -708,94 +788,49 @@ void MAIAllocator::Run() {
   //
 
 
-      if (name == "assign-free")
-	cout << "assign-free command received" << endl;
-      else if (name == "swap-carriers")
-	cout << "swap-carriers command received" << endl;
-      else if (name == "increase-power")
-	cout << "increase-power power command received" << endl;
-      else
-	cout << "unknown output command from SOAR" << endl;
-
-
-      // switch (name) {
-      // case "assign-free":
-      // 	cout << "assign-free command received" << endl;
-      // 	break;
-      // case "swap-carriers":
-      // 	cout << "swap-carriers command received" << endl;
-      // 	break;
-      // case "increase-power":
-      // 	cout << "increase-power power command received" << endl;
-      // 	break;
-      // default:
-      // 	cout << "unknown output command from SOAR" << endl;
-      // 	break;
-      // }
-      
-      // if (name != "allocation-map") {
-      // 	cerr << "uncoherent command received from SOAR agent" << endl;
-      // 	exit(1);
-      // } else { // ok proceed
-
-      // 	// only users as children
-      // 	int nusers = pCommand->GetNumberChildren();
+      if (name == "assign-free") {
+	std::string sUid = pCommand->GetParameterValue("uid");
+	std::string sDeassign = pCommand->GetParameterValue("deassign");
+	std::string sAssign = pCommand->GetParameterValue("assign");
+	cout << "assign-free command received [ u:"
+	     << sUid << " , -"
+	     << sDeassign << " , +"
+	     << sAssign << " ]"
+	     << endl;
 	
-      // 	for (int i=0;i<nusers;i++) { // user loop
-	  
-      // 	  Identifier *pUser = pCommand->GetChild(i)->ConvertToIdentifier();
-      // 	  string sUid = pUser->GetParameterValue("uid");
-      // 	  string sNeeds = pUser->GetParameterValue("needs");
-	  
-      // 	  // only allocations as children
-      // 	  int nallocs = pUser->GetNumberChildren();
-	  
-      // 	  // cout << "^io.output-link.allocation-map user id:"
-      // 	  //      << sUid
-      // 	  //      << " needs:"
-      // 	  //      << sNeeds
-      // 	  //      << " allocations["
-      // 	  //      << nallocs-2 
-      // 	  //      << "]= ";
-	  
-      // 	  // iterate among children
+	AssignFree(sUid,sDeassign,sAssign);
+	pCommand->AddStatusComplete();
 
-      // 	  Identifier::ChildrenIter child;
-      // 	  int allIdx = 0;
+      } else if (name == "swap-carriers") {
 
-      // 	  for (child = pUser->GetChildrenBegin();
-      // 	       child != pUser->GetChildrenEnd();
-      // 	       child++) {
+	std::string sU1 = pCommand->GetParameterValue("u1");
+	std::string sC1 = pCommand->GetParameterValue("c1");
+	std::string sU2 = pCommand->GetParameterValue("u2");
+	std::string sC2 = pCommand->GetParameterValue("c2");
+	cout << "swap-carriers command received [ u1:"
+	     << sU1 << " , c1:"
+	     << sC1 << " , u2:"
+	     << sU2 << " , c2:"
+	     << sC2 << " ]" << endl;
 
-      // 	    string childAttr = (*child)->GetAttribute();
+	SwapCarriers(sU1,sC1,sU2,sC2);
+	pCommand->AddStatusComplete();
 
-      // 	    if (childAttr == "allocation") { // so it's an identifier
-      // 	      Identifier *alloc = (*child)->ConvertToIdentifier();
+      } else if (name == "increase-power") {
 
-      // 	      string sCid = alloc->GetParameterValue("cid");
-      // 	      string sPower = alloc->GetParameterValue("power");
-	      
-      // 	      // cout << sCid << "(" << sPower << "), ";
+	std::string sUid = pCommand->GetParameterValue("uid");
+	std::string sCid = pCommand->GetParameterValue("cid");
 
-      // 	      gsl_matrix_uint_set(signature_frequencies,
-      // 				  i,
-      // 				  allIdx,
-      // 				  atoi(sCid.c_str()));
+	cout << "increase-power command received [ u:"
+	     << sUid << " , c:"
+	     << sCid << " ]" << endl;
 
-      // 	      gsl_matrix_set(signature_powers,
-      // 				  i,
-      // 				  allIdx,
-      // 				  atof(sPower.c_str()));
+	IncreasePower(sUid,sCid);
+	pCommand->AddStatusComplete();
 
-      // 	      allIdx++;
-	      
-      // 	    } // if is allocation 
-      // 	  } // children loop
-      // 	  // cout << endl;
-      // 	} // user (i) loop 
-      // 	// cout << endl;
-      // } // cmd loop
-
+      } else {
+	cout << "ignoring unknown output command from SOAR" << endl;
+      }
 
       
       // Then mark the command as completed

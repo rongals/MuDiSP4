@@ -1,6 +1,6 @@
 sp {crai*propose*implement-assign-free
    (state <s> ^name crai
-              ^io.output-link.assign-free (-^status completed)
+              ^io.output-link.assign-free (-^status complete)
               ^io.input-link.isdummy yes)
 -->
    (<s> ^operator <op> + =)
@@ -16,7 +16,7 @@ sp {apply*implement-assign-free
    (<u> ^uid <uid> ^carr <c>)
    (<c> ^cid <bad>)
 -->
-   (<cmd> ^status completed)
+   (<cmd> ^status complete)
    (<c> ^cid <free>
         ^cid <bad> -)
 }

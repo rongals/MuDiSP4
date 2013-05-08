@@ -42,7 +42,8 @@
 
 //#define SHOW_POWER
 //#define SHOW_MATRIX
-#define SPAWN_DEBUGGER
+//#define SPAWN_DEBUGGER
+//#define PAUSED
 
 //
 //
@@ -167,6 +168,9 @@ void MAIAllocator::Setup() {
   // maximum initial powers for all carriers
   gsl_matrix_set_all(signature_powers,INIT_CARR_POWER); 
 
+  gsl_vector_uint_set_zero(errs);
+
+
   //
   //
   //  FFT Transform Matrix
@@ -278,8 +282,8 @@ void MAIAllocator::Setup() {
       }
 
     // keypress 
-    cout << "pause maillocator:203 ... (press ENTER key)" << endl;
-    cin.ignore();
+    //cout << "pause maillocator:203 ... (press ENTER key)" << endl;
+    //cin.ignore();
 
     //
     // we can now generate initial input link structure
@@ -367,10 +371,10 @@ void MAIAllocator::Run() {
     if (temperr.size == M()) {
       gsl_vector_uint_memcpy(errs,&temperr);
 
-      // for (int i=0;i<M();i++) {
-      // 	cout << "u[" << i << "]= " 
-      //             << gsl_vector_uint_get(errs,i) << endl; 
-      // }
+      for (int i=0;i<M();i++) {
+      	cout << "u[" << i << "]= " 
+                  << gsl_vector_uint_get(errs,i) << endl; 
+      }
 
     }
   } 
@@ -735,9 +739,12 @@ void MAIAllocator::Run() {
       
       numberCommands = pAgent->GetNumberCommands() ;
       
+
+#ifdef PAUSED
       // keypress 
-      // cout << "pause maillocator:663 ... (press ENTER key)" << endl;
-      // cin.ignore();
+      cout << "pause maillocator:663 ... (press ENTER key)" << endl;
+      cin.ignore();
+#endif
 
     }
     

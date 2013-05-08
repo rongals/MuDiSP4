@@ -189,7 +189,9 @@ void MCPMPCoeffs::GeoInit() {
   geoPositions = gsl_vector_complex_alloc(2*M());
   geoVelocities  = gsl_vector_complex_alloc(2*M());
 
-  for (int i=0;i<2*M();i++) {
+
+  // tx[i]
+  for (int i=0;i<M();i++) {
     double lat=gsl_ran_flat(ran,
 			     GEO_AREA_CENTER_LAT-GEO_AREA_SIZE/2.0,
 			     GEO_AREA_CENTER_LAT+GEO_AREA_SIZE/2.0);
@@ -202,10 +204,51 @@ void MCPMPCoeffs::GeoInit() {
     double veldir=gsl_ran_flat(ran,
 			       0.0,
 			       2*M_PI);
+
+    gsl_complex vel = gsl_complex_polar(velmod,veldir);
+
+    // vx (km/h), vy (km/h)
+    // deltalon (deg) = vx / 3.6 / 111111 Cos[lat]
+    // deltalat (deg) = vy / 3.6 / 111111 
+    
+    double deltalon = GSL_REAL(vel) / 3.6 / 111111.0 / cos(GEO_AREA_CENTER_LAT / 180.0 * M_PI);
+    double deltalat = GSL_IMAG(vel) / 3.6 / 111111.0;
+
     gsl_vector_complex_set(geoPositions,i,gsl_complex_rect(lat,lon));
-    gsl_vector_complex_set(geoVelocities,i,gsl_complex_polar(velmod,veldir));
+    gsl_vector_complex_set(geoVelocities,i,gsl_complex_rect(deltalon,deltalat));
 
   }
+
+  // rx[i] same position zero velocity 
+  for (int i=M();i<2*M();i++) {
+    double lat=gsl_ran_flat(ran,
+			     GEO_AREA_CENTER_LAT-GEO_AREA_SIZE/2.0,
+			     GEO_AREA_CENTER_LAT+GEO_AREA_SIZE/2.0);
+    double lon=gsl_ran_flat(ran,
+			     GEO_AREA_CENTER_LON-GEO_AREA_SIZE/2.0,
+			     GEO_AREA_CENTER_LON+GEO_AREA_SIZE/2.0);
+    double velmod=gsl_ran_flat(ran,
+			     GEO_VELOCITY_MIN,
+			     GEO_VELOCITY_MAX);
+    double veldir=gsl_ran_flat(ran,
+			       0.0,
+			       2*M_PI);
+
+    gsl_complex vel = gsl_complex_polar(velmod,veldir);
+
+    // vx (km/h), vy (km/h)
+    // deltalon (deg) = vx / 3.6 / 111111 Cos[lat]
+    // deltalat (deg) = vy / 3.6 / 111111 
+    
+    double deltalon = GSL_REAL(vel) / 3.6 / 111111.0 / cos(GEO_AREA_CENTER_LAT / 180.0 * M_PI);
+    double deltalat = GSL_IMAG(vel) / 3.6 / 111111.0;
+
+    gsl_vector_complex_set(geoPositions,i,gsl_complex_rect(GEO_AREA_CENTER_LAT,GEO_AREA_CENTER_LON));
+    gsl_vector_complex_set(geoVelocities,i,gsl_complex_polar(0.0,0.0));
+
+  }
+
+
 
   // header and footer of kml section
   kmlhead << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl
@@ -241,8 +284,10 @@ void MCPMPCoeffs::GeoUpdate(double seconds) {
 
   for (int i=0;i<2*M();i++) {
 
-    gsl_complex v = gsl_vector_complex_get(geoVelocities,i);
-    gsl_complex p = gsl_vector_complex_get(geoPositions,i);
+
+
+    gsl_complex v = gsl_vector_complex_get(geoVelocities,i); // expressed in deltalon/s,deltalat/s
+    gsl_complex p = gsl_vector_complex_get(geoPositions,i); // expressed in lon,lat
     gsl_complex np = gsl_complex_add(p,gsl_complex_mul_real(v, seconds));
 
     gsl_vector_complex_set(geoPositions,i,np);
@@ -269,10 +314,10 @@ void MCPMPCoeffs::GeoRender() {
     kmltmp << "\t<Placemark>" << endl
 	      << "\t\t<name>Tx_" << i << "</name>" << endl
 	      << "\t\t<description>^</description>" << endl
-	      << "\t\t<styleUrl>#greenIcon</styleUrl>" << endl      
+	      << "\t\t<styleUrl>#greenIcon</styleUrl>" << endl
 	      << "\t\t<Point>" << endl
-	      << "\t\t\t<coordinates>" << GSL_IMAG(pos) << "," 
-	      << GSL_REAL(pos) << "," 
+	      << "\t\t\t<coordinates>" << GSL_IMAG(pos) << ","
+	      << GSL_REAL(pos) << ","
 	      << 0 << "</coordinates>" << endl
 	      << "\t\t</Point>" << endl
 	      << "\t</Placemark>" << endl;

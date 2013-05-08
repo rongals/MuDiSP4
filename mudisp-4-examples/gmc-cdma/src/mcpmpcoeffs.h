@@ -16,14 +16,20 @@
 #include <fstream>
 #include <sstream>
 
-#define GEO_AREA_CENTER_LAT 29.964324
-#define GEO_AREA_CENTER_LON 30.893594
-#define GEO_AREA_SIZE 0.01 // in dec degrees
-#define GEO_VELOCITY_MIN 0.0 
-#define GEO_VELOCITY_MAX 0.00000436 // 100 kmph (rad/s = km/h / 3.6 / 1.11 * 0.00001 / 360 * 2 PI )
-#define GEO_UPDATE_INTERVAL 1000
+#define GEO_AREA_CENTER_LAT 43.807635
+#define GEO_AREA_CENTER_LON 11.195560
+#define GEO_AREA_SIZE 0.03 // in dec degrees
+#define GEO_UPDATE_INTERVAL 10
 #define EARTH_RADIUS 6371.009 // km
 #define M_PI_OVER_180 M_PI/180.0
+
+
+
+// vx (km/h), vy (km/h)
+// deltalon = vx / 3.6 / 111111 Cos[lat]
+// deltalat = vy / 3.6 / 111111 
+#define GEO_VELOCITY_MIN 0.0 // expressed in km/h
+#define GEO_VELOCITY_MAX 100.0 // expressed in km/h
 
 
 // Accuracy versus decimal places at the equator
@@ -39,6 +45,16 @@
 // 7		0.0000001	1.11 cm
 // 8		0.00000001	1.11 mm
 //
+
+//
+// Quick and dirty
+//
+// 111.111 km = 1 deg LAT
+// 111.111 cos(LAT) km = 1 deg LON
+//
+
+
+
 
 ////////
 ////////   Here put your personal includes

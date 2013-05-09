@@ -63,6 +63,8 @@ void MBitBer::Run() {
 
       gsl_vector_uint_set(bitcount,i,gsl_vector_uint_get(bitcount,i)+bpu());
       gsl_vector_uint_set(errcount,i,gsl_vector_uint_get(errcount,i)+userErrors);
+
+
     } // user loop 
       
     
@@ -79,7 +81,8 @@ void MBitBer::Run() {
 	cout << gsl_vector_uint_get(dumperrs,i) << " errors for user " << i << endl;
       }      
 #endif      
-      vout1.DeliverDataObj(*dumperrs); //this produces an output every ERROR_REPORT_INTERVAL frames
+      vout1.DeliverDataObj(*dumperrs); 
+      //this produces an output every ERROR_REPORT_INTERVAL frames
       cout << "Producing error report..done." << endl;      
     } // end report errors
 

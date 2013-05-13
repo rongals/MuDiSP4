@@ -50,8 +50,8 @@
 // Matrix display
 //
 //
-extern void gsl_matrix_uint_show(gsl_matrix_uint *mat);
-extern void gsl_matrix_complex_show(gsl_matrix_complex *mat);
+//extern void gsl_matrix_uint_show(gsl_matrix_uint *mat);
+//extern void gsl_matrix_complex_show(gsl_matrix_complex *mat);
 
 void MAIAllocator::AssignFree(std::string & sUid, 
 			      std::string & sDeassign,

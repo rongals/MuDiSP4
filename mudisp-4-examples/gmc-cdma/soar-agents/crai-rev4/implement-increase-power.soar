@@ -19,5 +19,5 @@ sp {apply*implement-increase-power
    (<cmd> ^status complete)
    (<u> ^power (+ <pu> <inc>) <pu> -)
    (<c> ^power (+ <pow> <inc>)<pow> -)
-   (<u> ^errs (+ (- <e> <cid>) 1) ^errs <e> -)
+   (<u> ^errs (+ (- <e> <cid>) 10) ^errs <e> -)
 }

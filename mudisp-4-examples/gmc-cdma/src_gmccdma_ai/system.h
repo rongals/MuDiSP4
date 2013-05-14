@@ -145,6 +145,8 @@ public:
     mcoeffs1.ExportParameter("Carriers");
     mcoeffs1.ExportParameter("NumUsers");
 
+    maialloc1.ExportParameter("SourceSymbs");
+    maialloc1.ExportParameter("BitSymb");
     maialloc1.ExportParameter("CodedSymbs");
     maialloc1.ExportParameter("Carriers");
     maialloc1.ExportParameter("NumUsers");

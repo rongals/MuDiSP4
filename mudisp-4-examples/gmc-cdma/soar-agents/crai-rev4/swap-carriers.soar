@@ -1,7 +1,7 @@
 #
 # if two different users u1,u2 use respectively c1 and c2
 # h(u1,c2) > h(u1,c1), h(u2,c1) > h(u2,c2)
-# there's no command on output link
+# there's no satified command on output link
 # there's no conflicts
 # --> propose swap-carriers(u1,c1,u2,c2)
 #

@@ -16,10 +16,10 @@
 #include <fstream>
 #include <sstream>
 
+#define GEO_UPDATE_INTERVAL 30
 #define GEO_AREA_CENTER_LAT 43.807635
 #define GEO_AREA_CENTER_LON 11.195560
 #define GEO_AREA_SIZE 0.03 // in dec degrees
-#define GEO_UPDATE_INTERVAL 10
 #define EARTH_RADIUS 6371.009 // km
 #define M_PI_OVER_180 M_PI/180.0
 

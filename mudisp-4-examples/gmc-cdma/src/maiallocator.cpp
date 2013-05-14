@@ -11,7 +11,7 @@
 
 #define INIT_CARR_POWER 1.0
 #define POWER_STEP 0.01
-#define MAX_ERRORS 100
+#define MAX_ERROR_RATE 0.01
 #define MAX_POWER 10.0 
 
 // FIXED_ALLOCATION
@@ -206,6 +206,8 @@ void MAIAllocator::Setup() {
     //
     // SOAR INITIALIZATION
     //
+    max_errors = MAX_ERROR_RATE * ERROR_REPORT_INTERVAL * Nb() * K();
+    cout << BlockName << " - Max errors tuned to " << max_errors << " errors/frame." << endl;
 
     //
     // first we initialize the vectors and matrices
@@ -302,7 +304,10 @@ void MAIAllocator::Setup() {
 
     // the usrmap structure (common wmes)
     umap = pAgent->CreateIdWME(pInputLink,"usrmap");
-    umapMaxerr = pAgent->CreateIntWME(umap,"maxerr",MAX_ERRORS);
+
+    // BITS_PER_REPORT = ERROR_REPORT_INTERVAL * Nb() * K()
+    // MAX_ERRORS = MAX_ERROR_RATE * BITS_PER_REPORT
+    umapMaxerr = pAgent->CreateIntWME(umap,"maxerr",max_errors);
     umapPstep = pAgent->CreateFloatWME(umap,"pstep",POWER_STEP);
     umapPmax = pAgent->CreateFloatWME(umap,"pmax",MAX_POWER);
     // the channels
@@ -786,7 +791,6 @@ void MAIAllocator::Run() {
 
       //      cout << "the command is " << name << endl;
 
-
   //  ____   ___  _   _  ___     ___  _   _ ___ _
   // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
   // \___ \| | | |  \| | | | | | | | | | | || || |
@@ -834,6 +838,16 @@ void MAIAllocator::Run() {
 
 	IncreasePower(sUid,sCid);
 	pCommand->AddStatusComplete();
+
+      } else if (name == "no-choices") {
+
+
+	cout << "no-choices command received" << endl;
+
+	pCommand->AddStatusComplete();
+
+	break;
+
 
       } else {
 	cout << "ignoring unknown output command from SOAR" << endl;

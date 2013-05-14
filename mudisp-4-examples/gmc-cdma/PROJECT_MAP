@@ -90,3 +90,8 @@ powers    (J x M)    2    power assignements, double
 
 SOAR crai-rev4 Cognitive engine
 
+Updates and notes:
+
+RN20130514 - we keep constant the channel coefficients for GEO_UPDATE_INTERVAL
+
+

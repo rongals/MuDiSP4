@@ -116,58 +116,62 @@ void MCPMPCoeffs::Setup() {
 
 void MCPMPCoeffs::Run() {
 
-  
-  gsl_complex z = gsl_complex_rect(0,0);
-  gsl_complex o = gsl_complex_rect(1,0);
 
-  //
-  // Update Positions 
-  //
-  if (geoEnabled && (runCount++ == GEO_UPDATE_INTERVAL)) {
-    GeoUpdate(5.0); // each GEO_UPDATE_INTERVAL runs are equivalent to x seconds
-    GeoRender();
-    PathLossUpdate();
-    runCount = 0;
-    cout << "Updating node positions." << endl;
-    // gsl_matrix_show(pathLoss);
+	gsl_complex z = gsl_complex_rect(0,0);
+	gsl_complex o = gsl_complex_rect(1,0);
 
-  }
 
-  //
-  // Exponentially decaying power profile
-  //
-  //
-  gsl_complex chcoeff;
-  gsl_matrix_complex_set_all(ch,z);
-  for (int i=0; i<_M; i++) { // user i (tx)
-    for (int ii=0;ii<_M;ii++) { // user ii (rx)
-      double plgain = gain * gsl_matrix_get(pathLoss,i,ii);
-      for (int j=0; j<L(); j++) { // tap j 
-	double coeffstd=plgain*exp(-j/PTau())/sqrt(2.0);
-	if (j==0) {  // if this is the first tab 
-	  chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd)+gainrice,
-	   			      gsl_ran_gaussian(ran,coeffstd));
-	  //chcoeff = o;
-	  
-	} else { // this is not the first tap
-	  chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd),
-				      gsl_ran_gaussian(ran,coeffstd));
-	  //chcoeff = z;
 
-	} // if
+	//
+	// Update Positions
+	//
+	if (runCount++ % GEO_UPDATE_INTERVAL == 0) {
+		GeoUpdate(5.0); // each GEO_UPDATE_INTERVAL runs are equivalent to x seconds
+		if (geoEnabled)
+			GeoRender();
+		PathLossUpdate();
+		cout << "Updating node positions." << endl;
+		// gsl_matrix_show(pathLoss);
 
-	gsl_matrix_complex_set(ch,i*_M+ii,j,chcoeff);	
+		//
+		// Exponentially decaying power profile
+		//
+		//
+		gsl_matrix_complex_set_all(ch,z);
+		gsl_complex chcoeff;
 
-      } // j loop
-    } // ii loop
-  } // i loop
-  
-  // cout << "channel:" << endl;
-  // gsl_matrix_complex_show(ch);
+		for (int i=0; i<_M; i++) { // user i (tx)
+			for (int ii=0;ii<_M;ii++) { // user ii (rx)
+				double plgain = gain * gsl_matrix_get(pathLoss,i,ii);
+				for (int j=0; j<L(); j++) { // tap j
+					double coeffstd=plgain*exp(-j/PTau())/sqrt(2.0);
+					if (j==0) {  // if this is the first tab
+						chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd)+gainrice,
+								gsl_ran_gaussian(ran,coeffstd));
+						//chcoeff = o;
 
- 
-  //////// production of data
-  mout1.DeliverDataObj( *ch );
+					} else { // this is not the first tap
+						chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd),
+								gsl_ran_gaussian(ran,coeffstd));
+						//chcoeff = z;
+
+					} // if
+
+					gsl_matrix_complex_set(ch,i*_M+ii,j,chcoeff);
+
+				} // j loop
+			} // ii loop
+		} // i loop
+
+
+	}
+
+//		cout << "channel:" << endl;
+//		gsl_matrix_complex_show(ch);
+
+
+	//////// production of data
+	mout1.DeliverDataObj( *ch );
 
 }
 

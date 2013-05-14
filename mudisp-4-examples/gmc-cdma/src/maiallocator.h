@@ -36,12 +36,12 @@ class MAIAllocator : public Block {
 
   ////////   Parameters instances
 
-  IntParam J,N,Mode,M; 
+  IntParam K,Nb,J,N,Mode,M;
   StringParam SoarFn;
   
   ////////   Local Attributes
  
-  unsigned int curruser,framecount, numberCommands, input_time;
+  unsigned int curruser,framecount, numberCommands, input_time, max_errors;
   gsl_matrix_uint *Hperm;
   gsl_permutation *p; 
   gsl_vector *huserabs;
@@ -154,6 +154,8 @@ public:
 
   MAIAllocator():Block("MAIAllocator")
     ////////  parameters initializazion
+    ,K("SourceSymbs",16,"source symbols")
+    ,Nb("BitSymb",2,"bits per symbol (PSK mapping)")
     ,M("NumUsers",2,"number of users")
     ,N("Carriers",16,"number of carriers")
     ,J("CodedSymbs",16,"coded symbols")
@@ -162,6 +164,8 @@ public:
     {
 
       //////// local parameter registration
+      AddParameter(K);
+      AddParameter(Nb);
       AddParameter(M);
       AddParameter(N);
       AddParameter(J);

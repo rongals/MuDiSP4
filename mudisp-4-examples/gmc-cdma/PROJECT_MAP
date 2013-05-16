@@ -92,6 +92,16 @@ SOAR crai-rev4 Cognitive engine
 
 Updates and notes:
 
-RN20130514 - we keep constant the channel coefficients for GEO_UPDATE_INTERVAL
+RN20130514
+we keep constant the channel coefficients for GEO_UPDATE_INTERVAL
+
+RN20130516
+every GEO_UPDATE a new input-time is generated; 
+GEO_UPDATE_INTERVAL in gmccdma.h; 
+changed SOAR agent to avoid multiple swap on the same carrier;
+TO MANAGE THE NO CHANGE STATUS !!!
+
+
+
 
 

@@ -15,3 +15,6 @@ source increase-power.soar
 source initialize-crai.soar
 source swap-carriers.soar
 source no-choices.soar
+
+# Souce file "update-time.soar"
+source update-time.soar

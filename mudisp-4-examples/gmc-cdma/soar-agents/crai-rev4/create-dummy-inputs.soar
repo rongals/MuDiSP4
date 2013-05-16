@@ -49,7 +49,7 @@ sp {apply*create-dummy-inputs
    (<c1> ^cid 1)
    (<c2> ^cid 2)
    (<c3> ^cid 3)
-   (<il> ^input-time 0
+   (<il> ^input-time 1
          ^isdummy yes)
    
 }

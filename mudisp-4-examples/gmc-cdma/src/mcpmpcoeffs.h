@@ -9,6 +9,7 @@
 #define __MUDISP2_MCPMPCOEFFS_H
 
 #include "mudisp.h"
+#include "gmccdma.h"
 #include "gsl/gsl_vector.h"
 #include "gsl/gsl_matrix.h"
 #include "gsl/gsl_rng.h"
@@ -16,7 +17,6 @@
 #include <fstream>
 #include <sstream>
 
-#define GEO_UPDATE_INTERVAL 30
 #define GEO_AREA_CENTER_LAT 43.807635
 #define GEO_AREA_CENTER_LON 11.195560
 #define GEO_AREA_SIZE 0.03 // in dec degrees

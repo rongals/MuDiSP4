@@ -42,8 +42,8 @@
 
 //#define SHOW_POWER
 //#define SHOW_MATRIX
-//#define SPAWN_DEBUGGER
-//#define PAUSED
+#define SPAWN_DEBUGGER
+#define PAUSED
 
 //
 //
@@ -368,11 +368,9 @@ void MAIAllocator::Run() {
   // fetch channel matrix
   gsl_matrix_complex hmm  =  min1.GetDataObj();
 
-
   // update error reports at receiver rx_m
-  if (++framecount % ERROR_REPORT_INTERVAL == 0) { // once every ERI
+  if (framecount % ERROR_REPORT_INTERVAL == 0) { // once every ERI
     gsl_vector_uint temperr  =  vin2.GetDataObj();
-    framecount = 0;
     if (temperr.size == M()) {
       gsl_vector_uint_memcpy(errs,&temperr);
 
@@ -704,16 +702,16 @@ void MAIAllocator::Run() {
     //    gsl_matrix_complex_show(Hmat);
 
     // keypress 
-    // cout << "pause maillocator:620 ... (press ENTER key)" << endl;
+	//  cout << "pause maillocator:620 ... (press ENTER key)" << endl;
     // cin.ignore();
+
 
 
 
     for (int u=0;u<M();u++) { // user loop
 
-          
-      // update soarUserMap.wmeErrsVec[u]
-      pAgent->Update(umapUserErrsVec[u],gsl_vector_uint_get(errs,u));
+    	// update soarUserMap.wmeErrsVec[u]
+    		pAgent->Update(umapUserErrsVec[u],gsl_vector_uint_get(errs,u));
 
       // update soarChannelMap.wmeValueMat[i*M()+j]
       for (int j=0;j<N();j++) {
@@ -854,8 +852,10 @@ void MAIAllocator::Run() {
       }
 
       
-      // Then mark the command as completed
-      pAgent->Update(inputTime,++input_time);
+      // Every GEO_UPDATE_INTERVAL we increase the input-time
+	  if (framecount % GEO_UPDATE_INTERVAL == 0) {
+		  pAgent->Update(inputTime,++input_time);
+	  }
       pAgent->Commit();
 
     }
@@ -866,7 +866,7 @@ void MAIAllocator::Run() {
 
 
   //////// production of data
-
+  framecount++;
   mout1.DeliverDataObj( *signature_frequencies );
   mout2.DeliverDataObj( *signature_powers );
 

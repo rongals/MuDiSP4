@@ -12,6 +12,8 @@ sp {apply*initialize-crai
 -->
    (<s> ^name crai
          ^conflicts <cfl>
-         ^free-carriers <fc>)
+         ^free-carriers <fc>
+         ^current-time 0
+         ^processed <p>)
 }
 

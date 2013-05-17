@@ -17,4 +17,5 @@ VERSION 4
 14	0	OPERATOR increase-power increase-power.soar 15
 15	0	OPERATOR initialize-crai initialize-crai.soar 16
 16	0	OPERATOR swap-carriers swap-carriers.soar 17
+17	0	OPERATOR update-time update-time.soar 18
 END

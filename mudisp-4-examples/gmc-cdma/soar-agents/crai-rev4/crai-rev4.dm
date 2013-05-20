@@ -1,4 +1,4 @@
-100
+106
 SOAR_ID 0
 SOAR_ID 1
 SOAR_ID 2
@@ -99,7 +99,13 @@ INTEGER_RANGE 96 -2147483648 2147483647
 SOAR_ID 97
 SOAR_ID 98
 ENUMERATION 99 1 update-time
-100
+SOAR_ID 100
+ENUMERATION 101 1 delete-command
+SOAR_ID 102
+ENUMERATION 103 1 no-choices
+SOAR_ID 104
+ENUMERATION 105 1 no-choices
+106
 0 conflicts 29
 0 current-time 96
 0 free-carriers 30
@@ -117,6 +123,9 @@ ENUMERATION 99 1 update-time
 0 operator 24
 0 operator 26
 0 operator 98
+0 operator 100
+0 operator 102
+0 operator 104
 0 processed 97
 0 superstate 6
 0 top-state 0
@@ -200,3 +209,6 @@ ENUMERATION 99 1 update-time
 89 user 90
 89 value 92
 98 name 99
+100 name 101
+102 name 103
+104 name 105

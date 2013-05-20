@@ -13,5 +13,6 @@ source implement-increase-power.soar
 source implement-swap-carriers.soar
 source increase-power.soar
 source initialize-crai.soar
+source no-choices.soar
 source swap-carriers.soar
 source update-time.soar

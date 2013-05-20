@@ -42,8 +42,8 @@
 
 //#define SHOW_POWER
 //#define SHOW_MATRIX
-#define SPAWN_DEBUGGER
-#define PAUSED
+//#define SPAWN_DEBUGGER
+//#define PAUSED
 
 //
 //
@@ -141,7 +141,7 @@ void MAIAllocator::Setup() {
   huu = gsl_matrix_complex_alloc(N(),M());
 
   framecount = 0;
-
+  noDecisions = 0;
   ostringstream cmd;
 
   //
@@ -708,26 +708,33 @@ void MAIAllocator::Run() {
 
 
 
-    for (int u=0;u<M();u++) { // user loop
+	  for (int u=0;u<M();u++) { // user loop
 
-    	// update soarUserMap.wmeErrsVec[u]
-    		pAgent->Update(umapUserErrsVec[u],gsl_vector_uint_get(errs,u));
+		  // update soarUserMap.wmeErrsVec[u]
+		  pAgent->Update(umapUserErrsVec[u],gsl_vector_uint_get(errs,u));
 
-      // update soarChannelMap.wmeValueMat[i*M()+j]
-      for (int j=0;j<N();j++) {
-      	double coeffVal = gsl_complex_abs2(gsl_matrix_complex_get(Hmat,j,u));
-      	pAgent->Update(chansCoeffValueMat[u*N()+j],coeffVal);
-      } // j loop
+		  // update soarChannelMap.wmeValueMat[i*M()+j]
+		  for (int j=0;j<N();j++) {
+			  double coeffVal = gsl_complex_abs2(gsl_matrix_complex_get(Hmat,j,u));
+			  pAgent->Update(chansCoeffValueMat[u*N()+j],coeffVal);
+		  } // j loop
 
-       // update 
-      for (int j=0;j<J();j++) {
-	unsigned int carr = gsl_matrix_uint_get(signature_frequencies,u,j);
-	double power = gsl_matrix_get(signature_powers,u,j);
-      	pAgent->Update(umapUserCarrCidMat[u*J()+j],carr);
-      	pAgent->Update(umapUserCarrPowerMat[u*J()+j],power);
-      } // j loop
-    } // user loop
+		  // update
+		  for (int j=0;j<J();j++) {
+			  unsigned int carr = gsl_matrix_uint_get(signature_frequencies,u,j);
+			  double power = gsl_matrix_get(signature_powers,u,j);
+			  pAgent->Update(umapUserCarrCidMat[u*J()+j],carr);
+			  pAgent->Update(umapUserCarrPowerMat[u*J()+j],power);
+		  } // j loop
+	  } // user loop
 
+
+	  // Every GEO_UPDATE_INTERVAL we increase the input-time and allow decisions
+	  if (framecount % GEO_UPDATE_INTERVAL == 0) {
+		  noDecisions = 0;
+		  pAgent->Update(inputTime,++input_time);
+	  }
+	  pAgent->Commit();
 
     // commit changes no longer needed
     //pAgent->Commit();
@@ -735,7 +742,8 @@ void MAIAllocator::Run() {
     // run agent till output
     numberCommands=0; 
 
-    while (! numberCommands) {
+    //while (! (numberCommands || noDecisions) ) { // while numberCommands=0 and noDecisions=0
+    while (! (noDecisions) ) { // while numberCommands=0 and noDecisions=0
 
       //pAgent->RunSelf(1);
       pAgent->RunSelfTilOutput();
@@ -749,7 +757,7 @@ void MAIAllocator::Run() {
       cin.ignore();
 #endif
 
-    }
+    //} WHILE REMOVED HERE
     
     // cout << "Found " << numberCommands << " command/s." << endl;
 
@@ -782,87 +790,78 @@ void MAIAllocator::Run() {
  //       ^status
 
 
-    for (int cmd = 0 ; cmd < numberCommands ; cmd++) {
+      for (int cmd = 0 ; cmd < numberCommands ; cmd++) {
 
-      Identifier* pCommand = pAgent->GetCommand(cmd) ;
-      string name  = pCommand->GetCommandName() ;
+    	  Identifier* pCommand = pAgent->GetCommand(cmd) ;
+    	  string name  = pCommand->GetCommandName() ;
 
-      //      cout << "the command is " << name << endl;
-
-  //  ____   ___  _   _  ___     ___  _   _ ___ _
-  // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
-  // \___ \| | | |  \| | | | | | | | | | | || || |
-  //  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
-  // |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
-  //
+    	  //      cout << "the command is " << name << endl;
 
 
-      if (name == "assign-free") {
-	std::string sUid = pCommand->GetParameterValue("uid");
-	std::string sDeassign = pCommand->GetParameterValue("deassign");
-	std::string sAssign = pCommand->GetParameterValue("assign");
-	cout << "assign-free command received [ u:"
-	     << sUid << " , -"
-	     << sDeassign << " , +"
-	     << sAssign << " ]"
-	     << endl;
-	
-	AssignFree(sUid,sDeassign,sAssign);
-	pCommand->AddStatusComplete();
+    	  if (name == "assign-free") {
+    		  std::string sUid = pCommand->GetParameterValue("uid");
+    		  std::string sDeassign = pCommand->GetParameterValue("deassign");
+    		  std::string sAssign = pCommand->GetParameterValue("assign");
+    		  cout << "assign-free command received [ u:"
+    				  << sUid << " , -"
+    				  << sDeassign << " , +"
+    				  << sAssign << " ]"
+    				  << endl;
 
-      } else if (name == "swap-carriers") {
+    		  AssignFree(sUid,sDeassign,sAssign);
+    		  pCommand->AddStatusComplete();
 
-	std::string sU1 = pCommand->GetParameterValue("u1");
-	std::string sC1 = pCommand->GetParameterValue("c1");
-	std::string sU2 = pCommand->GetParameterValue("u2");
-	std::string sC2 = pCommand->GetParameterValue("c2");
-	cout << "swap-carriers command received [ u1:"
-	     << sU1 << " , c1:"
-	     << sC1 << " , u2:"
-	     << sU2 << " , c2:"
-	     << sC2 << " ]" << endl;
+    	  } else if (name == "swap-carriers") {
 
-	SwapCarriers(sU1,sC1,sU2,sC2);
-	pCommand->AddStatusComplete();
+    		  std::string sU1 = pCommand->GetParameterValue("u1");
+    		  std::string sC1 = pCommand->GetParameterValue("c1");
+    		  std::string sU2 = pCommand->GetParameterValue("u2");
+    		  std::string sC2 = pCommand->GetParameterValue("c2");
+    		  cout << "swap-carriers command received [ u1:"
+    				  << sU1 << " , c1:"
+    				  << sC1 << " , u2:"
+    				  << sU2 << " , c2:"
+    				  << sC2 << " ]" << endl;
 
-      } else if (name == "increase-power") {
+    		  SwapCarriers(sU1,sC1,sU2,sC2);
+    		  pCommand->AddStatusComplete();
 
-	std::string sUid = pCommand->GetParameterValue("uid");
-	std::string sCid = pCommand->GetParameterValue("cid");
+    	  } else if (name == "increase-power") {
 
-	cout << "increase-power command received [ u:"
-	     << sUid << " , c:"
-	     << sCid << " ]" << endl;
+    		  std::string sUid = pCommand->GetParameterValue("uid");
+    		  std::string sCid = pCommand->GetParameterValue("cid");
 
-	IncreasePower(sUid,sCid);
-	pCommand->AddStatusComplete();
+    		  cout << "increase-power command received [ u:"
+    				  << sUid << " , c:"
+    				  << sCid << " ]" << endl;
 
-      } else if (name == "no-choices") {
+    		  IncreasePower(sUid,sCid);
+    		  pCommand->AddStatusComplete();
 
-
-	cout << "no-choices command received" << endl;
-
-	pCommand->AddStatusComplete();
-
-	break;
+    	  } else if (name == "no-choices") {
 
 
-      } else {
-	cout << "ignoring unknown output command from SOAR" << endl;
-      }
+    		  cout << "no-choices command received" << endl;
+    		  noDecisions = 1;
+    		  pCommand->AddStatusComplete();
 
-      
-      // Every GEO_UPDATE_INTERVAL we increase the input-time
-	  if (framecount % GEO_UPDATE_INTERVAL == 0) {
-		  pAgent->Update(inputTime,++input_time);
-	  }
-      pAgent->Commit();
+    		  break;
 
-    }
-    
-    break;
-  }
-  
+
+    	  } else {
+    		  cout << "ignoring unknown output command from SOAR" << endl;
+    	  }
+
+    	  cout << "framecount = " << framecount << endl;
+
+      } // end for (int cmd = 0 ; cmd < numberCommands ; cmd++)
+
+    } // while (! (noDecisions) )
+
+      break;
+
+  } // switch (Mode())
+
 
 
   //////// production of data
@@ -905,3 +904,10 @@ void MAIAllocator::Finish() {
   }    
 
 }
+
+//  ____   ___  _   _  ___     ___  _   _ ___ _
+// / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
+// \___ \| | | |  \| | | | | | | | | | | || || |
+//  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
+// |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
+//

@@ -41,7 +41,7 @@ class MAIAllocator : public Block {
   
   ////////   Local Attributes
  
-  unsigned int curruser,framecount, numberCommands, input_time, max_errors;
+  unsigned int curruser,framecount, numberCommands, input_time, max_errors, noDecisions;
   gsl_matrix_uint *Hperm;
   gsl_permutation *p; 
   gsl_vector *huserabs;

@@ -12,7 +12,7 @@
 
 #define MAXNUMLEN 128
 #define PI 3.1415926536
-
+//#define SHOW_MATRIX
 
 extern void  gsl_matrix_complex_show( gsl_matrix_complex *);
 

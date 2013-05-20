@@ -1,0 +1,35 @@
+;
+;  Parameters for System_1
+;
+System_1.Iterations:                    300              ; Main iterations
+System_1.EbNo:                          3              ; SNR (dB)
+System_1.BitSymb:                       1              ; bits per symbol (PSK mapping)
+System_1.SourceSymbs:                   2              ; source symbols
+System_1.CodedSymbs:                    4              ; coded symbols
+System_1.Carriers:                      16             ; number of carriers
+System_1.NumUsers:                      4              ; number of users
+
+;
+;  Parameters for MCPMPCoeffs_1
+;
+System_1.MCPMPCoeffs_1.ZeroDb:          1.0           ; zero dB distance for path loss (km)
+System_1.MCPMPCoeffs_1.GeoFName:        /home/ronga/public_html/track.kml         ; kml for georendering (none to disable)
+System_1.MCPMPCoeffs_1.RiceFact:        0              ; Ricean factor of channel
+System_1.MCPMPCoeffs_1.PowerTau:        1              ; decay factor of delay spread
+System_1.MCPMPCoeffs_1.ChanTaps:        2              ; number of channel taps
+
+
+;
+;  Parameters for MAIAllocator_1
+;
+System_1.MAIAllocator_1.SoarFn:         /usr/local/sandbox_ronga/git/MuDiSP4/mudisp-4-examples/gmc-cdma/soar-agents/crai-rev4.soar    ; SOAR agent filename
+System_1.MAIAllocator_1.AllocatorMode:  1              ; 0=fca,1=bst,2=swp,3=ovl,4=SOAR
+
+
+;
+;  Parameters for MBitBer_1
+;
+System_1.MBitBer_1.OutFile:             cout            
+
+
+

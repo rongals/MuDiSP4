@@ -108,6 +108,60 @@ void MCPMPCoeffs::Setup() {
   }
   
   
+  //
+  // SOS Spatial Channel Model
+  //
+  SOSN = 2.0 * SOSM() * SOSM();
+  sosc = sqrt(2.0/SOSN);
+
+  sosfrn = gsl_vector_alloc(SOSM()+2);
+  sosfxn = gsl_vector_alloc(SOSN);
+  sosfyn = gsl_vector_alloc(SOSN);
+
+
+  //
+  // we generate the radial spatial frequency
+  //
+  gsl_vector_set(sosfrn,0,0.0);
+
+  for (int i=0;i<SOSM()+1;i++) {
+	  double old = gsl_vector_get(sosfrn,i);
+	  double tmp1 = 1.0 / sqrt(SOSa()*SOSa() + 4.0 * M_PI * M_PI * old * old ) - SOSP() / (SOSM() * SOSa());
+	  double nextval = 1.0 / (2.0 * M_PI) * sqrt( 1.0 / (tmp1 * tmp1) - SOSa() * SOSa() );
+	  gsl_vector_set(sosfrn,i+1,nextval);
+
+	  cout << "fr_" << i+1 << " = " << nextval << endl;
+  }
+
+  //
+  // we compute the cartesian spatial frequency
+  //
+  for (int i=0; i<SOSM();i++) { // radius values
+	  for(int j=0; j<2*SOSM(); j++) { // angle values
+		  double phi = M_PI * (2 * j - 2 * SOSM() +1) / (4 * SOSM());
+		  double frm = gsl_vector_get(sosfrn,i+1);
+		  double fxn = frm * gsl_sf_cos(phi);
+		  double fyn = frm * gsl_sf_sin(phi);
+
+		  gsl_vector_set(sosfxn,j+i*2*(SOSM()),fxn);
+		  gsl_vector_set(sosfyn,j+i*2*(SOSM()),fyn);
+
+
+		  cout << "fx_" << i << "," << j << " = " << fxn << ", " << fyn << endl;
+
+	  }
+  }
+
+
+  //  ____   ___  _   _  ___     ___  _   _ ___ _
+  // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
+  // \___ \| | | |  \| | | | | | | | | | | || || |
+  //  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
+  // |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
+  //
+
+
+
   //////// rate declaration for ports
 
 
@@ -132,6 +186,18 @@ void MCPMPCoeffs::Run() {
 		PathLossUpdate();
 		cout << "Updating node positions." << endl;
 		// gsl_matrix_show(pathLoss);
+
+
+		//
+		//
+		// CHANNEL MODEL BASED ON
+		// CAI AND GIANNAKIS: 2D CHANNEL SIMULATION MODEL FOR SHADOWING PROCESSES
+		// IEEE Trans Veh Tech Vol 52, No. 6, Nov. 2003
+		//
+		//
+
+
+
 
 		//
 		// Exponentially decaying power profile
@@ -184,7 +250,12 @@ void MCPMPCoeffs::Finish() {
     gsl_vector_complex_free(geoPositions);
     gsl_vector_complex_free(geoVelocities);
   }
+  gsl_vector_free(sosfrn);
+  gsl_vector_free(sosfxn);
+  gsl_vector_free(sosfyn);
 }
+
+
 
 void MCPMPCoeffs::GeoInit() {
 

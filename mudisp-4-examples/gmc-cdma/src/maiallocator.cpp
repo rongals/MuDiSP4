@@ -838,6 +838,9 @@ void MAIAllocator::Run() {
     		  IncreasePower(sUid,sCid);
     		  pCommand->AddStatusComplete();
 
+    		  break;
+
+
     	  } else if (name == "no-choices") {
 
 

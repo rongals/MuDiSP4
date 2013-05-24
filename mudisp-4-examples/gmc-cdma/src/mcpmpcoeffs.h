@@ -70,15 +70,18 @@ class MCPMPCoeffs : public Block {
   FloatParam PTau;
   FloatParam Ricean;
   FloatParam ZeroDb;
+  FloatParam SOSa, SOSP, SOSsigma;
+  IntParam SOSM;
   StringParam GeoFn;
 
   ////////   Local Attributes
 
-  double gain, gainrice;
+  double gain, gainrice, sosc;
   gsl_matrix_complex *ch;
   gsl_matrix *pathLoss;
+  gsl_vector *sosfrn, *sosfxn,*sosfyn, *sosphi;
   gsl_rng * ran; 
-  unsigned int _M, runCount;
+  unsigned int _M, runCount, SOSN;
 
 
   // Geo Model
@@ -106,6 +109,10 @@ class MCPMPCoeffs : public Block {
     ,Ricean("RiceFact",0.0,"Ricean factor of channel")
     ,GeoFn("GeoFName","none","kml for georendering (none to disable)")
     ,ZeroDb("ZeroDb",0.01,"zero dB distance for path loss (km)")
+	,SOSa("SOSa",0.1,"SOS Spatial channel a parameter")
+	,SOSP("SOSP",0.8,"SOS Spatial channel P parameter")
+	,SOSsigma("SOSsigma",3,"SOS Spatial channel sigma parameter")
+	,SOSM("SOSM",5,"SOS Spatial channel M parameter")
     {
 
       //////// local parameter registration
@@ -116,6 +123,10 @@ class MCPMPCoeffs : public Block {
       AddParameter(Ricean);
       AddParameter(GeoFn);
       AddParameter(ZeroDb);
+      AddParameter(SOSa);
+      AddParameter(SOSP);
+      AddParameter(SOSsigma);
+      AddParameter(SOSM);
     }
 
   ~MCPMPCoeffs() {

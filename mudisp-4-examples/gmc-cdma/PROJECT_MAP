@@ -102,12 +102,9 @@ changed SOAR agent to avoid multiple swap on the same carrier;
 TO MANAGE THE NO CHANGE STATUS !!!
 
 RN20130520
-SOAR agent is executed until a no-choices command is received for each frame
+SOAR agent is executed until a no-choices or a increase-power command is received for each frame
 SOAR agent: no-choices is the worst operator
 
-TODO correct the infinite loop when a increase power is selected
-TODO single swap per carrier not fair: channel coefficient are too variable
-TODO induce an integrated error reporting to average the fading of single channel coefficient
-TOTO *** averaged channel coefficients !!!
+
 
  

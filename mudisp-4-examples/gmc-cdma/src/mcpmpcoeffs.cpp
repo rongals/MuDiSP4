@@ -130,7 +130,7 @@ void MCPMPCoeffs::Setup() {
 	  double nextval = 1.0 / (2.0 * M_PI) * sqrt( 1.0 / (tmp1 * tmp1) - SOSa() * SOSa() );
 	  gsl_vector_set(sosfrn,i+1,nextval);
 
-	  cout << "fr_" << i+1 << " = " << nextval << endl;
+	  //cout << "fr_" << i+1 << " = " << nextval << endl;
   }
 
   //
@@ -147,11 +147,26 @@ void MCPMPCoeffs::Setup() {
 		  gsl_vector_set(sosfyn,j+i*2*(SOSM()),fyn);
 
 
-		  cout << "fx_" << i << "," << j << " = " << fxn << ", " << fyn << endl;
+		  //cout << "fx_" << i << "," << j << " = " << fxn << ", " << fyn << endl;
 
 	  }
   }
 
+  cout << "Spatial frequencies generated." << endl;
+
+  //
+  // now we generate the random phases theta_n for each link tx->rx (M x SOSN )
+  //
+  sostheta = gsl_matrix_alloc(M()*M(),SOSN);
+  for (int i=0; i<_M; i++) { // user i (tx)
+	  for (int ii=0;ii<_M;ii++) { // user ii (rx)
+		  for (int j=0; j<SOSN; j++ ) { // phase of spatial frequency j
+			gsl_matrix_set(sostheta,i*_M+ii,j,gsl_ran_flat(ran,0,2.0*M_PI));
+		  }
+	  }
+  }
+
+  cout << "Spatial phases generated." << endl;
 
   //  ____   ___  _   _  ___     ___  _   _ ___ _
   // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
@@ -208,7 +223,7 @@ void MCPMPCoeffs::Run() {
 
 		for (int i=0; i<_M; i++) { // user i (tx)
 			for (int ii=0;ii<_M;ii++) { // user ii (rx)
-				double plgain = gain * gsl_matrix_get(pathLoss,i,ii);
+				double plgain = gain * gsl_matrix_get(pathLoss,i,ii) * SpatialShadowing(i,ii);
 				for (int j=0; j<L(); j++) { // tap j
 					double coeffstd=plgain*exp(-j/PTau())/sqrt(2.0);
 					if (j==0) {  // if this is the first tab
@@ -471,4 +486,46 @@ void MCPMPCoeffs::PathLossUpdate() {
       
     }
   }
+}
+
+//
+// we compute the shadowing coefficient for the link tx_i -> rx_ii
+//
+double MCPMPCoeffs::SpatialShadowing(unsigned int tx, unsigned int rx) {
+
+	// we are considering the spatial channel tx-rx, so we get the sostheta(j) vector
+	// and we compute the shadowing coefficient for the position of rx (rx_lon,rx_lat)
+	double tmp=0;
+
+	gsl_complex txPos =  gsl_vector_complex_get(geoPositions,tx); // lat,lon
+	gsl_complex rxPos =  gsl_vector_complex_get(geoPositions,rx+_M); // lat,lon
+
+	double txPosLat = GSL_REAL(txPos);
+	double txPosLon = GSL_IMAG(txPos);
+	double rxPosLat = GSL_REAL(rxPos);
+	double rxPosLon = GSL_IMAG(rxPos);
+
+	double deltaLat = rxPosLat-txPosLat; // ok
+	double deltaLon = rxPosLon-txPosLon; // be careful around 180E/W
+	double meanLat = (rxPosLat+txPosLat)/2.0; // be careful around poles
+
+	if (deltaLon > 180) // es Lon1 =-179 Lon2=179 D=2
+		deltaLon -= 360;
+	if (deltaLon < -180)
+		deltaLon += 360;
+
+	double x= deltaLon * 111111 * gsl_sf_cos(meanLat*M_PI_OVER_180); // cartesian x position around tx (in m)
+	double y= deltaLat * 111111; // cartesian y position arond tx (in m)
+
+
+	for (int j=0; j<SOSN; j++){
+		double th = gsl_matrix_get(sostheta,tx*_M+rx,j);
+		double fxn = gsl_vector_get(sosfxn,j);
+		double fyn = gsl_vector_get(sosfyn,j);
+		tmp += sosc * gsl_sf_cos(2.0 * M_PI * ( fxn * x + fyn * y + th));
+	}
+
+	cout << "shadow[ " << x << " , " << y << " ][ " << deltaLon << " , " << deltaLat << " ]= "<< tmp << endl;
+
+	return tmp;
 }

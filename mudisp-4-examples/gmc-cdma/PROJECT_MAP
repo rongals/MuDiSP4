@@ -92,6 +92,9 @@ SOAR crai-rev4 Cognitive engine
 
 Updates and notes:
 
+RN20130527
+added spatial model in mcpcoeffs
+
 RN20130514
 we keep constant the channel coefficients for GEO_UPDATE_INTERVAL
 
@@ -104,6 +107,7 @@ TO MANAGE THE NO CHANGE STATUS !!!
 RN20130520
 SOAR agent is executed until a no-choices or a increase-power command is received for each frame
 SOAR agent: no-choices is the worst operator
+
 
 
 

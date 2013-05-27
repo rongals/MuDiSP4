@@ -78,8 +78,8 @@ class MCPMPCoeffs : public Block {
 
   double gain, gainrice, sosc;
   gsl_matrix_complex *ch;
-  gsl_matrix *pathLoss;
-  gsl_vector *sosfrn, *sosfxn,*sosfyn, *sosphi;
+  gsl_matrix *pathLoss, *sostheta;
+  gsl_vector *sosfrn, *sosfxn,*sosfyn;
   gsl_rng * ran; 
   unsigned int _M, runCount, SOSN;
 
@@ -143,6 +143,7 @@ class MCPMPCoeffs : public Block {
   void GeoRender();
   double GeoDistance(unsigned int,unsigned int);
   void PathLossUpdate();
+  double SpatialShadowing(unsigned int userId, unsigned int pathId); // M x L spatial shadowing mapping
   
 };
 

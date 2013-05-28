@@ -83,11 +83,10 @@ class MCPMPCoeffs : public Block {
   gsl_rng * ran; 
   unsigned int _M, runCount, SOSN;
 
-
   // Geo Model
-
   gsl_vector_complex *geoPositions, *geoVelocities; // node coordinates tx + rx (2xM)
-  unsigned int geoEnabled;
+  unsigned int geoRenderEnabled;
+  // Geo Rendering
   ostringstream kmlhead,kmlobject,kmlheadend;
   ofstream ofs;
 
@@ -107,7 +106,7 @@ class MCPMPCoeffs : public Block {
     ,L("ChanTaps",2,"number of channel taps")
     ,PTau("PowerTau",1.0,"decay factor of delay spread")
     ,Ricean("RiceFact",0.0,"Ricean factor of channel")
-    ,GeoFn("GeoFName","none","kml for georendering (none to disable)")
+    ,GeoFn("GeoFName","none","kml for geo-rendering (none to disable)")
     ,ZeroDb("ZeroDb",0.01,"zero dB distance for path loss (km)")
 	,SOSa("SOSa",0.1,"SOS Spatial channel a parameter")
 	,SOSP("SOSP",0.8,"SOS Spatial channel P parameter")
@@ -142,8 +141,7 @@ class MCPMPCoeffs : public Block {
   void GeoUpdate(double seconds=1.0);
   void GeoRender();
   double GeoDistance(unsigned int,unsigned int);
-  void PathLossUpdate();
-  double SpatialShadowing(unsigned int userId, unsigned int pathId); // M x L spatial shadowing mapping
+  void SpatialChannelUpdate();
   
 };
 

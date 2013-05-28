@@ -13,6 +13,8 @@
 #include "gmccdma.h"
 #include "gsl/gsl_randist.h"
 #include "gsl/gsl_sf_trig.h"
+#include "gsl/gsl_sf_exp.h"
+#include "gsl/gsl_sf_log.h"
 #include "gsl/gsl_math.h"
 
 //
@@ -97,17 +99,19 @@ void MCPMPCoeffs::Setup() {
   //
   // GEO
   //
+
+  // geo initialization
+  GeoInit();
+
+  // check if rendering is desired
   string geofn(GeoFn());
-  if (GeoFn()=="none") // check if GEO desired
-    geoEnabled = 0;
+  if (GeoFn()=="none") // check if GEO rendering is desired
+    geoRenderEnabled = 0;
   else { // GEO rendering enabled
-    geoEnabled = 1;
-    GeoInit();
+    geoRenderEnabled = 1;
     GeoRender();
-    PathLossUpdate();
   }
-  
-  
+
   //
   // SOS Spatial Channel Model
   //
@@ -168,6 +172,12 @@ void MCPMPCoeffs::Setup() {
 
   cout << "Spatial phases generated." << endl;
 
+
+  //
+  // Spatial Channel (first) Update
+  //
+  SpatialChannelUpdate();
+
   //  ____   ___  _   _  ___     ___  _   _ ___ _
   // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
   // \___ \| | | |  \| | | | | | | | | | | || || |
@@ -195,12 +205,15 @@ void MCPMPCoeffs::Run() {
 	// Update Positions
 	//
 	if (runCount++ % GEO_UPDATE_INTERVAL == 0) {
+
 		GeoUpdate(5.0); // each GEO_UPDATE_INTERVAL runs are equivalent to x seconds
-		if (geoEnabled)
+		SpatialChannelUpdate();
+
+		if (geoRenderEnabled)
 			GeoRender();
-		PathLossUpdate();
 		cout << "Updating node positions." << endl;
-		// gsl_matrix_show(pathLoss);
+
+		//gsl_matrix_show(pathLoss);
 
 
 		//
@@ -223,11 +236,11 @@ void MCPMPCoeffs::Run() {
 
 		for (int i=0; i<_M; i++) { // user i (tx)
 			for (int ii=0;ii<_M;ii++) { // user ii (rx)
-				double plgain = gain * gsl_matrix_get(pathLoss,i,ii) * SpatialShadowing(i,ii);
+				double plgain = gain * gsl_matrix_get(pathLoss,i,ii);
 				for (int j=0; j<L(); j++) { // tap j
 					double coeffstd=plgain*exp(-j/PTau())/sqrt(2.0);
 					if (j==0) {  // if this is the first tab
-						chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd)+gainrice,
+						chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd) + coeffstd * gainrice,
 								gsl_ran_gaussian(ran,coeffstd));
 						//chcoeff = o;
 
@@ -247,8 +260,8 @@ void MCPMPCoeffs::Run() {
 
 	}
 
-//		cout << "channel:" << endl;
-//		gsl_matrix_complex_show(ch);
+		cout << "channel:" << endl;
+		gsl_matrix_complex_show(ch);
 
 
 	//////// production of data
@@ -260,14 +273,15 @@ void MCPMPCoeffs::Finish() {
   gsl_matrix_complex_free(ch);
   gsl_matrix_free(pathLoss);
   gsl_rng_free( ran );
-  if (geoEnabled) {
+  if (geoRenderEnabled) {
     ofs.close();
-    gsl_vector_complex_free(geoPositions);
-    gsl_vector_complex_free(geoVelocities);
   }
+  gsl_vector_complex_free(geoPositions);
+  gsl_vector_complex_free(geoVelocities);
   gsl_vector_free(sosfrn);
   gsl_vector_free(sosfxn);
   gsl_vector_free(sosfyn);
+  gsl_matrix_free(sostheta);
 }
 
 
@@ -382,6 +396,8 @@ void MCPMPCoeffs::GeoUpdate(double seconds) {
 
     gsl_vector_complex_set(geoPositions,i,np);
 
+ //   cout << "node " << i << " position = " << GSL_IMAG(np) << ", " << GSL_REAL(np) << endl;
+
   }
 
   
@@ -470,62 +486,60 @@ double MCPMPCoeffs::GeoDistance(unsigned int tx, unsigned int rx) {
 }
 
 
-void MCPMPCoeffs::PathLossUpdate() {
+//
+// we update shadowing and pathloss coefficients for all the links tx -> rx
+//
+void  MCPMPCoeffs::SpatialChannelUpdate() {
 
-  for (int i=0; i<_M; i++) { // user i (tx)
-    for (int ii=0;ii<=i;ii++) { // user ii (rx)
-      
-      double ploss = gsl_pow_3(ZeroDb()/GeoDistance(i,ii));
-      // cout << "GeoDistance=" << GeoDistance(i,ii) 
-      // 	   << "\tploss=" << ploss 
-      // 	   << "\ti=" << i 
-      // 	   << "\tii=" << ii << endl;
- 
-     gsl_matrix_set(pathLoss,i,ii,ploss);
-     gsl_matrix_set(pathLoss,ii,i,ploss); // it's symmetric !	
-      
-    }
-  }
+	for (int i=0; i<_M; i++) { // user i (tx)
+		for (int ii=0;ii<=i;ii++) { // user ii (rx)
+
+			// we are considering the spatial channel tx-rx, so we get the sostheta(j) vector
+			// and we compute the shadowing coefficient for the position of rx (rx_lon,rx_lat)
+
+			gsl_complex txPos =  gsl_vector_complex_get(geoPositions,i); // lat,lon
+			gsl_complex rxPos =  gsl_vector_complex_get(geoPositions,ii+_M); // lat,lon
+
+			double txPosLat = GSL_REAL(txPos);
+			double txPosLon = GSL_IMAG(txPos);
+			double rxPosLat = GSL_REAL(rxPos);
+			double rxPosLon = GSL_IMAG(rxPos);
+
+			double deltaLat = rxPosLat-txPosLat; // ok
+			double deltaLon = rxPosLon-txPosLon; // be careful around 180E/W
+			double meanLat = (rxPosLat+txPosLat)/2.0; // be careful around poles
+
+			if (deltaLon > 180) // es Lon1 =-179 Lon2=179 D=2
+				deltaLon -= 360;
+			if (deltaLon < -180)
+				deltaLon += 360;
+
+			double x= deltaLon * 111111 * gsl_sf_cos(meanLat*M_PI_OVER_180); // cartesian x position around tx (in m)
+			double y= deltaLat * 111111; // cartesian y position arond tx (in m)
+
+			// shadowing i->ii
+			double shadowdb=0;
+			for (int j=0; j<SOSN; j++){
+				double th = gsl_matrix_get(sostheta,i*_M+ii,j);
+				double fxn = gsl_vector_get(sosfxn,j);
+				double fyn = gsl_vector_get(sosfyn,j);
+				shadowdb += sosc * gsl_sf_cos(2.0 * M_PI * ( fxn * x + fyn * y + th));
+			} // for j
+
+			// pathloss i->ii
+			// 10 Log ( d^-3) = 10 Log ( d^2 ^-3/2) = -15 Log ( d^2 ) = -15 Log ( d^2 )
+			double dist = sqrt(x*x+y*y);
+		    double plossdb =  ( -30.0 * gsl_sf_log( dist ) + 30.0 * gsl_sf_log(ZeroDb()) )/M_LN10;
+
+		    cout << "rx[" << i << "] x=" << x << " y=" << y << " ploss="
+		    		<< plossdb << " shadow=" << shadowdb << " dist=" << dist << endl;
+		    //
+		    double cx = pow(10,( 0.5 * plossdb + SOSsigma() * shadowdb )/10.0 );
+
+		     gsl_matrix_set(pathLoss,i,ii,cx);
+		     gsl_matrix_set(pathLoss,ii,i,cx); // it's symmetric !
+
+		} // for ii
+	} // for i
 }
 
-//
-// we compute the shadowing coefficient for the link tx_i -> rx_ii
-//
-double MCPMPCoeffs::SpatialShadowing(unsigned int tx, unsigned int rx) {
-
-	// we are considering the spatial channel tx-rx, so we get the sostheta(j) vector
-	// and we compute the shadowing coefficient for the position of rx (rx_lon,rx_lat)
-	double tmp=0;
-
-	gsl_complex txPos =  gsl_vector_complex_get(geoPositions,tx); // lat,lon
-	gsl_complex rxPos =  gsl_vector_complex_get(geoPositions,rx+_M); // lat,lon
-
-	double txPosLat = GSL_REAL(txPos);
-	double txPosLon = GSL_IMAG(txPos);
-	double rxPosLat = GSL_REAL(rxPos);
-	double rxPosLon = GSL_IMAG(rxPos);
-
-	double deltaLat = rxPosLat-txPosLat; // ok
-	double deltaLon = rxPosLon-txPosLon; // be careful around 180E/W
-	double meanLat = (rxPosLat+txPosLat)/2.0; // be careful around poles
-
-	if (deltaLon > 180) // es Lon1 =-179 Lon2=179 D=2
-		deltaLon -= 360;
-	if (deltaLon < -180)
-		deltaLon += 360;
-
-	double x= deltaLon * 111111 * gsl_sf_cos(meanLat*M_PI_OVER_180); // cartesian x position around tx (in m)
-	double y= deltaLat * 111111; // cartesian y position arond tx (in m)
-
-
-	for (int j=0; j<SOSN; j++){
-		double th = gsl_matrix_get(sostheta,tx*_M+rx,j);
-		double fxn = gsl_vector_get(sosfxn,j);
-		double fyn = gsl_vector_get(sosfyn,j);
-		tmp += sosc * gsl_sf_cos(2.0 * M_PI * ( fxn * x + fyn * y + th));
-	}
-
-	cout << "shadow[ " << x << " , " << y << " ][ " << deltaLon << " , " << deltaLat << " ]= "<< tmp << endl;
-
-	return tmp;
-}

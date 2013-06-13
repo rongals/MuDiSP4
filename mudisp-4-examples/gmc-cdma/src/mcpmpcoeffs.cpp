@@ -526,10 +526,30 @@ void  MCPMPCoeffs::SpatialChannelUpdate() {
 				shadowdb += sosc * gsl_sf_cos(2.0 * M_PI * ( fxn * x + fyn * y + th));
 			} // for j
 
-			// pathloss i->ii
-			// 10 Log ( d^-3) = 10 Log ( d^2 ^-3/2) = -15 Log ( d^2 ) = -15 Log ( d^2 )
+			//
+			// PATHLOSS MODEL
+			//
+			// the following model has been adopted:
+			//
+			// the user choose the distance at which the mean Es/No is 0 (ESNO_ZERO_DISTANCE_M, desno0) and the
+			// distance at which the ploss is 0dB (PLOSS_ZERO_DISTANCE_M, dploss0)
+			// both expressed in metres, then the following apply
+			//
+			// EsNo(d) = Es [db] - ploss(d) [db] - No [db]
+			//
+			// EsNo(desno0) = Es [db] - ploss(desno0) [db] - No [db] = 0
+			//
+			// No [dB] = Es [dB] - ploss(desno0) [db]
+			//
+			// assuming Es [dB] = 0
+			//
+			// No = -ploss(desno0) [db]
+			//
+			// ploss(d) [dB] = 10 Log ( d^-3 / dploss^-3 ) = -30 Log(d) + 30 Log(dploss0)
+			//
+			//
 			double dist = sqrt(x*x+y*y);
-		    double plossdb =  ( -30.0 * gsl_sf_log( dist ) + 30.0 * gsl_sf_log(ZeroDb()) )/M_LN10;
+		    double plossdb =  ( -30.0 * gsl_sf_log( dist ) + 30.0 * gsl_sf_log(PLOSS_ZERO_DISTANCE_M) )/M_LN10;
 
 		    cout << "rx[" << i << "] x=" << x << " y=" << y << " ploss="
 		    		<< plossdb << " shadow=" << shadowdb << " dist=" << dist << endl;

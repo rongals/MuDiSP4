@@ -5,6 +5,7 @@
 // 
 
 #include "system.h"
+#include "gsl/gsl_sf_log.h"
 
 System::~System(){
 }
@@ -67,7 +68,22 @@ void System::Setup(){
   //                 N * ebnol * Nb
   //
 
-  mchannel1.SetParameter("Variance",1.0/(2.0*ebnol*Nb()));
+  //
+  // see PATHLOSS MODEL in gnccdma.h
+  //
+  // No [dB] = -ploss(desno0) [dB] = -30 Log(desno0) + 30 Log(dploss0)
+
+  double Nodb =  ( -30.0 * gsl_sf_log( ESNO_ZERO_DISTANCE_M )
+  	  	  	  	  + 30.0 * gsl_sf_log(PLOSS_ZERO_DISTANCE_M) )/M_LN10;
+
+  //
+  double noisevar = pow(10,( 0.5 * Nodb )/10.0 );
+
+  cout << "NodB (dB and linear) = " << Nodb << " , " << noisevar << endl;
+
+  mchannel1.SetParameter("Variance",0.5*noisevar);
+
+//  mchannel1.SetParameter("Variance",1.0/(2.0*ebnol*Nb()));
 
 
   mbitber1.SetParameter("Value",Ebno());

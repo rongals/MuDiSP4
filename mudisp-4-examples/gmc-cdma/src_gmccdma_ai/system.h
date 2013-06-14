@@ -84,7 +84,7 @@ private:
 
 
   IntParam K,J,N,Nb,M;
-  FloatParam Ebno;
+  FloatParam Ebno, RDist;
 
 
   MCPMPCoeffs mcoeffs1;
@@ -110,6 +110,7 @@ public:
   System():Block("System")
 	  ,_runs("Iterations",1,"Main iterations")
 	  ,Ebno("EbNo",3,"SNR (dB)")
+	  ,RDist("RDist",1000,"Reference Distance (m)")
 	  ,K("SourceSymbs",2,"source symbols")
 	  ,J("CodedSymbs",4,"coded symbols")
 	  ,N("Carriers",32,"number of carriers")
@@ -123,6 +124,7 @@ public:
     AddParameter(K);
     AddParameter(Nb);
     AddParameter(Ebno);    
+    AddParameter(RDist);
     AddParameter(_runs);
 
 

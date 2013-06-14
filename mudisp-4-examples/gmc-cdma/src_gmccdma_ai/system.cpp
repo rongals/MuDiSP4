@@ -5,7 +5,9 @@
 // 
 
 #include "system.h"
+#include "propagation.h"
 #include "gsl/gsl_sf_log.h"
+#include <math.h>
 
 System::~System(){
 }
@@ -69,15 +71,22 @@ void System::Setup(){
   //
 
   //
-  // see PATHLOSS MODEL in gnccdma.h
+  // ebnol = Eb / No = Es / (Nb No)
   //
-  // No [dB] = -ploss(desno0) [dB] = -30 Log(desno0) + 30 Log(dploss0)
-
-  double Nodb =  ( -30.0 * gsl_sf_log( ESNO_ZERO_DISTANCE_M )
-  	  	  	  	  + 30.0 * gsl_sf_log(PLOSS_ZERO_DISTANCE_M) )/M_LN10;
-
+  // without pathloss --> Es = 1
   //
-  double noisevar = pow(10,( 0.5 * Nodb )/10.0 );
+  // ebnol = 1 / (Nb No)
+  // No = 1 / (ebnol Nb) --> noisevar_I/Q = No/2 = 1 / (2 ebnol Nb)
+  //
+  //
+  // with patloss at dref --> Es = 1/ploss(dref)
+  //
+  // noisevar_I/Q = No/2 = 1 / (2 ebnol Nb ploss(refdist))
+  // No [dB] = -Ebno -Nb -ploss(refdist)
+
+
+  double Nodb = -Ebno() - mudisp::lintodb(Nb()) - mudisp::OkumuraHataCitydB(RDist(),1500);
+  double noisevar = 0.5*mudisp::dbtolin(Nodb);
 
   cout << "NodB (dB and linear) = " << Nodb << " , " << noisevar << endl;
 

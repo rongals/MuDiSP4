@@ -41,7 +41,8 @@ USERSRC = mblockuser.cpp \
 	mcpmpchan.cpp \
 	mblockrec.cpp \
 	gsllapack.cpp \
-	mbitber.cpp
+	mbitber.cpp \
+	propagation.cpp
 
 
 ##########################################

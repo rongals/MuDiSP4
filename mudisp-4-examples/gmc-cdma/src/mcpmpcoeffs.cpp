@@ -16,6 +16,7 @@
 #include "gsl/gsl_sf_exp.h"
 #include "gsl/gsl_sf_log.h"
 #include "gsl/gsl_math.h"
+#include "propagation.h"
 
 //
 //
@@ -234,6 +235,8 @@ void MCPMPCoeffs::Run() {
 		gsl_matrix_complex_set_all(ch,z);
 		gsl_complex chcoeff;
 
+		cout << "MODIFIED CHANNEL !!!!!!!!!!!!!!!!" << endl;
+
 		for (int i=0; i<_M; i++) { // user i (tx)
 			for (int ii=0;ii<_M;ii++) { // user ii (rx)
 				double plgain = gain * gsl_matrix_get(pathLoss,i,ii);
@@ -243,11 +246,13 @@ void MCPMPCoeffs::Run() {
 						chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd) + coeffstd * gainrice,
 								gsl_ran_gaussian(ran,coeffstd));
 						//chcoeff = o;
+						chcoeff = gsl_complex_rect(gsl_matrix_get(pathLoss,i,ii),0);
+
 
 					} else { // this is not the first tap
 						chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd),
 								gsl_ran_gaussian(ran,coeffstd));
-						//chcoeff = z;
+						chcoeff = z;
 
 					} // if
 
@@ -260,8 +265,8 @@ void MCPMPCoeffs::Run() {
 
 	}
 
-		cout << "channel:" << endl;
-		gsl_matrix_complex_show(ch);
+//		cout << "channel:" << endl;
+//		gsl_matrix_complex_show(ch);
 
 
 	//////// production of data
@@ -529,32 +534,16 @@ void  MCPMPCoeffs::SpatialChannelUpdate() {
 			//
 			// PATHLOSS MODEL
 			//
-			// the following model has been adopted:
-			//
-			// the user choose the distance at which the mean Es/No is 0 (ESNO_ZERO_DISTANCE_M, desno0) and the
-			// distance at which the ploss is 0dB (PLOSS_ZERO_DISTANCE_M, dploss0)
-			// both expressed in metres, then the following apply
-			//
-			// EsNo(d) = Es [db] - ploss(d) [db] - No [db]
-			//
-			// EsNo(desno0) = Es [db] - ploss(desno0) [db] - No [db] = 0
-			//
-			// No [dB] = Es [dB] - ploss(desno0) [db]
-			//
-			// assuming Es [dB] = 0
-			//
-			// No = -ploss(desno0) [db]
-			//
-			// ploss(d) [dB] = 10 Log ( d^-3 / dploss^-3 ) = -30 Log(d) + 30 Log(dploss0)
-			//
-			//
-			double dist = sqrt(x*x+y*y);
-		    double plossdb =  ( -30.0 * gsl_sf_log( dist ) + 30.0 * gsl_sf_log(PLOSS_ZERO_DISTANCE_M) )/M_LN10;
+			double dist = sqrt(x*x+y*y); // metres
+
+			double plossdb = mudisp::OkumuraHataCitydB(dist,1500);
+			//double plossdb = mudisp::OkumuraHataMetrodB(dist,1500);
+
 
 		    cout << "rx[" << i << "] x=" << x << " y=" << y << " ploss="
-		    		<< plossdb << " shadow=" << shadowdb << " dist=" << dist << endl;
+		    		<< -plossdb << " shadow=" << shadowdb << " dist=" << dist << endl;
 		    //
-		    double cx = pow(10,( 0.5 * plossdb + SOSsigma() * shadowdb )/10.0 );
+		    double cx = mudisp::dbtolin(-0.5 * plossdb + SOSsigma() * shadowdb );
 
 		     gsl_matrix_set(pathLoss,i,ii,cx);
 		     gsl_matrix_set(pathLoss,ii,i,cx); // it's symmetric !

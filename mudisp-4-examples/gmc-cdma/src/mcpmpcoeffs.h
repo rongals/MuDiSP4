@@ -28,7 +28,7 @@
 // deltalon = vx / 3.6 / 111111 Cos[lat]
 // deltalat = vy / 3.6 / 111111 
 #define GEO_VELOCITY_MIN 0.0 // expressed in km/h
-#define GEO_VELOCITY_MAX 100.0 // expressed in km/h
+#define GEO_VELOCITY_MAX 30.0 // expressed in km/h
 
 
 // Accuracy versus decimal places at the equator
@@ -68,7 +68,6 @@ class MCPMPCoeffs : public Block {
   IntParam N,L,M;
   FloatParam PTau;
   FloatParam Ricean;
-  FloatParam ZeroDb;
   FloatParam SOSa, SOSP, SOSsigma;
   IntParam SOSM;
   StringParam GeoFn;
@@ -106,7 +105,6 @@ class MCPMPCoeffs : public Block {
     ,PTau("PowerTau",1.0,"decay factor of delay spread")
     ,Ricean("RiceFact",0.0,"Ricean factor of channel")
     ,GeoFn("GeoFName","none","kml for geo-rendering (none to disable)")
-    ,ZeroDb("ZeroDb",0.01,"zero dB distance for path loss (m)")
 	,SOSa("SOSa",0.1,"SOS Spatial channel a parameter")
 	,SOSP("SOSP",0.8,"SOS Spatial channel P parameter")
 	,SOSsigma("SOSsigma",3,"SOS Spatial channel sigma parameter")
@@ -120,7 +118,6 @@ class MCPMPCoeffs : public Block {
       AddParameter(PTau);
       AddParameter(Ricean);
       AddParameter(GeoFn);
-      AddParameter(ZeroDb);
       AddParameter(SOSa);
       AddParameter(SOSP);
       AddParameter(SOSsigma);

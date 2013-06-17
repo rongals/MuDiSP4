@@ -33,7 +33,12 @@
 //
 //Example: K=2, Nb=1, ERROR_REPORT_INTERVAL 1024 --> a report every 1024/2=512 frames
 //
-#define ERROR_REPORT_INTERVAL 500000
+#define ERROR_REPORT_INTERVAL 50
+
+// symbol tyme in microseconds
+#define OFDM_SYMBOL_TIME_US 126.0
+
+// every x OFDM symbols a spatial channel update
 #define GEO_UPDATE_INTERVAL 10
 
 

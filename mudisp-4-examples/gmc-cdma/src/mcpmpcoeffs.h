@@ -25,6 +25,7 @@
 
 
 // vx (km/h), vy (km/h)
+// deltalon deltalat (deg/s)
 // deltalon = vx / 3.6 / 111111 Cos[lat]
 // deltalat = vy / 3.6 / 111111 
 #define GEO_VELOCITY_MIN 0.0 // expressed in km/h

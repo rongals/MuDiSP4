@@ -92,11 +92,15 @@ SOAR crai-rev4 Cognitive engine
 
 Updates and notes:
 
+RN20130617
+corrected issue: mobiles velocity
+
+
 RN20130614
 completed mudisp:: namespace with OkumuraHata models and helper functions
 completed noise computation
 *** issue: segfault for frequent error reports
-*** issue: mobiles too far during time CHECK VELOCITIES
+issue: mobiles too far during time CHECK VELOCITIES
 
 RN20130528
 collected all spatial channels updates in a single method

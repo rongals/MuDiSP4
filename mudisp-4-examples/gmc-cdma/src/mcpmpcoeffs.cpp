@@ -207,7 +207,7 @@ void MCPMPCoeffs::Run() {
 	//
 	if (runCount++ % GEO_UPDATE_INTERVAL == 0) {
 
-		GeoUpdate(5.0); // each GEO_UPDATE_INTERVAL runs are equivalent to x seconds
+		GeoUpdate(OFDM_SYMBOL_TIME_US * GEO_UPDATE_INTERVAL * 1.0e-6);
 		SpatialChannelUpdate();
 
 		if (geoRenderEnabled)
@@ -298,6 +298,9 @@ void MCPMPCoeffs::GeoInit() {
   geoPositions = gsl_vector_complex_alloc(2*M());
   geoVelocities  = gsl_vector_complex_alloc(2*M());
 
+  //
+  //
+  //
 
   // tx[i]
   for (int i=0;i<M();i++) {
@@ -323,7 +326,9 @@ void MCPMPCoeffs::GeoInit() {
     double deltalon = GSL_REAL(vel) / 3.6 / 111111.0 / cos(GEO_AREA_CENTER_LAT / 180.0 * M_PI);
     double deltalat = GSL_IMAG(vel) / 3.6 / 111111.0;
 
+    // expressed in deg LON and LAT
     gsl_vector_complex_set(geoPositions,i,gsl_complex_rect(lat,lon));
+    // expressed in deg/s LON and LAT
     gsl_vector_complex_set(geoVelocities,i,gsl_complex_rect(deltalon,deltalat));
 
   }
@@ -352,7 +357,9 @@ void MCPMPCoeffs::GeoInit() {
     double deltalon = GSL_REAL(vel) / 3.6 / 111111.0 / cos(GEO_AREA_CENTER_LAT / 180.0 * M_PI);
     double deltalat = GSL_IMAG(vel) / 3.6 / 111111.0;
 
+// expressed in deg, LON and LAT
     gsl_vector_complex_set(geoPositions,i,gsl_complex_rect(GEO_AREA_CENTER_LAT,GEO_AREA_CENTER_LON));
+// expressed in deg/s, LON and LAT
     gsl_vector_complex_set(geoVelocities,i,gsl_complex_polar(0.0,0.0));
 
   }

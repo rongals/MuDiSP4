@@ -92,9 +92,10 @@ SOAR crai-rev4 Cognitive engine
 
 Updates and notes:
 
-RN20130617
+RN20130619
 corrected issue: mobiles velocity
-
+corrected issue: segfault
+*** issue: gsl: ../gsl/gsl_matrix_double.h:277: ERROR: second index out of range
 
 RN20130614
 completed mudisp:: namespace with OkumuraHata models and helper functions

@@ -212,7 +212,7 @@ void MCPMPCoeffs::Run() {
 
 		if (geoRenderEnabled)
 			GeoRender();
-		cout << "Updating node positions." << endl;
+		//cout << "Updating node positions." << endl;
 
 		//gsl_matrix_show(pathLoss);
 
@@ -235,7 +235,7 @@ void MCPMPCoeffs::Run() {
 		gsl_matrix_complex_set_all(ch,z);
 		gsl_complex chcoeff;
 
-		cout << "MODIFIED CHANNEL !!!!!!!!!!!!!!!!" << endl;
+//		cout << "MODIFIED CHANNEL !!!!!!!!!!!!!!!!" << endl;
 
 		for (int i=0; i<_M; i++) { // user i (tx)
 			for (int ii=0;ii<_M;ii++) { // user ii (rx)
@@ -246,13 +246,13 @@ void MCPMPCoeffs::Run() {
 						chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd) + coeffstd * gainrice,
 								gsl_ran_gaussian(ran,coeffstd));
 						//chcoeff = o;
-						chcoeff = gsl_complex_rect(gsl_matrix_get(pathLoss,i,ii),0);
+						//chcoeff = gsl_complex_rect(gsl_matrix_get(pathLoss,i,ii),0);
 
 
 					} else { // this is not the first tap
 						chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd),
 								gsl_ran_gaussian(ran,coeffstd));
-						chcoeff = z;
+						//chcoeff = z;
 
 					} // if
 
@@ -547,9 +547,10 @@ void  MCPMPCoeffs::SpatialChannelUpdate() {
 			//double plossdb = mudisp::OkumuraHataMetrodB(dist,1500);
 
 
-		    cout << "rx[" << i << "] x=" << x << " y=" << y << " ploss="
-		    		<< -plossdb << " shadow=" << shadowdb << " dist=" << dist << endl;
-		    //
+			//cout << "rx[" << i << "] x=" << x << " y=" << y << " ploss="
+			//	<< -plossdb << " shadow=" << shadowdb << " dist=" << dist << endl;
+
+			//
 		    double cx = mudisp::dbtolin(-0.5 * plossdb + SOSsigma() * shadowdb );
 
 		     gsl_matrix_set(pathLoss,i,ii,cx);

@@ -28,8 +28,8 @@
 // deltalon deltalat (deg/s)
 // deltalon = vx / 3.6 / 111111 Cos[lat]
 // deltalat = vy / 3.6 / 111111 
-#define GEO_VELOCITY_MIN 0.0 // expressed in km/h
-#define GEO_VELOCITY_MAX 30.0 // expressed in km/h
+#define GEO_VELOCITY_MIN 20.0 // expressed in km/h
+#define GEO_VELOCITY_MAX 90.0 // expressed in km/h
 
 
 // Accuracy versus decimal places at the equator

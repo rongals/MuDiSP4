@@ -141,6 +141,7 @@ void MAIAllocator::Setup() {
   huu = gsl_matrix_complex_alloc(N(),M());
 
   framecount = 0;
+  ericount = 0;
   noDecisions = 0;
   ostringstream cmd;
 
@@ -206,7 +207,7 @@ void MAIAllocator::Setup() {
     //
     // SOAR INITIALIZATION
     //
-    max_errors = MAX_ERROR_RATE * ERROR_REPORT_INTERVAL * Nb() * K();
+    max_errors = MAX_ERROR_RATE * ERROR_REPORT_UPDATE_FR * Nb() * K();
     cout << BlockName << " - Max errors tuned to " << max_errors << " errors/frame." << endl;
 
     //
@@ -367,20 +368,21 @@ void MAIAllocator::Run() {
 
   // fetch channel matrix
   gsl_matrix_complex hmm  =  min1.GetDataObj();
+  gsl_vector_uint temperr  =  vin2.GetDataObj();
 
   // update error reports at receiver rx_m
-  if (framecount % ERROR_REPORT_INTERVAL == 0) { // once every ERI
-    gsl_vector_uint temperr  =  vin2.GetDataObj();
-    if (temperr.size == M()) {
-      gsl_vector_uint_memcpy(errs,&temperr);
+  if (ericount % ERROR_REPORT_UPDATE_FR == 0) { // once every ERI
+	  if (temperr.size == M()) {
+		  gsl_vector_uint_memcpy(errs,&temperr);
 
-      for (int i=0;i<M();i++) {
-      	cout << "u[" << i << "]= " 
-                  << gsl_vector_uint_get(errs,i) << endl; 
-      }
+//		  for (int i=0;i<M();i++) {
+//			  cout << "u[" << i << "]= "
+//					  << gsl_vector_uint_get(errs,i) << endl;
+//		  }
 
-    }
-  } 
+	  }
+	  ericount = 0;
+  }
 
   // extract huu (time domain response of channels tx_u --> rx_u)
   for (int u=0;u<M();u++) { // user loop
@@ -869,6 +871,7 @@ void MAIAllocator::Run() {
 
   //////// production of data
   framecount++;
+  ericount++;
   mout1.DeliverDataObj( *signature_frequencies );
   mout2.DeliverDataObj( *signature_powers );
 

@@ -26,14 +26,10 @@
 //#define GIANNAKIS_PRECODING
 
 //
-//the constant ERROR_REPORT_INTERVAL defines the number of bits
-//received from each user before creating a error report. The expected 
-//rate of reports depends on the number of bits per users in a GMC-CDMA
-//frame, i.e. bit_per_user_nbu = symbols_per_frame_K * bits_per_symbols_Nb
+//the constant ERROR_REPORT_UPDATE_FR defines the number of frames
+//received from each user before updating an error report.
 //
-//Example: K=2, Nb=1, ERROR_REPORT_INTERVAL 1024 --> a report every 1024/2=512 frames
-//
-#define ERROR_REPORT_INTERVAL 50
+#define ERROR_REPORT_UPDATE_FR 50
 
 // symbol tyme in microseconds
 #define OFDM_SYMBOL_TIME_US 126.0

@@ -19,7 +19,7 @@
 //
 // Uncomment if you need the errors dumped every ERROR_REPORT_INTERVAL (defined in gmccdma.h)
 //
-#define DUMPERRS
+//#define DUMPERRS
 
 
 #define NUMWIDTH 15
@@ -68,10 +68,13 @@ void MBitBer::Run() {
     } // user loop 
       
     
-    if (framecount ==  ERROR_REPORT_INTERVAL) { // report errors
+    if (framecount ==  ERROR_REPORT_UPDATE_FR) { // report errors
 
+    	// dumperrs <- errocount
       gsl_vector_uint_memcpy(dumperrs,errcount);
+      // dumperrs <- dumperrs - lasterrs
       gsl_vector_uint_sub(dumperrs,lasterrs);
+      // lasterrs <- errcount
       gsl_vector_uint_memcpy(lasterrs,errcount);
 
       framecount = 0;
@@ -81,15 +84,13 @@ void MBitBer::Run() {
 	cout << gsl_vector_uint_get(dumperrs,i) << " errors for user " << i << endl;
       }      
 #endif      
-      vout1.DeliverDataObj(*dumperrs); 
-      //this produces an output every ERROR_REPORT_INTERVAL frames
-      cout << "Producing error report..done." << endl;      
-    } // end report errors
+    } // end update report errors
 
     framecount++;
 
     //////// production of data
-    
+
+    vout1.DeliverDataObj(*dumperrs);
     
 }
 

@@ -41,7 +41,7 @@ class MAIAllocator : public Block {
   
   ////////   Local Attributes
  
-  unsigned int curruser,framecount, numberCommands, input_time, max_errors, noDecisions;
+  unsigned int curruser,framecount, ericount, numberCommands, input_time, max_errors, noDecisions;
   gsl_matrix_uint *Hperm;
   gsl_permutation *p; 
   gsl_vector *huserabs;
@@ -139,7 +139,7 @@ public:
   InPort < gsl_matrix_complex > min1;
 
   //
-  // Error reports (once every ERROR_REPORT_INTERVAL frames, i.e. runs) 
+  // Error reports (always consumed but updated once every ERROR_REPORT_INTERVAL frames, i.e. runs)
   //
   InPort < gsl_vector_uint > vin2;
 

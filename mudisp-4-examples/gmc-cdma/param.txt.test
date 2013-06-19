@@ -1,7 +1,7 @@
 ;
 ;  Parameters for System_1
 ;
-System_1.Iterations:                    10000              ; Main iterations
+System_1.Iterations:                    100000              ; Main iterations
 System_1.RDist:                         1000           ; Reference Distance (m)
 System_1.EbNo:                          3              ; SNR (dB)
 System_1.BitSymb:                       1              ; bits per symbol (PSK mapping)

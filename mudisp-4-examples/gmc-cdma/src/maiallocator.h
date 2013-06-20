@@ -128,6 +128,7 @@ class MAIAllocator : public Block {
   void IncreasePower(std::string & sUid, 
 		     std::string & sCid);
 
+  void UpdateInputLink();
 
 public:
 

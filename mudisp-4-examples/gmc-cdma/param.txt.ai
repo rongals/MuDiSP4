@@ -18,7 +18,7 @@ System_1.MCPMPCoeffs_1.SOSsigma:        3              ; SOS Spatial channel sig
 System_1.MCPMPCoeffs_1.SOSP:            0.8            ; SOS Spatial channel P parameter
 System_1.MCPMPCoeffs_1.SOSa:            0.1            ; SOS Spatial channel a parameter
 System_1.MCPMPCoeffs_1.GeoFName:        /home/ronga/public_html/track.kml         ; kml for georendering (none to disable)
-System_1.MCPMPCoeffs_1.RiceFact:        0              ; Ricean factor of channel
+System_1.MCPMPCoeffs_1.RiceFact:        0.8              ; Ricean factor of channel
 System_1.MCPMPCoeffs_1.PowerTau:        1              ; decay factor of delay spread
 System_1.MCPMPCoeffs_1.ChanTaps:        2              ; number of channel taps
 

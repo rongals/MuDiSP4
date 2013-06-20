@@ -16,7 +16,7 @@ VERSION 4
 13	0	OPERATOR implement-swap-carriers implement-swap-carriers.soar 14
 14	0	OPERATOR increase-power increase-power.soar 15
 15	0	OPERATOR initialize-crai initialize-crai.soar 16
-16	0	OPERATOR no-choices no-choices.soar 21
-17	0	OPERATOR swap-carriers swap-carriers.soar 17
-18	0	OPERATOR update-time update-time.soar 18
+16	0	OPERATOR no-choices no-choices.soar 17
+17	0	OPERATOR swap-carriers swap-carriers.soar 18
+18	0	OPERATOR update-time update-time.soar 19
 END

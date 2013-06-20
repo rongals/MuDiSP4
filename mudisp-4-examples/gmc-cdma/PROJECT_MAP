@@ -92,6 +92,11 @@ SOAR crai-rev4 Cognitive engine
 
 Updates and notes:
 
+RN20130620
+corrected issue: gsl: ../gsl/gsl_matrix_double.h:277: ERROR: second index out of range
+multiple decisions per single frame
+*** issue: increase power on same user,carrier should wait next error report
+
 RN20130619
 corrected issue: mobiles velocity
 corrected issue: segfault

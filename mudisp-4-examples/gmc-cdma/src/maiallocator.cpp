@@ -10,7 +10,7 @@
 #include "gmccdma.h"
 
 #define INIT_CARR_POWER 1.0
-#define POWER_STEP 0.01
+#define POWER_STEP 0.1
 #define MAX_ERROR_RATE 0.01
 #define MAX_POWER 10.0 
 
@@ -42,7 +42,7 @@
 
 //#define SHOW_POWER
 //#define SHOW_MATRIX
-//#define SPAWN_DEBUGGER
+#define SPAWN_DEBUGGER
 //#define PAUSED
 
 //
@@ -50,7 +50,7 @@
 // Matrix display
 //
 //
-//extern void gsl_matrix_uint_show(gsl_matrix_uint *mat);
+extern void gsl_matrix_uint_show(gsl_matrix_uint *mat);
 //extern void gsl_matrix_complex_show(gsl_matrix_complex *mat);
 
 void MAIAllocator::AssignFree(std::string & sUid, 
@@ -103,27 +103,49 @@ void MAIAllocator::SwapCarriers(std::string & sU1,
 
 
 void MAIAllocator::IncreasePower(std::string & sUid, 
-				 std::string & sCid) {
+		std::string & sCid) {
 
-  unsigned int foundj=J();
-  unsigned int u = atoi(sUid.c_str());
-  unsigned int c = atoi(sCid.c_str());
-  // we find the index of current allocation
-  for (int j=0; j<J(); j++)
-    if (gsl_matrix_uint_get(signature_frequencies,u,j) == c) {
-      foundj = j;
-      break;
-    }
-  // we perform the allocation and reset power
-  gsl_matrix_set(signature_powers,u,foundj,
-		 gsl_matrix_get(signature_powers,u,foundj)+POWER_STEP);
+	unsigned int foundj=J();
+	unsigned int u = atoi(sUid.c_str());
+	unsigned int c = atoi(sCid.c_str());
+
+
+	// we find the index of current allocation
+	for (int j=0; j<J(); j++)
+		if (gsl_matrix_uint_get(signature_frequencies,u,j) == c) {
+			foundj = j;
+			break;
+		}
+	// we perform the allocation and reset power
+	gsl_matrix_set(signature_powers,u,foundj,
+			gsl_matrix_get(signature_powers,u,foundj)+POWER_STEP);
 
 }
 
 
+void MAIAllocator::UpdateInputLink(){
 
+	for (int u=0;u<M();u++) { // user loop
 
+		// user errors
+		pAgent->Update(umapUserErrsVec[u],gsl_vector_uint_get(errs,u));
 
+		// channel coefficients
+		for (int j=0;j<N();j++) {
+			double coeffVal = gsl_complex_abs2(gsl_matrix_complex_get(Hmat,j,u));
+			pAgent->Update(chansCoeffValueMat[u*N()+j],coeffVal);
+		} // j loop
+
+		// current allocation (channels and powers)
+		for (int j=0;j<J();j++) {
+			unsigned int carr = gsl_matrix_uint_get(signature_frequencies,u,j);
+			double power = gsl_matrix_get(signature_powers,u,j);
+			pAgent->Update(umapUserCarrCidMat[u*J()+j],carr);
+			pAgent->Update(umapUserCarrPowerMat[u*J()+j],power);
+		} // j loop
+	} // user loop
+
+}
 
 void MAIAllocator::Setup() {
 
@@ -708,29 +730,6 @@ void MAIAllocator::Run() {
     // cin.ignore();
 
 
-
-
-	  for (int u=0;u<M();u++) { // user loop
-
-		  // update soarUserMap.wmeErrsVec[u]
-		  pAgent->Update(umapUserErrsVec[u],gsl_vector_uint_get(errs,u));
-
-		  // update soarChannelMap.wmeValueMat[i*M()+j]
-		  for (int j=0;j<N();j++) {
-			  double coeffVal = gsl_complex_abs2(gsl_matrix_complex_get(Hmat,j,u));
-			  pAgent->Update(chansCoeffValueMat[u*N()+j],coeffVal);
-		  } // j loop
-
-		  // update
-		  for (int j=0;j<J();j++) {
-			  unsigned int carr = gsl_matrix_uint_get(signature_frequencies,u,j);
-			  double power = gsl_matrix_get(signature_powers,u,j);
-			  pAgent->Update(umapUserCarrCidMat[u*J()+j],carr);
-			  pAgent->Update(umapUserCarrPowerMat[u*J()+j],power);
-		  } // j loop
-	  } // user loop
-
-
 	  // Every GEO_UPDATE_INTERVAL we increase the input-time and allow decisions
 	  if (framecount % GEO_UPDATE_INTERVAL == 0) {
 		  noDecisions = 0;
@@ -744,8 +743,14 @@ void MAIAllocator::Run() {
     // run agent till output
     numberCommands=0; 
 
-    //while (! (numberCommands || noDecisions) ) { // while numberCommands=0 and noDecisions=0
-    while (! (noDecisions) ) { // while numberCommands=0 and noDecisions=0
+
+    while (! (noDecisions) ) { // main decisional loop
+
+  	  //
+  	  // INPUT LINK Update
+  	  //
+  	  UpdateInputLink();
+
 
       //pAgent->RunSelf(1);
       pAgent->RunSelfTilOutput();

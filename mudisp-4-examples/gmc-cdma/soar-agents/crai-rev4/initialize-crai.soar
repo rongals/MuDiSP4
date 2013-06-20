@@ -14,6 +14,7 @@ sp {apply*initialize-crai
          ^conflicts <cfl>
          ^free-carriers <fc>
          ^current-time 0
-         ^processed <p>)
+         ^processed <p>
+         ^pow-issued no)
 }
 

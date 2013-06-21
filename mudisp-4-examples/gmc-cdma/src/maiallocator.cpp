@@ -42,7 +42,7 @@
 
 //#define SHOW_POWER
 //#define SHOW_MATRIX
-#define SPAWN_DEBUGGER
+//#define SPAWN_DEBUGGER
 //#define PAUSED
 
 //
@@ -390,21 +390,47 @@ void MAIAllocator::Run() {
 
   // fetch channel matrix
   gsl_matrix_complex hmm  =  min1.GetDataObj();
+
+  // hmm : channel coeffs matrix h(n) (M**2xN)
+  //                               ij
+  // ch matrix structure
+  //
+  //   +-                 -+
+  //   | h(0) . . . . h(n) | |
+  //   |  11           11  | |
+  //   |                   | | Rx1
+  //   | h(0) . . . . h(n) | |
+  //   |  12           12  | |
+  //   |                   |
+  //   | h(0) . . . . h(n) | |
+  //   |  21           21  | |
+  //   |                   | | Rx2
+  //   | h(0) . . . . h(n) | |
+  //   |  22           22  | |
+  //   +-                 -+
+  //
+  //   where h(n) represents the channel impulse response
+  //          ij
+  //
+  //   at time n, from tx_i to rx_j
+  //   the matrix has MxM rows and N comumns.
+  //   The (i,j) channel is locater at row i*M+j
+  //   with i,j in the range [0,M-1] and rows counting from 0
+  //
+  //
+
+  // fetch error report
+  // e(u) = errors for user u in the last ERROR_REPORT_UPDATE_FR (ERU)frames
   gsl_vector_uint temperr  =  vin2.GetDataObj();
 
-  // update error reports at receiver rx_m
-  if (ericount % ERROR_REPORT_UPDATE_FR == 0) { // once every ERI
+  // update error reports at receiver rx_m every ERU
+  if (ericount % ERROR_REPORT_UPDATE_FR == 0) { // once every ERU
 	  if (temperr.size == M()) {
 		  gsl_vector_uint_memcpy(errs,&temperr);
-
-//		  for (int i=0;i<M();i++) {
-//			  cout << "u[" << i << "]= "
-//					  << gsl_vector_uint_get(errs,i) << endl;
-//		  }
-
 	  }
 	  ericount = 0;
   }
+
 
   // extract huu (time domain response of channels tx_u --> rx_u)
   for (int u=0;u<M();u++) { // user loop
@@ -421,7 +447,7 @@ void MAIAllocator::Run() {
   //  huu matrix structure
   //
   //   +-                 -+
-  //   | h(0) . . . . h(0) |
+  //   | h(0) . . . . h(n) |
   //   |  11           uu  |
   //   |                   |
   //   | h(n) . . . . h(n) |
@@ -432,13 +458,13 @@ void MAIAllocator::Run() {
   //          ii
   //
   //   at time n, from tx_u to rx_u
-  //   the matrix has N rows and M comumns.
+  //   the matrix has N rows and M columns.
   //
-  //
+  //   ATTENTION! user_0 channel response is the first column
+
   //
   // Hmat(NxM) = Fourier( huu(NxM) )
   // 
-
   gsl_blas_zgemm(CblasNoTrans,
 		 CblasNoTrans,
 		 gsl_complex_rect(1,0),
@@ -447,7 +473,6 @@ void MAIAllocator::Run() {
 		 gsl_complex_rect(0,0),
 		 Hmat);
 
-//		 gsl_complex_rect(sqrt(double(N())),0),
   //
   // ***********************************************************
   // CARRIER ALLOCATION STRATEGIES
@@ -467,10 +492,13 @@ void MAIAllocator::Run() {
     //
     // SORT CARRIERS OF EACH USERS
     //
-    // uses Hmat: the frequency responses of channels tx_m --> rx_1
+    // uses Hmat: the frequency responses of channel tx_n --> rx_n
     //
+	// starting from user u ...
+	// find the best (in u ranking) unused carrier and assign it to u
+	// next user until no more available carriers
 
-  for(int u=0; u<M(); u++) {
+  for(int u=0; u<M(); u++) { // cycle through users
 
     gsl_vector_complex_const_view huser 
       = gsl_matrix_complex_const_column(Hmat,u);
@@ -484,6 +512,7 @@ void MAIAllocator::Run() {
       gsl_vector_set(huserabs,j,currpower);
     }
 
+    // sort over c using abs(h(u,c))
     gsl_sort_vector_index(p,huserabs);
 
     for (int j=0; j<N(); j++) {
@@ -524,16 +553,8 @@ void MAIAllocator::Run() {
     }
   }
 
-  //
-  // sort signatures 
-  //
-  //   for (int u=0; u<M(); u++) {
-  //     gsl_vector_uint_view signature_u = 
-  //       gsl_matrix_uint_row(signature_frequencies,u);
-  //     gsl_sort_vector_uint(&signature_u.vector);
-  //   }
-  
- 
+
+
   //
   // show channels and permutations 
   //
@@ -541,31 +562,31 @@ void MAIAllocator::Run() {
   //gsl_matrix_uint_show(Hperm);
   //gsl_matrix_uint_show(signature_frequencies);
 
-    break;
+  break;
 
   case 2: // SWAP_BAD_GOOD
 
-  //
-  // HPERM CONSTRUCTION
-  //
+	  //
+	  // SWAP_BAD_GOOD
+	  //
+	  // sort carriers for each user
+	  // choose randomly a starting user u
+	  // for each user starting with u
+	  //    swap worst carrier used by u with best carrier if used by others
 
-  // SORT CARRIERS OF EACH USERS
-  //
+	  // sort carriers
+	  for(int u=0; u<M(); u++) {
 
+		  gsl_vector_complex_const_view huser
+		  = gsl_matrix_complex_const_column(Hmat,u);
+		  gsl_vector_uint_view sortindu = gsl_matrix_uint_column(Hperm,u);
+		  gsl_vector_view huserabs = gsl_matrix_column(habs,u);
 
-  for(int u=0; u<M(); u++) {
-
-    gsl_vector_complex_const_view huser 
-      = gsl_matrix_complex_const_column(Hmat,u);
-    gsl_vector_uint_view sortindu = gsl_matrix_uint_column(Hperm,u);
-    gsl_vector_view huserabs = gsl_matrix_column(habs,u);
-
-    for (int j=0; j<N(); j++) {
+		  for (int j=0; j<N(); j++) {
       double currpower 
 	= gsl_complex_abs2(gsl_vector_complex_get(&huser.vector,j));
       gsl_vector_set(&huserabs.vector,j,currpower);
     }
-
 
     //
     // sort channels for user <u>

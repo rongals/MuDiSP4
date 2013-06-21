@@ -3,6 +3,7 @@
 ;
 System_1.Iterations:                    300              ; Main iterations
 System_1.EbNo:                          3              ; SNR (dB)
+System_1.RDist:                         1000           ; Reference Distance (m)
 System_1.BitSymb:                       1              ; bits per symbol (PSK mapping)
 System_1.SourceSymbs:                   2              ; source symbols
 System_1.CodedSymbs:                    4              ; coded symbols
@@ -12,9 +13,12 @@ System_1.NumUsers:                      4              ; number of users
 ;
 ;  Parameters for MCPMPCoeffs_1
 ;
-System_1.MCPMPCoeffs_1.ZeroDb:          1.0           ; zero dB distance for path loss (km)
+System_1.MCPMPCoeffs_1.SOSM:            5              ; SOS Spatial channel M parameter
+System_1.MCPMPCoeffs_1.SOSsigma:        3              ; SOS Spatial channel sigma parameter
+System_1.MCPMPCoeffs_1.SOSP:            0.8            ; SOS Spatial channel P parameter
+System_1.MCPMPCoeffs_1.SOSa:            0.1            ; SOS Spatial channel a parameter
 System_1.MCPMPCoeffs_1.GeoFName:        /home/ronga/public_html/track.kml         ; kml for georendering (none to disable)
-System_1.MCPMPCoeffs_1.RiceFact:        0              ; Ricean factor of channel
+System_1.MCPMPCoeffs_1.RiceFact:        0.8              ; Ricean factor of channel
 System_1.MCPMPCoeffs_1.PowerTau:        1              ; decay factor of delay spread
 System_1.MCPMPCoeffs_1.ChanTaps:        2              ; number of channel taps
 

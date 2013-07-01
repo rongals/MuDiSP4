@@ -64,6 +64,8 @@ void MBitBer::Run() {
       gsl_vector_uint_set(bitcount,i,gsl_vector_uint_get(bitcount,i)+bpu());
       gsl_vector_uint_set(errcount,i,gsl_vector_uint_get(errcount,i)+userErrors);
 
+      if (gsl_vector_uint_get(errcount,i)>maxerrs())
+    	  stopFlag=true;
 
     } // user loop 
       
@@ -149,4 +151,8 @@ void MBitBer::Finish() {
   gsl_vector_uint_free(dumperrs);
 
 
+}
+
+bool MBitBer::getStopFlag() {
+	return stopFlag;
 }

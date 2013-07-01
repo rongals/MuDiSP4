@@ -20,8 +20,12 @@ void System::Build() {
   //////// parameters reading.
   ////////
 
-
+  // uncomment to send instantaneous channel coefficients to allocator
   Connect(mcoeffs1,mcoeffs1.mout1,maialloc1,maialloc1.min1);
+
+  // uncomment to send channel powers to allocator
+  //Connect(mcoeffs1,mcoeffs1.mout2,maialloc1,maialloc1.min1);
+
   Connect(mcoeffs1,mcoeffs1.mout1,mchannel1,mchannel1.min2);
 
   Connect(maialloc1,maialloc1.mout1,mblockuser1,mblockuser1.min2);
@@ -108,6 +112,6 @@ void System::Setup(){
 // You shoud not modify this ...
 //
 void System::Run(){
-    for (unsigned int i=0; i<_runs();i++)
+    for (unsigned int i=0; (i < _runs()) && (! mbitber1.getStopFlag()) ;i++)
       Block::Run();
 }

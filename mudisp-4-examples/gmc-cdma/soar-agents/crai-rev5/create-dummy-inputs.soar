@@ -1,0 +1,55 @@
+#
+# if there's no usermap on i-l
+# we create a dummy one
+#
+
+sp {crai*propose*create-dummy-inputs
+   (state <s> ^name crai
+              ^io.input-link <il>)
+   -(<il> ^usrmap <um>)
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name create-dummy-inputs)
+}
+
+sp {apply*create-dummy-inputs
+   (state <s> ^operator <op>
+              ^io.input-link <il>)
+   (<op> ^name create-dummy-inputs)
+-->
+   (<il> ^usrmap <umap>)
+   (<umap> ^maxerr 100 
+           ^pstep (/ 1 10)
+           ^pmax 10.0
+           ^user <u0> <u1> )
+   (<u0> ^uid 0 ^errs   0 ^power 2.0 ^carr <a00> <a01>)
+   (<u1> ^uid 1 ^errs 130 ^power 2.0 ^carr <a10> <a11>)
+   (<a00> ^cid 0 ^power 1.0)
+   (<a01> ^cid 1 ^power 1.0)
+   (<a10> ^cid 1 ^power 1.0)
+   (<a11> ^cid 3 ^power 1.0)
+   
+   (<il> ^channels <chs>)
+   (<chs> ^coeff <c00> <c01> <c02> <c03> <c10> <c11> <c12> <c13>)
+   (<c00> ^user 0 ^carr 0 ^value (/ 1  100))
+   (<c01> ^user 0 ^carr 1 ^value (/ 2  100))
+   (<c02> ^user 0 ^carr 2 ^value (/ 2  100))
+   (<c03> ^user 0 ^carr 3 ^value (/ 1  100))
+   (<c10> ^user 1 ^carr 0 ^value (/ 2  100))
+   (<c11> ^user 1 ^carr 1 ^value (/ 1  100))
+   (<c12> ^user 1 ^carr 2 ^value (/ 1  100))
+   (<c13> ^user 1 ^carr 3 ^value (/ 2  100))
+
+   (<il> ^carmap <cm>)
+   (<cm> ^carr <c0>
+         ^carr <c1>
+         ^carr <c2>
+         ^carr <c3>)
+   (<c0> ^cid 0)
+   (<c1> ^cid 1)
+   (<c2> ^cid 2)
+   (<c3> ^cid 3)
+   (<il> ^input-time 1
+         ^isdummy yes)
+   
+}

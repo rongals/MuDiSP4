@@ -24,7 +24,7 @@ private:
 
 ////////   Parameters instances
 
-  IntParam M, bpu;
+  IntParam M, bpu, maxerrs;
   FloatParam value;
   StringParam fname;
 
@@ -35,6 +35,7 @@ private:
   
 
   unsigned int framecount;
+  bool stopFlag;
 
 
 public:
@@ -50,9 +51,11 @@ public:
   MBitBer():Block("MBitBer")
     
 ////////  parameters initializazion
+  	,stopFlag(false)
     ,framecount(0)
     ,value("Value",0.0,"index value")
     ,fname("OutFile","cout")
+  	,maxerrs("MaxErrs",100,"max errs for ANY user")
     ,M("NumUsers",2,"number of users")
     ,bpu("BitUser",2,"number of bit per user ")
     {
@@ -61,6 +64,7 @@ public:
 
       AddParameter(value);
       AddParameter(fname);
+      AddParameter(maxerrs);
       AddParameter(M);
       AddParameter(bpu);
     }
@@ -68,6 +72,7 @@ public:
   void Setup();
   void Run();
   void Finish();
+  bool getStopFlag();
   
 };
 

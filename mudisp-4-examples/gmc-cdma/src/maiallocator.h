@@ -135,7 +135,7 @@ public:
   ////////   InPorts and OutPorts
 
   //
-  // Channel coefficient 
+  // Channel (power/instantaneous) coefficient
   //
   InPort < gsl_matrix_complex > min1;
 
@@ -143,7 +143,6 @@ public:
   // Error reports (always consumed but updated once every ERROR_REPORT_INTERVAL frames, i.e. runs)
   //
   InPort < gsl_vector_uint > vin2;
-
   
   //
   // Allocation Matrices

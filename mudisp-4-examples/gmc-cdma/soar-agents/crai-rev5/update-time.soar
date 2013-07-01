@@ -1,0 +1,27 @@
+#
+# if input-time is different from current-time
+# update current-time and clear processed-carriers
+#
+
+sp {crai*propose*update-time
+   (state <s> ^name crai
+              ^io.input-link.input-time <itime>
+              ^current-time {<> <itime> <ctime>})
+-->
+   (<s> ^operator <op> + !)
+   (<op> ^name update-time)
+}
+
+
+
+sp {apply*update-time
+   (state <s> ^operator <op>
+              ^io.input-link.input-time <it>
+              ^current-time {<> <it> <ct>}
+              ^pow-issued <pi>)
+-->
+   (<s> ^current-time <ct> -
+        ^current-time <it>
+        ^pow-issued <pi> -
+        ^pow-issued no)
+}

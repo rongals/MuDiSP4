@@ -1,0 +1,22 @@
+#
+# if the command in OL is completed
+# --> delete it
+#
+
+sp {crai*propose*delete-command
+   (state <s> ^name crai
+              ^io.output-link (^<cmd> (^status complete)))
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name delete-command)
+}
+
+
+
+sp {apply*delete-command
+   (state <s> ^operator <op>
+              ^io.output-link (<ol> ^<name> (<cmd> ^status complete)))
+   (<op> ^name delete-command)
+-->
+   (<ol> ^<name> <cmd> -)
+}

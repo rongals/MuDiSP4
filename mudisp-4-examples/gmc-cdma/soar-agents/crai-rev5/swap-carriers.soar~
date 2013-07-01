@@ -1,0 +1,44 @@
+#
+# if two different users u1,u2 use respectively c1 and c2
+# h(u1,c2) > h(u1,c1), h(u2,c1) > h(u2,c2)
+# there's no satified command on output link
+# there's no conflicts
+# --> propose swap-carriers(u1,c1,u2,c2)
+#
+
+
+
+sp {crai*propose*swap-carriers
+   (state <s> ^name crai
+              ^io.input-link.usrmap.user (^uid <uid1> ^carr (^cid <cid1>)) 
+                                         (^uid {<> <uid1> <uid2>} ^carr (^cid {<> <cid1> <cid2>}))
+              ^io.input-link.channels.coeff (^carr <cid1> ^user <uid1> ^value <v1>)
+                                            (^carr <cid2> ^user <uid2> ^value <v2>)
+                                            (^carr <cid2> ^user <uid1> ^value <sv1> > <v1>)
+                                            (^carr <cid1> ^user <uid2> ^value <sv2> > <v2>)
+              ^io.output-link (-^<name>)
+              -^conflicts.carr <ccs>)
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name swap-carriers
+         ^u1 <uid1>
+         ^c1 <cid1>
+         ^u2 <uid2>
+         ^c2 <cid2>)
+}
+
+sp {apply*swap-carriers
+   (state <s> ^operator <op>
+              ^io.output-link <ol>)
+   (<op> ^name swap-carriers
+         ^u1 <uid1>
+         ^c1 <cid1>
+         ^u2 <uid2>
+         ^c2 <cid2>)
+-->
+  (<ol> ^swap-carriers <cmd>)
+  (<cmd> ^u1 <uid1>
+         ^c1 <cid1>
+         ^u2 <uid2>
+         ^c2 <cid2>)
+}

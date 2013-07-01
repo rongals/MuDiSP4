@@ -215,7 +215,7 @@ void MCPMPCoeffs::Run() {
 		//cout << "Updating node positions." << endl;
 
 		//gsl_matrix_show(pathLoss);
-
+	}
 
 		//
 		//
@@ -224,9 +224,6 @@ void MCPMPCoeffs::Run() {
 		// IEEE Trans Veh Tech Vol 52, No. 6, Nov. 2003
 		//
 		//
-
-
-
 
 		//
 		// Exponentially decaying power profile
@@ -246,24 +243,24 @@ void MCPMPCoeffs::Run() {
 						chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd) + coeffstd * gainrice,
 								gsl_ran_gaussian(ran,coeffstd));
 						//chcoeff = o;
-						//chcoeff = gsl_complex_rect(gsl_matrix_get(pathLoss,i,ii),0);
 
 
 					} else { // this is not the first tap
 						chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd),
 								gsl_ran_gaussian(ran,coeffstd));
-						//chcoeff = z;
+
 
 					} // if
 
 					gsl_matrix_complex_set(ch,i*_M+ii,j,chcoeff);
+
 
 				} // j loop
 			} // ii loop
 		} // i loop
 
 
-	}
+	//} // if (runCount++ % GEO_UPDATE_INTERVAL == 0)
 
 //		cout << "channel:" << endl;
 //		gsl_matrix_complex_show(ch);

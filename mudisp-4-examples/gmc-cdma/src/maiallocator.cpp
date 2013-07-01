@@ -8,6 +8,7 @@
 
 #include "maiallocator.h"
 #include "gmccdma.h"
+#include "propagation.h"
 
 #define INIT_CARR_POWER 1.0
 #define POWER_STEP 0.1
@@ -42,6 +43,7 @@
 
 //#define SHOW_POWER
 //#define SHOW_MATRIX
+//#define SHOW_SOAR
 //#define SPAWN_DEBUGGER
 //#define PAUSED
 
@@ -51,7 +53,7 @@
 //
 //
 extern void gsl_matrix_uint_show(gsl_matrix_uint *mat);
-//extern void gsl_matrix_complex_show(gsl_matrix_complex *mat);
+extern void gsl_matrix_complex_show(gsl_matrix_complex *mat);
 
 void MAIAllocator::AssignFree(std::string & sUid, 
 			      std::string & sDeassign,
@@ -132,8 +134,8 @@ void MAIAllocator::UpdateInputLink(){
 
 		// channel coefficients
 		for (int j=0;j<N();j++) {
-			double coeffVal = gsl_complex_abs2(gsl_matrix_complex_get(Hmat,j,u));
-			pAgent->Update(chansCoeffValueMat[u*N()+j],coeffVal);
+			double coeffVal = gsl_complex_abs(gsl_matrix_complex_get(Hmat,j,u));
+			pAgent->Update(chansCoeffValueMat[u*N()+j],mudisp::lintodb(coeffVal));
 		} // j loop
 
 		// current allocation (channels and powers)
@@ -188,6 +190,7 @@ void MAIAllocator::Setup() {
   //
   gsl_matrix_uint_memcpy(signature_frequencies,
 			 signature_frequencies_init);
+
   // maximum initial powers for all carriers
   gsl_matrix_set_all(signature_powers,INIT_CARR_POWER); 
 
@@ -473,13 +476,16 @@ void MAIAllocator::Run() {
 		 gsl_complex_rect(0,0),
 		 Hmat);
 
+#ifdef SHOW_MATRIX
+  cout << "Hmat(freq,user) (frame:" << framecount << ") = " << endl;
+  gsl_matrix_complex_show(Hmat);
+#endif
+
   //
   // ***********************************************************
   // CARRIER ALLOCATION STRATEGIES
   // ***********************************************************
   //
-    gsl_matrix_uint_memcpy(signature_frequencies,
-			   signature_frequencies_init);
 
   switch (Mode()) {
 
@@ -684,6 +690,8 @@ void MAIAllocator::Run() {
   //
   // SORT CARRIERS OF EACH USERS
   //
+	    gsl_matrix_uint_memcpy(signature_frequencies,
+				   signature_frequencies_init);
 
   for(int u=0; u<M(); u++) {
 
@@ -731,20 +739,9 @@ void MAIAllocator::Run() {
     //
     // SOAR
     //
-    // we base the decisions on the channels tx_m --> rx_m extracted from hmm
+    // we base the decisions on the frequency response tx_m --> rx_m in Hmat(N,M)
 
-    //-----------------------------------------------------------------------
 
-    // extract frequency response for all users and all carriers
-    // hmm (M**2xN)
-    //
-    // for each user 
-    //   we get the hmm time response, 
-    //   then Hmm frequency response,
-    //   update the relevant sections of ^io.input-link
-    //
-
-    //    gsl_matrix_complex_show(Hmat);
 
     // keypress 
 	//  cout << "pause maillocator:620 ... (press ENTER key)" << endl;
@@ -753,17 +750,15 @@ void MAIAllocator::Run() {
 
 	  // Every GEO_UPDATE_INTERVAL we increase the input-time and allow decisions
 	  if (framecount % GEO_UPDATE_INTERVAL == 0) {
-		  noDecisions = 0;
 		  pAgent->Update(inputTime,++input_time);
+		  pAgent->Commit();
 	  }
-	  pAgent->Commit();
 
-    // commit changes no longer needed
-    //pAgent->Commit();
 
-    // run agent till output
-    numberCommands=0; 
+	  // run agent till output
+	  noDecisions = 0;
 
+	  numberCommands=0;
 
     while (! (noDecisions) ) { // main decisional loop
 
@@ -785,57 +780,24 @@ void MAIAllocator::Run() {
       cin.ignore();
 #endif
 
-    //} WHILE REMOVED HERE
-    
-    // cout << "Found " << numberCommands << " command/s." << endl;
 
-    // keypress 
-    // cout << "pause maillocator:671 ... (press ENTER key)" << endl;
-    // cin.ignore();
-
-
-
-    //-----------------------------------------------------------------------
-
-    // collect results and generate signature_frequencies
-    // and signature_powers
-
- // ^io
- //   ^output-link
- //     ^assign-free
- //       ^uid
- //       ^deassign
- //       ^assign
- //     ^swap-carriers
- //       ^u1
- //       ^c1
- //       ^u2
- //       ^c2
- //     ^increase-power
- //       ^uid
- //       ^cid
- //     ^<command>
- //       ^status
-
-
+      // loop through received commands
       for (int cmd = 0 ; cmd < numberCommands ; cmd++) {
 
     	  Identifier* pCommand = pAgent->GetCommand(cmd) ;
     	  string name  = pCommand->GetCommandName() ;
 
-    	  //      cout << "the command is " << name << endl;
-
-
     	  if (name == "assign-free") {
     		  std::string sUid = pCommand->GetParameterValue("uid");
     		  std::string sDeassign = pCommand->GetParameterValue("deassign");
     		  std::string sAssign = pCommand->GetParameterValue("assign");
+#ifdef SHOW_SOAR
     		  cout << "assign-free command received [ u:"
     				  << sUid << " , -"
     				  << sDeassign << " , +"
     				  << sAssign << " ]"
     				  << endl;
-
+#endif
     		  AssignFree(sUid,sDeassign,sAssign);
     		  pCommand->AddStatusComplete();
 
@@ -845,12 +807,13 @@ void MAIAllocator::Run() {
     		  std::string sC1 = pCommand->GetParameterValue("c1");
     		  std::string sU2 = pCommand->GetParameterValue("u2");
     		  std::string sC2 = pCommand->GetParameterValue("c2");
+#ifdef SHOW_SOAR
     		  cout << "swap-carriers command received [ u1:"
     				  << sU1 << " , c1:"
     				  << sC1 << " , u2:"
     				  << sU2 << " , c2:"
     				  << sC2 << " ]" << endl;
-
+#endif
     		  SwapCarriers(sU1,sC1,sU2,sC2);
     		  pCommand->AddStatusComplete();
 
@@ -858,11 +821,11 @@ void MAIAllocator::Run() {
 
     		  std::string sUid = pCommand->GetParameterValue("uid");
     		  std::string sCid = pCommand->GetParameterValue("cid");
-
+#ifdef SHOW_SOAR
     		  cout << "increase-power command received [ u:"
     				  << sUid << " , c:"
     				  << sCid << " ]" << endl;
-
+#endif
     		  IncreasePower(sUid,sCid);
     		  pCommand->AddStatusComplete();
 
@@ -871,8 +834,9 @@ void MAIAllocator::Run() {
 
     	  } else if (name == "no-choices") {
 
-
+#ifdef SHOW_SOAR
     		  cout << "no-choices command received" << endl;
+#endif
     		  noDecisions = 1;
     		  pCommand->AddStatusComplete();
 
@@ -880,12 +844,15 @@ void MAIAllocator::Run() {
 
 
     	  } else {
+#ifdef SHOW_SOAR
     		  cout << "ignoring unknown output command from SOAR" << endl;
+#endif
+    		  break;
     	  }
 
-    	  cout << "framecount = " << framecount << endl;
+//    	  cout << "framecount = " << framecount << endl;
 
-      } // end for (int cmd = 0 ; cmd < numberCommands ; cmd++)
+      } // end command loop
 
     } // while (! (noDecisions) )
 
@@ -893,13 +860,19 @@ void MAIAllocator::Run() {
 
   } // switch (Mode())
 
-
+  if (framecount % 10 == 0)
+	  cout << "frame: " << framecount << endl;
 
   //////// production of data
   framecount++;
   ericount++;
   mout1.DeliverDataObj( *signature_frequencies );
   mout2.DeliverDataObj( *signature_powers );
+
+#ifdef SHOW_MATRIX
+  cout << "signature frequencies (frame:" << framecount-1 << ") = " << endl;
+  gsl_matrix_uint_show(signature_frequencies);
+#endif
 
 }
 

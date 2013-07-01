@@ -1,0 +1,36 @@
+# if user <u> has ^errs greater than ^maxerr 
+# and <s> ^ptime <> ^io.input-link.time
+# propose increase-power operator
+#
+
+sp {crai*propose*increase-power
+   (state <s> ^name crai
+              ^io.input-link.usrmap (^maxerr <maxe> ^pmax <pm> ^user
+                                    (<u> ^power < <pm> 
+                                         ^errs > <maxe> 
+                                         ^carr <c>))
+              ^io.output-link (-^<name>)
+              ^pow-issued no)
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name increase-power
+         ^user <u>
+         ^carr <c>)
+}
+
+sp {apply*increase-power
+   (state <s> ^operator <op>
+              ^io.input-link.usrmap.user (<u> ^uid <uid> ^carr
+                                         (<c> ^cid <cid> ))
+              ^io.output-link <ol>
+              ^pow-issued <pc>)
+   (<op> ^name increase-power
+         ^user <u>
+         ^carr <c>)
+-->
+   (<s> ^pow-issued <pc> -
+        ^pow-issued yes)
+   (<ol> ^increase-power <cmd>)
+   (<cmd> ^uid <uid>
+          ^cid <cid>)
+}

@@ -94,7 +94,7 @@ class MCPMPCoeffs : public Block {
 
 ////////   InPorts and OutPorts
 
-  OutPort < gsl_matrix_complex > mout1;  // complex mat MxMxN 
+  OutPort < gsl_matrix_complex > mout1;  // complex mat (MxM)xN
 
 
 

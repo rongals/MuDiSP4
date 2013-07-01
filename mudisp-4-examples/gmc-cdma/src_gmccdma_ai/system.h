@@ -82,7 +82,6 @@ private:
   //
   //
 
-
   IntParam K,J,N,Nb,M;
   FloatParam Ebno, RDist;
 
@@ -113,9 +112,9 @@ public:
 	  ,RDist("RDist",1000,"Reference Distance (m)")
 	  ,K("SourceSymbs",2,"source symbols")
 	  ,J("CodedSymbs",4,"coded symbols")
-	  ,N("Carriers",32,"number of carriers")
+	  ,N("Carriers",16,"number of carriers")
 	  ,Nb("BitSymb",1,"bits per symbol (PSK mapping)")
-	  ,M("NumUsers",2,"number of users")
+	  ,M("NumUsers",4,"number of users")
   {
 
     AddParameter(M);

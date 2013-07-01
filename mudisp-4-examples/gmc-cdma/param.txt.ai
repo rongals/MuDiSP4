@@ -18,22 +18,20 @@ System_1.MCPMPCoeffs_1.SOSsigma:        3              ; SOS Spatial channel sig
 System_1.MCPMPCoeffs_1.SOSP:            0.8            ; SOS Spatial channel P parameter
 System_1.MCPMPCoeffs_1.SOSa:            0.1            ; SOS Spatial channel a parameter
 System_1.MCPMPCoeffs_1.GeoFName:        /home/ronga/public_html/track.kml         ; kml for georendering (none to disable)
-System_1.MCPMPCoeffs_1.RiceFact:        0.8              ; Ricean factor of channel
+System_1.MCPMPCoeffs_1.RiceFact:        0.9              ; Ricean factor of channel
 System_1.MCPMPCoeffs_1.PowerTau:        1              ; decay factor of delay spread
-System_1.MCPMPCoeffs_1.ChanTaps:        2              ; number of channel taps
+System_1.MCPMPCoeffs_1.ChanTaps:        5              ; number of channel taps
 
 
 ;
 ;  Parameters for MAIAllocator_1
 ;
-System_1.MAIAllocator_1.SoarFn:         /usr/local/sandbox_ronga/git/MuDiSP4/mudisp-4-examples/gmc-cdma/soar-agents/crai-rev4.soar    ; SOAR agent filename
+System_1.MAIAllocator_1.SoarFn:         /usr/local/sandbox_ronga/git/MuDiSP4/mudisp-4-examples/gmc-cdma/soar-agents/crai-rev5.soar    ; SOAR agent filename
 System_1.MAIAllocator_1.AllocatorMode:  4              ; 0=fca,1=bst,2=swp,3=ovl,4=SOAR
 
 
 ;
 ;  Parameters for MBitBer_1
 ;
+System_1.MBitBer_1.MaxErrs:             100            ; max errs for ANY user
 System_1.MBitBer_1.OutFile:             cout            
-
-
-

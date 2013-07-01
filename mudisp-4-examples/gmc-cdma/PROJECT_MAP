@@ -88,14 +88,28 @@ signal    (N x M)    4    tx signal matrix
 signature (J x M)    2    carriers assignements, uint
 powers    (J x M)    2    power assignements, double
 
-SOAR crai-rev4 Cognitive engine
+
+SOAR crai-rev5 Cognitive engine 
+   one power increment per epoch
+   multiple swap allowed per carrier per epoch
+
+SOAR crai-rev4 Cognitive engine 
+   one power increment per epoch
+   swap a carrier at most once per epoch 
 
 Updates and notes:
+
+RN20130701
+...
+
+RN20130627
+*** check channel matrix wmes in SOAR
+crai-rev5 agent created
 
 RN20130620
 corrected issue: gsl: ../gsl/gsl_matrix_double.h:277: ERROR: second index out of range
 multiple decisions per single frame
-*** issue: increase power on same user,carrier should wait next error report
+corrected issue: increase power on same user,carrier should wait next error report
 
 RN20130619
 corrected issue: mobiles velocity

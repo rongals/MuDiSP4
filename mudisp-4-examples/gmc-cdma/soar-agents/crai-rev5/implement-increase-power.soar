@@ -1,0 +1,23 @@
+sp {crai*propose*implement-increase-power
+   (state <s> ^name crai
+              ^io.output-link.increase-power (-^status complete)
+              ^io.input-link.isdummy yes)
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name implement-increase-power)
+}
+
+sp {apply*implement-increase-power
+   (state <s> ^operator.name implement-increase-power
+              ^io.output-link.increase-power (<cmd> ^uid <uid> ^cid <cid>)
+              ^io.input-link.usrmap (^pstep <inc> ^user 
+                                    (<u> ^uid <uid>
+                                         ^errs <e>
+                                         ^power <pu>
+                                         ^carr (<c> ^cid <cid> ^power <pow>))))
+-->
+   (<cmd> ^status complete)
+   (<u> ^power (+ <pu> <inc>) <pu> -)
+   (<c> ^power (+ <pow> <inc>)<pow> -)
+   (<u> ^errs (+ (- <e> <cid>) 10) ^errs <e> -)
+}

@@ -1,0 +1,23 @@
+#
+# if choices none and impasse no-change
+# propose and apply no-choices command
+#
+
+
+sp {default*propose*no-choices
+   (state <ss> ^top-state <ts>
+               ^choices none
+               ^impasse no-change)
+-->
+   (<ts> ^operator <o> + <)
+   (<o> ^name no-choices)
+}
+
+sp {crai*apply*no-choices
+   (state <s> ^name crai
+              ^operator <op>
+              ^io.output-link <ol>)
+   (<op> ^name no-choices)
+-->
+   (<ol> ^no-choices <cmd>)
+}

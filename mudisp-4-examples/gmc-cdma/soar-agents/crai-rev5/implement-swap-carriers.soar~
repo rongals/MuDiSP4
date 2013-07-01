@@ -1,0 +1,19 @@
+sp {crai*propose*implement-swap-carriers
+   (state <s> ^name crai
+              ^io.output-link.swap-carriers (-^status complete)
+               ^io.input-link.isdummy yes)
+-->
+   (<s> ^operator <op> + =)
+   (<op> ^name implement-swap-carriers)
+}
+
+sp {apply*implement-swap-carriers
+   (state <s> ^operator.name implement-swap-carriers
+              ^io.output-link.swap-carriers (<cmd> ^u1 <uid1> ^c1 <cid1> ^u2 <uid2> ^c2 <cid2>)
+              ^io.input-link.usrmap.user (^uid <uid1> ^carr (<c1> ^cid <cid1>))
+                                         (^uid <uid2> ^carr (<c2> ^cid <cid2>)))
+-->
+   (<cmd> ^status complete)
+   (<c1> ^cid <cid2> <cid1> -)
+   (<c2> ^cid <cid1> <cid2> -)
+}

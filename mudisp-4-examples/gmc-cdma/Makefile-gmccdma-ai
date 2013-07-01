@@ -47,7 +47,7 @@ USERSRC = mblockuser.cpp \
 
 ##########################################
 # DEBUG
-DEBUG = true;
+#DEBUG = true;
 
 ##########################################
 # SIMULATOR LIBS

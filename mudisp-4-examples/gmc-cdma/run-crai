@@ -1,0 +1,3 @@
+#!/bin/bash
+. source.me.noinput
+./gmc-cdma-ai $1

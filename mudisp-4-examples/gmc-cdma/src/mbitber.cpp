@@ -9,6 +9,7 @@
 #include "gmccdma.h"
 #include "gsl/gsl_randist.h"
 #include "gsl/gsl_cdf.h"
+#include "gsl/gsl_math.h"
 
 
 //
@@ -48,6 +49,7 @@ void MBitBer::Run() {
     gsl_matrix_uint ref = min1.GetDataObj();
     gsl_matrix_uint rec = min2.GetDataObj();
 
+    stopFlag = ! (maxerrs()==0);
 
     for (int i=0;i<M();i++) { // user loop
 
@@ -64,8 +66,8 @@ void MBitBer::Run() {
       gsl_vector_uint_set(bitcount,i,gsl_vector_uint_get(bitcount,i)+bpu());
       gsl_vector_uint_set(errcount,i,gsl_vector_uint_get(errcount,i)+userErrors);
 
-      if (gsl_vector_uint_get(errcount,i)>maxerrs())
-    	  stopFlag=true;
+      if (gsl_vector_uint_get(errcount,i)<maxerrs())
+    	  stopFlag=false;
 
     } // user loop 
       
@@ -111,6 +113,10 @@ void MBitBer::Finish() {
     exit(_ERROR_OPEN_FILE_);
   }
 
+  unsigned int minimum, maximum, sum;
+  minimum = (unsigned int)GSL_POSINF;
+  maximum = sum = 0;
+
   for (int u=0;u<M();u++) { // user loop
 
     if (gsl_vector_uint_get(bitcount,u)!=0) {
@@ -139,7 +145,92 @@ void MBitBer::Finish() {
 	cout << gsl_vector_uint_get(errcount,u) << endl;
       }
     }
+    // find maximum
+    if (gsl_vector_uint_get(errcount,u)>maximum)
+        	maximum = gsl_vector_uint_get(errcount,u);
+    // find minimum
+    if (gsl_vector_uint_get(errcount,u)<minimum)
+        	minimum = gsl_vector_uint_get(errcount,u);
+    sum += gsl_vector_uint_get(errcount,u);
+
   } // user loop
+
+  // min, max and mean
+  if (gsl_vector_uint_get(bitcount,0)!=0) {
+    if (fn != "cout") {
+	ofs.width(NUMWIDTH);
+	ofs << "min";
+	ofs.width(NUMWIDTH);
+	ofs << value();
+	ofs.width(NUMWIDTH);
+	ofs << 1.0*minimum/gsl_vector_uint_get(bitcount,0);
+	ofs.width(NUMWIDTH);
+	ofs << gsl_vector_uint_get(bitcount,0);
+	ofs.width(NUMWIDTH);
+	ofs << minimum << endl;
+
+	ofs.width(NUMWIDTH);
+	ofs << "max";
+	ofs.width(NUMWIDTH);
+	ofs << value();
+	ofs.width(NUMWIDTH);
+	ofs << 1.0*maximum/gsl_vector_uint_get(bitcount,0);
+	ofs.width(NUMWIDTH);
+	ofs << gsl_vector_uint_get(bitcount,0);
+	ofs.width(NUMWIDTH);
+	ofs << maximum << endl;
+
+	ofs.width(NUMWIDTH);
+	ofs << "mean";
+	ofs.width(NUMWIDTH);
+	ofs << value();
+	ofs.width(NUMWIDTH);
+	ofs << 1.0*sum/gsl_vector_uint_get(bitcount,0)/M();
+	ofs.width(NUMWIDTH);
+	ofs << gsl_vector_uint_get(bitcount,0);
+	ofs.width(NUMWIDTH);
+	ofs << sum/M() << endl;
+
+
+    }
+    else {
+	cout.width(NUMWIDTH);
+	cout << "min";
+	cout.width(NUMWIDTH);
+	cout << value();
+	cout.width(NUMWIDTH);
+	cout << 1.0*minimum/gsl_vector_uint_get(bitcount,0);
+	cout.width(NUMWIDTH);
+	cout << gsl_vector_uint_get(bitcount,0);
+	cout.width(NUMWIDTH);
+	cout << minimum << endl;
+
+	cout.width(NUMWIDTH);
+	cout << "max";
+	cout.width(NUMWIDTH);
+	cout << value();
+	cout.width(NUMWIDTH);
+	cout << 1.0*maximum/gsl_vector_uint_get(bitcount,0);
+	cout.width(NUMWIDTH);
+	cout << gsl_vector_uint_get(bitcount,0);
+	cout.width(NUMWIDTH);
+	cout << maximum << endl;
+
+	cout.width(NUMWIDTH);
+	cout << "mean";
+	cout.width(NUMWIDTH);
+	cout << value();
+	cout.width(NUMWIDTH);
+	cout << 1.0*sum/gsl_vector_uint_get(bitcount,0)/M();
+	cout.width(NUMWIDTH);
+	cout << gsl_vector_uint_get(bitcount,0);
+	cout.width(NUMWIDTH);
+	cout << sum/M() << endl;
+
+    }
+  }
+
+
   ofs.close();
   
   double ebnol=pow(10.0,(value()/10.0));

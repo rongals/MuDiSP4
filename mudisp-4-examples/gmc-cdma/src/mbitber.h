@@ -55,7 +55,7 @@ public:
     ,framecount(0)
     ,value("Value",0.0,"index value")
     ,fname("OutFile","cout")
-  	,maxerrs("MaxErrs",100,"max errs for ANY user")
+  	,maxerrs("MaxErrs",100,"max errs to stop (0=off)")
     ,M("NumUsers",2,"number of users")
     ,bpu("BitUser",2,"number of bit per user ")
     {

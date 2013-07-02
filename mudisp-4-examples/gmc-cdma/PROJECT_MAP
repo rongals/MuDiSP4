@@ -99,8 +99,10 @@ SOAR crai-rev4 Cognitive engine
 
 Updates and notes:
 
-RN20130701
-...
+RN20130702
+production build
+created scripts for automatic runs: example:  ./launcher ./run-crai params/gmccdma-ai/crai-base-fixed_*
+
 
 RN20130627
 *** check channel matrix wmes in SOAR

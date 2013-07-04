@@ -5,6 +5,6 @@ export PATH=$PATH:$SOAR_HOME:$ECLIPSE_HOME
 export LD_LIBRARY_PATH=$SOAR_HOME
 alias vs='java -jar "$SOAR_HOME/VisualSoar.jar"'
 alias sd='java -jar "$SOAR_HOME/SoarJavaDebugger.jar"'
-export GSL_RNG_SEED=1234326542
+export GSL_RNG_SEED=201307041009
 echo "new seed is GSL_RNG_SEED=$GSL_RNG_SEED"
 

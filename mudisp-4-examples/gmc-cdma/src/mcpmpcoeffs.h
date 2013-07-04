@@ -8,6 +8,10 @@
 #ifndef __MUDISP2_MCPMPCOEFFS_H 
 #define __MUDISP2_MCPMPCOEFFS_H
 
+////////
+////////   Here put your personal includes
+////////
+
 #include "mudisp.h"
 #include "gmccdma.h"
 #include "gsl/gsl_vector.h"
@@ -54,12 +58,7 @@
 //
 
 
-
-
-////////
-////////   Here put your personal includes
-////////
-
+enum geo_init_type {uniform, center, belt};
 
 class MCPMPCoeffs : public Block {
  private:
@@ -134,7 +133,7 @@ class MCPMPCoeffs : public Block {
 
  protected:
 
-  void GeoInit();
+  void GeoInit(geo_init_type t=uniform);
   void GeoUpdate(double seconds=1.0);
   void GeoRender();
   double GeoDistance(unsigned int,unsigned int);

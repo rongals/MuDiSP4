@@ -84,6 +84,11 @@ void MCPMPCoeffs::Setup() {
   pathLoss = gsl_matrix_alloc(_M,_M);
   gsl_matrix_set_all(pathLoss,1.0);
 
+// tx, rx positions
+  geoPositions = gsl_vector_complex_alloc(2*M());
+  geoVelocities  = gsl_vector_complex_alloc(2*M());
+
+
   double pwr=0.0;
   for (int j=0; j<L(); j++) {
     pwr += exp(-j*2.0/PTau());
@@ -179,16 +184,39 @@ void MCPMPCoeffs::Setup() {
   //
   SpatialChannelUpdate();
 
-  //  ____   ___  _   _  ___     ___  _   _ ___ _
-  // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
-  // \___ \| | | |  \| | | | | | | | | | | || || |
-  //  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
-  // |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
-  //
 
 
+  if (geoRenderEnabled) {
 
-  //////// rate declaration for ports
+	  // header and footer of kml section
+	  kmlhead << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl
+			  << "<kml xmlns=\"http://earth.google.com/kml/2.0\">" << endl
+			  << "<Document>" << endl
+			  << "<name>MuDiSP User locations</name>" << endl
+			  << "<Style id=\"greenIcon\">" << endl
+			  << "\t<IconStyle>" << endl
+			  << "\t\t<scale>2.0</scale>" << endl
+			  << "\t\t<Icon>" << endl
+			  << "\t\t\t<href>http://maps.google.com/mapfiles/ms/icons/yellow-dot.png</href>" << endl
+			  << "\t\t</Icon>" << endl
+			  << "\t</IconStyle>" << endl
+			  << "</Style>" << endl
+			  << "<Style id=\"blueIcon\">" << endl
+			  << "\t<IconStyle>" << endl
+			  << "\t\t<scale>2.0</scale>" << endl
+			  << "\t\t<Icon>" << endl
+			  << "\t\t\t<href>http://maps.google.com/mapfiles/ms/icons/red-dot.png</href>" << endl
+			  << "\t\t</Icon>" << endl
+			  << "\t</IconStyle>" << endl
+			  << "</Style>" << endl;
+
+
+	  kmlheadend << "</Document>" << endl
+			  << "</kml>" << endl;
+
+  }
+
+	//////// rate declaration for ports
 
 
 }
@@ -201,9 +229,9 @@ void MCPMPCoeffs::Run() {
 	gsl_complex o = gsl_complex_rect(1,0);
 
 
-
-	//
-	// Update Positions
+	// MODEL 1
+	// Single GeoInit
+	// Multiple Update Positions every GeoUpdateInterval
 	//
 	if (runCount++ % GEO_UPDATE_INTERVAL == 0) {
 
@@ -217,53 +245,59 @@ void MCPMPCoeffs::Run() {
 		//gsl_matrix_show(pathLoss);
 	}
 
-		//
-		//
-		// CHANNEL MODEL BASED ON
-		// CAI AND GIANNAKIS: 2D CHANNEL SIMULATION MODEL FOR SHADOWING PROCESSES
-		// IEEE Trans Veh Tech Vol 52, No. 6, Nov. 2003
-		//
-		//
+	// MODEL 2
+	// new GeoInit every frame
+	//
+	GeoInit();
+	SpatialChannelUpdate();
 
-		//
-		// Exponentially decaying power profile
-		//
-		//
-		gsl_matrix_complex_set_all(ch,z);
-		gsl_complex chcoeff;
+	//
+	//
+	// CHANNEL MODEL BASED ON
+	// CAI AND GIANNAKIS: 2D CHANNEL SIMULATION MODEL FOR SHADOWING PROCESSES
+	// IEEE Trans Veh Tech Vol 52, No. 6, Nov. 2003
+	//
+	//
 
-//		cout << "MODIFIED CHANNEL !!!!!!!!!!!!!!!!" << endl;
+	//
+	// Exponentially decaying power profile
+	//
+	//
+	gsl_matrix_complex_set_all(ch,z);
+	gsl_complex chcoeff;
 
-		for (int i=0; i<_M; i++) { // user i (tx)
-			for (int ii=0;ii<_M;ii++) { // user ii (rx)
-				double plgain = gain * gsl_matrix_get(pathLoss,i,ii);
-				for (int j=0; j<L(); j++) { // tap j
-					double coeffstd=plgain*exp(-j/PTau())/sqrt(2.0);
-					if (j==0) {  // if this is the first tab
-						chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd) + coeffstd * gainrice,
-								gsl_ran_gaussian(ran,coeffstd));
-						//chcoeff = o;
+	//		cout << "MODIFIED CHANNEL !!!!!!!!!!!!!!!!" << endl;
 
-
-					} else { // this is not the first tap
-						chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd),
-								gsl_ran_gaussian(ran,coeffstd));
-
-
-					} // if
-
-					gsl_matrix_complex_set(ch,i*_M+ii,j,chcoeff);
+	for (int i=0; i<_M; i++) { // user i (tx)
+		for (int ii=0;ii<_M;ii++) { // user ii (rx)
+			double plgain = gain * gsl_matrix_get(pathLoss,i,ii);
+			for (int j=0; j<L(); j++) { // tap j
+				double coeffstd=plgain*exp(-j/PTau())/sqrt(2.0);
+				if (j==0) {  // if this is the first tab
+					chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd) + coeffstd * gainrice,
+							gsl_ran_gaussian(ran,coeffstd));
+					//chcoeff = o;
 
 
-				} // j loop
-			} // ii loop
-		} // i loop
+				} else { // this is not the first tap
+					chcoeff = gsl_complex_rect( gsl_ran_gaussian(ran,coeffstd),
+							gsl_ran_gaussian(ran,coeffstd));
+
+
+				} // if
+
+				gsl_matrix_complex_set(ch,i*_M+ii,j,chcoeff);
+
+
+			} // j loop
+		} // ii loop
+	} // i loop
 
 
 	//} // if (runCount++ % GEO_UPDATE_INTERVAL == 0)
 
-//		cout << "channel:" << endl;
-//		gsl_matrix_complex_show(ch);
+	//		cout << "channel:" << endl;
+	//		gsl_matrix_complex_show(ch);
 
 
 	//////// production of data
@@ -272,122 +306,98 @@ void MCPMPCoeffs::Run() {
 }
 
 void MCPMPCoeffs::Finish() {
-  gsl_matrix_complex_free(ch);
-  gsl_matrix_free(pathLoss);
-  gsl_rng_free( ran );
-  if (geoRenderEnabled) {
-    ofs.close();
-  }
-  gsl_vector_complex_free(geoPositions);
-  gsl_vector_complex_free(geoVelocities);
-  gsl_vector_free(sosfrn);
-  gsl_vector_free(sosfxn);
-  gsl_vector_free(sosfyn);
-  gsl_matrix_free(sostheta);
+	gsl_matrix_complex_free(ch);
+	gsl_matrix_free(pathLoss);
+	gsl_rng_free( ran );
+	if (geoRenderEnabled) {
+		ofs.close();
+	}
+	gsl_vector_complex_free(geoPositions);
+	gsl_vector_complex_free(geoVelocities);
+	gsl_vector_free(sosfrn);
+	gsl_vector_free(sosfxn);
+	gsl_vector_free(sosfyn);
+	gsl_matrix_free(sostheta);
 }
 
 
 
-void MCPMPCoeffs::GeoInit() {
+void MCPMPCoeffs::GeoInit(geo_init_type t) {
 
-  // initial geo positions
+	// initial geo positions
+	double lat, lon, velmod, veldir, deltalon, deltalat, dist, azimut;
+	gsl_complex vel;
 
-  geoPositions = gsl_vector_complex_alloc(2*M());
-  geoVelocities  = gsl_vector_complex_alloc(2*M());
+	switch (t) {
+	// all users around
+	case uniform:
 
-  //
-  //
-  //
+		// tx[i] uniform
+		for (int i=0;i<M();i++) {
 
-  // tx[i]
-  for (int i=0;i<M();i++) {
-    double lat=gsl_ran_flat(ran,
-			     GEO_AREA_CENTER_LAT-GEO_AREA_SIZE/2.0,
-			     GEO_AREA_CENTER_LAT+GEO_AREA_SIZE/2.0);
-    double lon=gsl_ran_flat(ran,
-			     GEO_AREA_CENTER_LON-GEO_AREA_SIZE/2.0,
-			     GEO_AREA_CENTER_LON+GEO_AREA_SIZE/2.0);
-    double velmod=gsl_ran_flat(ran,
-			     GEO_VELOCITY_MIN,
-			     GEO_VELOCITY_MAX);
-    double veldir=gsl_ran_flat(ran,
-			       0.0,
-			       2*M_PI);
+//			dist = gsl_ran_flat(ran,0,GEO_AREA_SIZE/2);
+//			azimut = gsl_ran_flat(ran,0,2*M_PI);
+			dist = GEO_AREA_SIZE/2;
+			azimut = 2*M_PI*i/M();
 
-    gsl_complex vel = gsl_complex_polar(velmod,veldir);
+// wikipedia coordinates to create lat/lon -> x,y conversion functions
 
-    // vx (km/h), vy (km/h)
-    // deltalon (deg) = vx / 3.6 / 111111 Cos[lat]
-    // deltalat (deg) = vy / 3.6 / 111111 
-    
-    double deltalon = GSL_REAL(vel) / 3.6 / 111111.0 / cos(GEO_AREA_CENTER_LAT / 180.0 * M_PI);
-    double deltalat = GSL_IMAG(vel) / 3.6 / 111111.0;
-
-    // expressed in deg LON and LAT
-    gsl_vector_complex_set(geoPositions,i,gsl_complex_rect(lat,lon));
-    // expressed in deg/s LON and LAT
-    gsl_vector_complex_set(geoVelocities,i,gsl_complex_rect(deltalon,deltalat));
-
-  }
-
-  // rx[i] same position zero velocity 
-  for (int i=M();i<2*M();i++) {
-    double lat=gsl_ran_flat(ran,
-			     GEO_AREA_CENTER_LAT-GEO_AREA_SIZE/2.0,
-			     GEO_AREA_CENTER_LAT+GEO_AREA_SIZE/2.0);
-    double lon=gsl_ran_flat(ran,
-			     GEO_AREA_CENTER_LON-GEO_AREA_SIZE/2.0,
-			     GEO_AREA_CENTER_LON+GEO_AREA_SIZE/2.0);
-    double velmod=gsl_ran_flat(ran,
-			     GEO_VELOCITY_MIN,
-			     GEO_VELOCITY_MAX);
-    double veldir=gsl_ran_flat(ran,
-			       0.0,
-			       2*M_PI);
-
-    gsl_complex vel = gsl_complex_polar(velmod,veldir);
-
-    // vx (km/h), vy (km/h)
-    // deltalon (deg) = vx / 3.6 / 111111 Cos[lat]
-    // deltalat (deg) = vy / 3.6 / 111111 
-    
-    double deltalon = GSL_REAL(vel) / 3.6 / 111111.0 / cos(GEO_AREA_CENTER_LAT / 180.0 * M_PI);
-    double deltalat = GSL_IMAG(vel) / 3.6 / 111111.0;
-
-// expressed in deg, LON and LAT
-    gsl_vector_complex_set(geoPositions,i,gsl_complex_rect(GEO_AREA_CENTER_LAT,GEO_AREA_CENTER_LON));
-// expressed in deg/s, LON and LAT
-    gsl_vector_complex_set(geoVelocities,i,gsl_complex_polar(0.0,0.0));
-
-  }
+			  //  ____   ___  _   _  ___     ___  _   _ ___ _
+			  // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
+			  // \___ \| | | |  \| | | | | | | | | | | || || |
+			  //  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
+			  // |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
+			  //
 
 
-
-  // header and footer of kml section
-  kmlhead << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl
-	  << "<kml xmlns=\"http://earth.google.com/kml/2.0\">" << endl
-	  << "<Document>" << endl
-	  << "<name>MuDiSP User locations</name>" << endl
-	  << "<Style id=\"greenIcon\">" << endl
-	  << "\t<IconStyle>" << endl
-	  << "\t\t<scale>2.0</scale>" << endl
-	  << "\t\t<Icon>" << endl 
-	  << "\t\t\t<href>http://maps.google.com/mapfiles/ms/icons/yellow-dot.png</href>" << endl
-	  << "\t\t</Icon>" << endl
-	  << "\t</IconStyle>" << endl
-	  << "</Style>" << endl
-	  << "<Style id=\"blueIcon\">" << endl
-	  << "\t<IconStyle>" << endl
-	  << "\t\t<scale>2.0</scale>" << endl
-	  << "\t\t<Icon>" << endl 
-	  << "\t\t\t<href>http://maps.google.com/mapfiles/ms/icons/red-dot.png</href>" << endl
-	  << "\t\t</Icon>" << endl
-	  << "\t</IconStyle>" << endl
-	  << "</Style>" << endl;
+			lon = GEO_AREA_CENTER_LON+dist*gsl_sf_cos(azimut)/gsl_sf_cos(GEO_AREA_CENTER_LAT);
+			lat = GEO_AREA_CENTER_LAT+dist*gsl_sf_sin(azimut);
 
 
-  kmlheadend << "</Document>" << endl
-	     << "</kml>" << endl;
+			velmod=gsl_ran_flat(ran,
+					GEO_VELOCITY_MIN,
+					GEO_VELOCITY_MAX);
+			veldir=gsl_ran_flat(ran,
+					0.0,
+					2*M_PI);
+
+			vel = gsl_complex_polar(velmod,veldir);
+
+			// vx (km/h), vy (km/h)
+			// deltalon (deg) = vx / 3.6 / 111111 Cos[lat]
+			// deltalat (deg) = vy / 3.6 / 111111
+
+			deltalon = GSL_REAL(vel) / 3.6 / 111111.0 / cos(GEO_AREA_CENTER_LAT / 180.0 * M_PI);
+			deltalat = GSL_IMAG(vel) / 3.6 / 111111.0;
+
+			// expressed in deg LON and LAT
+			gsl_vector_complex_set(geoPositions,i,gsl_complex_rect(lat,lon));
+			// expressed in deg/s LON and LAT
+			gsl_vector_complex_set(geoVelocities,i,gsl_complex_rect(deltalon,deltalat));
+
+		} // for tx[i]
+
+		// rx[i] center of area - zero velocity
+		for (int i=M();i<2*M();i++) {
+
+			// expressed in deg, LON and LAT
+			gsl_vector_complex_set(geoPositions,i,gsl_complex_rect(GEO_AREA_CENTER_LAT,GEO_AREA_CENTER_LON));
+			// expressed in deg/s, LON and LAT
+			gsl_vector_complex_set(geoVelocities,i,gsl_complex_polar(0.0,0.0));
+
+		} // for rx[i]
+		break;
+
+	case center:
+
+
+		break;
+
+	case belt:
+		break;
+
+	} // end case
+
 
 }
 
@@ -395,21 +405,21 @@ void MCPMPCoeffs::GeoInit() {
 
 void MCPMPCoeffs::GeoUpdate(double seconds) {
 
-  for (int i=0;i<2*M();i++) {
+	for (int i=0;i<2*M();i++) {
 
 
 
-    gsl_complex v = gsl_vector_complex_get(geoVelocities,i); // expressed in deltalon/s,deltalat/s
-    gsl_complex p = gsl_vector_complex_get(geoPositions,i); // expressed in lon,lat
-    gsl_complex np = gsl_complex_add(p,gsl_complex_mul_real(v, seconds));
+		gsl_complex v = gsl_vector_complex_get(geoVelocities,i); // expressed in deltalon/s,deltalat/s
+		gsl_complex p = gsl_vector_complex_get(geoPositions,i); // expressed in lon,lat
+		gsl_complex np = gsl_complex_add(p,gsl_complex_mul_real(v, seconds));
 
-    gsl_vector_complex_set(geoPositions,i,np);
+		gsl_vector_complex_set(geoPositions,i,np);
 
- //   cout << "node " << i << " position = " << GSL_IMAG(np) << ", " << GSL_REAL(np) << endl;
+		//   cout << "node " << i << " position = " << GSL_IMAG(np) << ", " << GSL_REAL(np) << endl;
 
-  }
+	}
 
-  
+
 
 }
 

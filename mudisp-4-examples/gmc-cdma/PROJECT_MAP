@@ -99,6 +99,11 @@ SOAR crai-rev4 Cognitive engine
 
 Updates and notes:
 
+RN20130705
+procise model for user distribution
+snapshot model (new tx positions after GUI) 
+
+
 RN20130702
 production build
 created scripts for automatic runs: example:  ./launcher ./run-crai params/gmccdma-ai/crai-base-fixed_*

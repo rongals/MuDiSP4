@@ -235,7 +235,12 @@ void MCPMPCoeffs::Run() {
 	//
 	if (runCount++ % GEO_UPDATE_INTERVAL == 0) {
 
-		GeoUpdate(OFDM_SYMBOL_TIME_US * GEO_UPDATE_INTERVAL * 1.0e-6);
+		// uncomment for time continuous model
+		//GeoUpdate(OFDM_SYMBOL_TIME_US * GEO_UPDATE_INTERVAL * 1.0e-6);
+
+		// uncomment for snapshot model
+		GeoInit();
+
 		SpatialChannelUpdate();
 
 		if (geoRenderEnabled)
@@ -245,11 +250,6 @@ void MCPMPCoeffs::Run() {
 		//gsl_matrix_show(pathLoss);
 	}
 
-	// MODEL 2
-	// new GeoInit every frame
-	//
-	GeoInit();
-	SpatialChannelUpdate();
 
 	//
 	//
@@ -325,7 +325,7 @@ void MCPMPCoeffs::Finish() {
 void MCPMPCoeffs::GeoInit(geo_init_type t) {
 
 	// initial geo positions
-	double lat, lon, velmod, veldir, deltalon, deltalat, dist, azimut;
+	double lat, lon, velmod, veldir, deltalon, deltalat, dx, dy, azimut, dist;
 	gsl_complex vel;
 
 	switch (t) {
@@ -335,23 +335,26 @@ void MCPMPCoeffs::GeoInit(geo_init_type t) {
 		// tx[i] uniform
 		for (int i=0;i<M();i++) {
 
-//			dist = gsl_ran_flat(ran,0,GEO_AREA_SIZE/2);
-//			azimut = gsl_ran_flat(ran,0,2*M_PI);
-			dist = GEO_AREA_SIZE/2;
-			azimut = 2*M_PI*i/M();
 
-// wikipedia coordinates to create lat/lon -> x,y conversion functions
+			azimut = gsl_ran_flat(ran,0,2*M_PI);
+			dist = gsl_ran_flat(ran,0,GEO_AREA_RADIUS);
 
-			  //  ____   ___  _   _  ___     ___  _   _ ___ _
-			  // / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
-			  // \___ \| | | |  \| | | | | | | | | | | || || |
-			  //  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
-			  // |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
-			  //
+			dx = GEO_AREA_RADIUS * gsl_sf_cos(azimut);
+			dy = GEO_AREA_RADIUS * gsl_sf_sin(azimut);
 
 
-			lon = GEO_AREA_CENTER_LON+dist*gsl_sf_cos(azimut)/gsl_sf_cos(GEO_AREA_CENTER_LAT);
-			lat = GEO_AREA_CENTER_LAT+dist*gsl_sf_sin(azimut);
+			// wikipedia coordinates to create lat/lon -> x,y conversion functions
+
+			//  ____   ___  _   _  ___     ___  _   _ ___ _
+			// / ___| / _ \| \ | |/ _ \   / _ \| | | |_ _| |
+			// \___ \| | | |  \| | | | | | | | | | | || || |
+			//  ___) | |_| | |\  | |_| | | |_| | |_| || ||_|
+			// |____/ \___/|_| \_|\___/   \__\_\\___/|___(_)
+			//
+
+
+			lon = GEO_AREA_CENTER_LON + dx / londeg(GEO_AREA_CENTER_LAT);
+			lat = GEO_AREA_CENTER_LAT + dy / latdeg(GEO_AREA_CENTER_LAT);
 
 
 			velmod=gsl_ran_flat(ran,
@@ -363,12 +366,11 @@ void MCPMPCoeffs::GeoInit(geo_init_type t) {
 
 			vel = gsl_complex_polar(velmod,veldir);
 
-			// vx (km/h), vy (km/h)
-			// deltalon (deg) = vx / 3.6 / 111111 Cos[lat]
-			// deltalat (deg) = vy / 3.6 / 111111
+			// vel in km/h
+			// deltalon, deltalat in deg/s
 
-			deltalon = GSL_REAL(vel) / 3.6 / 111111.0 / cos(GEO_AREA_CENTER_LAT / 180.0 * M_PI);
-			deltalat = GSL_IMAG(vel) / 3.6 / 111111.0;
+			deltalon = GSL_REAL(vel) / 3.6 / londeg(GEO_AREA_CENTER_LAT);
+			deltalat = GSL_IMAG(vel) / 3.6 / latdeg(GEO_AREA_CENTER_LAT);
 
 			// expressed in deg LON and LAT
 			gsl_vector_complex_set(geoPositions,i,gsl_complex_rect(lat,lon));
@@ -566,4 +568,19 @@ void  MCPMPCoeffs::SpatialChannelUpdate() {
 		} // for ii
 	} // for i
 }
+
+
+// lenghth in m of a degree of latitude at lat(itude)
+double MCPMPCoeffs::latdeg(double lat){
+	return 111132.954 - 559.822 * gsl_sf_cos(2*lat*M_PI_OVER_180) + 1.175 * gsl_sf_cos(4*lat*M_PI_OVER_180);
+}
+
+// length in m of a deg of longitude at lat(itude)
+double MCPMPCoeffs::londeg(double lat) {
+
+	double beta = atan( 0.99664719 * tan(lat*M_PI_OVER_180));
+	return M_PI_OVER_180 * 6378137.0 * gsl_sf_cos(beta);
+
+}
+
 

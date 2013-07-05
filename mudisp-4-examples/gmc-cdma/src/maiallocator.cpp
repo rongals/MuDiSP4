@@ -43,7 +43,7 @@
 
 //#define SHOW_POWER
 //#define SHOW_MATRIX
-//#define SHOW_SOAR
+#define SHOW_SOAR
 //#define SPAWN_DEBUGGER
 //#define PAUSED
 

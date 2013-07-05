@@ -21,9 +21,10 @@
 #include <fstream>
 #include <sstream>
 
-#define GEO_AREA_CENTER_LAT 43.807635
-#define GEO_AREA_CENTER_LON 11.195560
-#define GEO_AREA_SIZE 0.03 // in dec degrees
+#define GEO_AREA_CENTER_LAT 43.807635	// LAT of center area
+#define GEO_AREA_CENTER_LON 11.195560	// LON of center area
+#define GEO_AREA_RADIUS 1200			// radius of GEO area (in metres)
+
 #define EARTH_RADIUS 6371.009 // km
 #define M_PI_OVER_180 M_PI/180.0
 
@@ -139,6 +140,9 @@ class MCPMPCoeffs : public Block {
   double GeoDistance(unsigned int,unsigned int);
   void SpatialChannelUpdate();
   
+  double latdeg(double lat); // lenghth in m of a degree of latitude at lat(itude)
+  double londeg(double lat);
+
 };
 
 #endif /* __MUDISP_MYBLOCK_H  */

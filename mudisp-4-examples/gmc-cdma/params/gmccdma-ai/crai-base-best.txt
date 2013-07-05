@@ -33,6 +33,6 @@ System_1.MAIAllocator_1.AllocatorMode:  1              ; 0=fca,1=bst,2=swp,3=ovl
 ;
 ;  Parameters for MBitBer_1
 ;
-System_1.MBitBer_1.MaxErrs:             10            ; max errs for ALL user
-;System_1.MBitBer_1.OutFile:             results/crai/crai-best-ebno.dat            
-System_1.MBitBer_1.OutFile:             cout            
+System_1.MBitBer_1.MaxErrs:             50            ; max errs for ALL user
+System_1.MBitBer_1.OutFile:            results/crai/crai-m4n16j4k2-best.dat
+;System_1.MBitBer_1.OutFile:             cout

@@ -115,14 +115,14 @@ set xlabel "E_b/N_0 (dB)"
 set xlabel  offset character 0, 0, 0 font "" textcolor lt -1 norotate
 set x2label "" 
 set x2label  offset character 0, 0, 0 font "" textcolor lt -1 norotate
-set xrange [ * : * ] noreverse nowriteback  # (currently [0.00000:6.00000] )
-set x2range [ * : * ] noreverse nowriteback  # (currently [0.00000:6.00000] )
+set xrange [ * : * ] noreverse nowriteback  # (currently [0.00000:25.0000] )
+set x2range [ * : * ] noreverse nowriteback  # (currently [0.00000:25.0000] )
 set ylabel "P_e" 
 set ylabel  offset character 0, 0, 0 font "" textcolor lt -1 rotate by -270
 set y2label "" 
 set y2label  offset character 0, 0, 0 font "" textcolor lt -1 rotate by -270
 set yrange [ * : * ] noreverse nowriteback  # (currently [-4.00000:-0.00000] )
-set y2range [ * : * ] noreverse nowriteback  # (currently [-3.77815:-0.374002] )
+set y2range [ * : * ] noreverse nowriteback  # (currently [-3.51881:-0.500071] )
 set zlabel "" 
 set zlabel  offset character 0, 0, 0 font "" textcolor lt -1 norotate
 set zrange [ * : * ] noreverse nowriteback  # (currently [-10.0000:10.0000] )
@@ -146,5 +146,5 @@ set loadpath
 set fontpath 
 set fit noerrorvariables
 GNUTERM = "wxt"
-plot '<(awk /min/{print} ./results/crai/crai-fixed-ebno.dat)' u 2:3 w l ti "min", '<(awk /mean/{print} ./results/crai/crai-fixed-ebno.dat)' u 2:3 w l ti "mean", '<(awk /max/{print} ./results/crai/crai-fixed-ebno.dat)' u 2:3 w l ti "max"
+plot '<(awk /mean/{print} ./results/crai/crai-m4n16j4k2-fixed.dat)' u 2:3 w l ti "fca", '<(awk /mean/{print} ./results/crai/crai-m4n16j4k2-best.dat)' u 2:3 w l ti "best", '<(awk /mean/{print} ./results/crai/crai-m4n16j4k2-swap.dat)' u 2:3 w l ti "swap", '<(awk /mean/{print} ./results/crai/crai-m4n16j4k2-soar.dat)' u 2:3 w l ti "AI"
 #    EOF

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="MuDISP" InternalType="">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="lib">
+    <VirtualDirectory Name="mudisp">
+      <VirtualDirectory Name="engine">
+        <File Name="lib/mudisp/engine/stdfun.cpp"/>
+        <File Name="lib/mudisp/engine/param.cpp"/>
+        <File Name="lib/mudisp/engine/block.cpp"/>
+        <File Name="lib/mudisp/engine/port.cpp"/>
+        <File Name="lib/mudisp/engine/parlist.cpp"/>
+        <File Name="lib/mudisp/engine/lcm.cpp"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="library">
+      <VirtualDirectory Name="base">
+        <File Name="lib/library/base/write.cpp"/>
+        <File Name="lib/library/base/filter.cpp"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="CommonLib">
+      <File Name="lib/CommonLib/Sockets.cpp"/>
+      <File Name="lib/CommonLib/Threads.cpp"/>
+      <File Name="lib/CommonLib/Timeval.cpp"/>
+      <File Name="lib/CommonLib/LinkedLists.cpp"/>
+      <File Name="lib/CommonLib/Configuration.cpp"/>
+      <File Name="lib/CommonLib/BitVector.cpp"/>
+      <File Name="lib/CommonLib/Logger.cpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <VirtualDirectory Name="mudisp">
+      <VirtualDirectory Name="engine">
+        <File Name="include/mudisp/engine/lcm.h"/>
+        <File Name="include/mudisp/engine/mudisp.h"/>
+        <File Name="include/mudisp/engine/main.h"/>
+        <File Name="include/mudisp/engine/errors.h"/>
+        <File Name="include/mudisp/engine/parlist.h"/>
+        <File Name="include/mudisp/engine/param.h"/>
+        <File Name="include/mudisp/engine/block.h"/>
+        <File Name="include/mudisp/engine/port.h"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="library">
+      <VirtualDirectory Name="base">
+        <File Name="include/library/base/filter.h"/>
+        <File Name="include/library/base/write.h"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="tnt">
+      <File Name="include/tnt/lapack.h"/>
+      <File Name="include/tnt/fspvec.h"/>
+      <File Name="include/tnt/fmat.h"/>
+      <File Name="include/tnt/subscrpt.h"/>
+      <File Name="include/tnt/out"/>
+      <File Name="include/tnt/fortran.h"/>
+      <File Name="include/tnt/blas.h"/>
+      <File Name="include/tnt/trislv.h"/>
+      <File Name="include/tnt/tntreqs.h"/>
+      <File Name="include/tnt/tntcmplx.h"/>
+      <File Name="include/tnt/cmat.h"/>
+      <File Name="include/tnt/vecadaptor.h"/>
+      <File Name="include/tnt/tnt.h"/>
+      <File Name="include/tnt/index.h"/>
+      <File Name="include/tnt/transv.h"/>
+      <File Name="include/tnt/region1d.h"/>
+      <File Name="include/tnt/fcscmat.h"/>
+      <File Name="include/tnt/qr.h"/>
+      <File Name="include/tnt/vec.h"/>
+      <File Name="include/tnt/region2d.h"/>
+      <File Name="include/tnt/lu.h"/>
+      <File Name="include/tnt/tntmath.h"/>
+      <File Name="include/tnt/cholesky.h"/>
+      <File Name="include/tnt/triang.h"/>
+      <File Name="include/tnt/stpwatch.h"/>
+      <File Name="include/tnt/version.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="CommonLib">
+      <File Name="include/CommonLib/Logger.h"/>
+      <File Name="include/CommonLib/Vector.h"/>
+      <File Name="include/CommonLib/Threads.h"/>
+      <File Name="include/CommonLib/F16.h"/>
+      <File Name="include/CommonLib/Timeval.h"/>
+      <File Name="include/CommonLib/LinkedLists.h"/>
+      <File Name="include/CommonLib/Sockets.h"/>
+      <File Name="include/CommonLib/rndgen.h"/>
+      <File Name="include/CommonLib/Configuration.h"/>
+      <File Name="include/CommonLib/BitVector.h"/>
+      <File Name="include/CommonLib/Regexp.h"/>
+      <File Name="include/CommonLib/Interthread.h"/>
+    </VirtualDirectory>
+    <File Name="include/config.h"/>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="mudisp-4">
+    <File Name="CONTACT"/>
+    <File Name="CHANGE"/>
+    <File Name="README"/>
+    <File Name="COPYING"/>
+    <File Name="INSTALL"/>
+    <File Name="AUTHORS"/>
+    <File Name="LICENSE"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="docs">
+    <File Name="docs/DoxyRule"/>
+    <File Name="docs/QUICKSTART"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="tools">
+    <File Name="tools/launcher"/>
+    <File Name="tools/param_exploder.cpp"/>
+    <File Name="tools/param_exploder_multi.cpp"/>
+  </VirtualDirectory>
+  <Settings Type="Dynamic Library">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" C_Options="-g" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="yes">
+        <RebuildCommand/>
+        <CleanCommand>make clean</CleanCommand>
+        <BuildCommand>make</BuildCommand>
+        <PreprocessFileCommand>cd build-debug &amp;&amp; cmake -DCMAKE_INSTALL_PREFIX=/usr/local/mudisp4 -DCMAKE_BUILD_TYPE=Debug -DENABLE_DOXYGEN=OFF  -DENABLE_UTILS=OFF -DCMAKE_VERBOSE_MAKEFILE=TRUE</PreprocessFileCommand>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory>$(WorkspacePath)</WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="" C_Options="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="-O2" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="yes">
+        <RebuildCommand/>
+        <CleanCommand>make clean</CleanCommand>
+        <BuildCommand>make</BuildCommand>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory>$(WorkspacePath)</WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>

@@ -21,6 +21,11 @@
         <File Name="lib/library/base/write.cpp"/>
         <File Name="lib/library/base/filter.cpp"/>
       </VirtualDirectory>
+      <VirtualDirectory Name="usrp">
+        <File Name="lib/library/usrp/uhd_mudisp_usrp_sink.cpp"/>
+        <File Name="lib/library/usrp/uhd_mudisp_usrp_source.cpp"/>
+      </VirtualDirectory>
+      <File Name="lib/CMakeLists.txt"/>
     </VirtualDirectory>
     <VirtualDirectory Name="CommonLib">
       <File Name="lib/CommonLib/Sockets.cpp"/>
@@ -49,6 +54,11 @@
       <VirtualDirectory Name="base">
         <File Name="include/library/base/filter.h"/>
         <File Name="include/library/base/write.h"/>
+        <File Name="include/library/CMakeLists.txt"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="usrp">
+        <File Name="include/library/usrp/uhd_mudisp_usrp_sink.h"/>
+        <File Name="include/library/usrp/uhd_mudisp_usrp_source.h"/>
       </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="tnt">
@@ -94,6 +104,7 @@
       <File Name="include/CommonLib/Interthread.h"/>
     </VirtualDirectory>
     <File Name="include/config.h"/>
+    <File Name="include/CMakeLists.txt"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>

@@ -123,7 +123,7 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     #ADD_DEFINITIONS( -DMUDISP_DEBUG_VERBOSE) #-System Runtime Message 
     ADD_DEFINITIONS( -DOLD_PORT) # Deprecate version of port
     ADD_DEFINITIONS( -DMUDISP_REALTIME) # Real time
-    #ADD_DEFINITIONS(-std=gnu++0x)
+    ADD_DEFINITIONS(-std=c++11)
     ADD_DEFINITIONS(-ansi)
     #only export symbols that are declared to be part of the uhd api:
     MUDISP_ADD_OPTIONAL_CXX_COMPILER_FLAG(-fvisibility=hidden HAVE_VISIBILITY_HIDDEN)

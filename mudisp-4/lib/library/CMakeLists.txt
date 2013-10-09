@@ -80,6 +80,7 @@ MESSAGE(\n "DIRECTORY CORRENTE  ${CMAKE_CURRENT_SOURCE_DIR}")
 ########################################################################
 SET(BLOCKS_LIB ${CMAKE_CURRENT_SOURCE_DIR}
 	       ${CMAKE_CURRENT_SOURCE_DIR}/base
+	       ${CMAKE_CURRENT_SOURCE_DIR}/usrp
 	      # ${CMAKE_SOURE_DIR}/mudisp/engine
 )
 
@@ -94,8 +95,8 @@ MESSAGE(STATUS " Directory Corrente Binary ${CMAKE_SOURCE_DIR}")
 LIBLIBRARY_APPEND_SOURCES(
     	${CMAKE_CURRENT_SOURCE_DIR}/base/filter.cpp  
 	${CMAKE_CURRENT_SOURCE_DIR}/base/write.cpp  
-	#${CMAKE_CURRENT_SOURCE_DIR}/base/uhd_mudisp_usrp_sink.cpp
-	#${CMAKE_CURRENT_SOURCE_DIR}/base/uhd_mudisp_usrp_source.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/usrp/uhd_mudisp_usrp_sink.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/usrp/uhd_mudisp_usrp_source.cpp
 )
 
 MESSAGE(STATUS " File Nella Cartella Corrente ${libblocks_sources}")

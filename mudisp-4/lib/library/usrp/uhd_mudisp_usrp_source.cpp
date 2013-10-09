@@ -23,7 +23,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <library/base/uhd_mudisp_usrp_sink.h>
+#include <library/usrp/uhd_mudisp_usrp_sink.h>
 
 void UHD_MuDiSP_USRP_Sink::Setup() {
 	
@@ -55,7 +55,7 @@ void UHD_MuDiSP_USRP_Sink::Setup() {
 #ifdef MUDISP_VERBOSE 
     std::cout << boost::format("Using Device: %s") % sdev->get_pp_string() << std::endl;
     //set the tx sample rate
-    std::cout << boost::format("Setting TX Rate: %f Msps...") % (rate/1e6) << std::endl;
+    std::cout << boost::format("Setting TX Rate: %f Msps...") % (rate()/1e6) << std::endl;
   
     std::cout << boost::format("Actual TX Rate: %f Msps...") % (sdev->get_tx_rate()/1e6) << std::endl << std::endl;
     //set the tx center frequency

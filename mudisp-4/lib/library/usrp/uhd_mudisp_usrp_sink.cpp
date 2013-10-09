@@ -59,7 +59,7 @@ void UHD_MuDiSP_USRP_Sink::Setup() {
   
     std::cout << boost::format("Actual TX Rate: %f Msps...") % (sdev->get_tx_rate()/1e6) << std::endl << std::endl;
     //set the tx center frequency
-    std::cout << boost::format("Setting TX Freq: %f Mhz...") % (freq/1e6) << std::endl;
+    std::cout << boost::format("Setting TX Freq: %f Mhz...") % (freq()/1e6) << std::endl;
     std::cout << boost::format("Actual TX Freq: %f Mhz...") % (sdev->get_tx_freq()/1e6) << std::endl << std::endl;
     std::cout << boost::format("Setting device timestamp to 0...") << std::endl;
 #endif

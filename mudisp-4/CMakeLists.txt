@@ -17,6 +17,15 @@ INCLUDE(MUDISPComponent) #enable components
 INCLUDE(MUDISPPackage)   #setup cpack
 #INCLUDE(UHDComponent) 	 #enable components
 #INCLUDE(UHDPackage)   	 #setup cpack
+
+
+########################################################################
+# Environment setup
+########################################################################
+IF(NOT DEFINED BOOST_ROOT)
+    SET(BOOST_ROOT ${CMAKE_INSTALL_PREFIX})
+ENDIF()
+
 ########################################################################
 # Install Dirs
 ########################################################################
@@ -159,6 +168,10 @@ IF(WIN32)
     ADD_DEFINITIONS(-DNOMINMAX) #disables stupidity and enables std::min and std::max
 ENDIF(WIN32)
 
+
+#INCLUDE(FindBoost)
+#INCLUDE(MyBoost)
+
 ########################################################################
 # Setup Boost
 ########################################################################
@@ -171,7 +184,8 @@ SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "/usr/local/libboost/lib")
 MESSAGE(STATUS "Boost Library Dir " ${BOOST_LIBRARYDIR})
 
 SET(Boost_ADDITIONAL_VERSIONS "1.46.0" "1.46" "1.47" "1.47.0" "1.48" "1.48.0" "1.49" "1.49.0")
-MESSAGE(STATUS "Boost Version" ${Boost_ADDITIONAL_VERSIONS})
+SET(Boost_ADDITIONAL_VERSIONS_TEXT "1.46.0," " 1.46, " "1.47, " "1.47.0, " "1.48, " "1.48.0, " "1.49, " "1.49.0 ")
+MESSAGE(STATUS "Candidate Boost Version" ${Boost_ADDITIONAL_VERSIONS_TEXT})
 FIND_PACKAGE(Boost ${BOOST_MIN_VERSION} COMPONENTS
     date_time
     filesystem
@@ -195,12 +209,12 @@ IF(MSVC)
     ENDIF(BOOST_ALL_DYN_LINK)
 ENDIF(MSVC)
 
-SET(Boost_ADDITIONAL_VERSIONS  "1.46")
+#SET(Boost_ADDITIONAL_VERSIONS  "1.46")
 #// _INCLUDE_DIR   // a list of directories containing the package's include files
 #//  <name>_LIBRARIES     // a list of directories containing the package's libraries
 
-SET(Boost_INCLUDE_DIR  ${Boost_INCLUDE_DIRS} "/usr/local/libboost/include/boost")
-SET(Boost_LIBRARY_DIRS ${Boost_INCLUDE_DIRS} "/usr/local/libboost/lib")
+#SET(Boost_INCLUDE_DIR  ${Boost_INCLUDE_DIRS} "/usr/local/libboost/include/boost")
+#SET(Boost_LIBRARY_DIRS ${Boost_INCLUDE_DIRS} "/usr/local/libboost/lib")
 
 FIND_PACKAGE(Boost ${BOOST_MIN_VERSION} COMPONENTS ${BOOST_REQUIRED_COMPONENTS})
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
@@ -208,7 +222,16 @@ LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
 MESSAGE(STATUS "Boost include directories: ${Boost_INCLUDE_DIRS}")
 MESSAGE(STATUS "Boost library directories: ${Boost_LIBRARY_DIRS}")
-MESSAGE(STATUS "Boost libraries: ${Boost_LIBRARIES}")
+MESSAGE(STATUS "Boost libraries: ${Boost_LIBRARIES} \n \n")
+
+
+########################################################################
+# Setup UHD
+########################################################################
+
+FIND_PACKAGE(UHD)
+FIND_PACKAGE(USB)
+
 
 ########################################################################
 # Setup LAPACK
@@ -298,6 +321,7 @@ INSTALL(FILES
 ########################################################################
 LIBMUDISP_REGISTER_COMPONENT("Docs" ENABLE_DOCS ON "ENABLE_LIBMUDISP" ON)
 LIBMUDISP_REGISTER_COMPONENT("LibMUDISP" ENABLE_LIBMUDISP ON "Boost_FOUND;HAVE_PYTHON_PLAT_MIN_VERSION;HAVE_PYTHON_MODULE_CHEETAH" OFF)
+LIBMUDISP_REGISTER_COMPONENT("USRP_IO" ENABLE_USRP_IO ON "Boost_FOUND;HAVE_PYTHON_PLAT_MIN_VERSION;HAVE_PYTHON_MODULE_CHEETAH;UHD" OFF)
 #LIBMUDISP_REGISTER_COMPONENT("Examples" ENABLE_EXAMPLES ON "ENABLE_LIBUHD" OFF)
 LIBMUDISP_REGISTER_COMPONENT("Utils" ENABLE_UTILS ON "ENABLE_LIBMUDISP" OFF)
 #LIBMUDISP_REGISTER_COMPONENT("Tests" ENABLE_TESTS ON "ENABLE_LIBUHD" OFF)

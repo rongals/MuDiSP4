@@ -27,20 +27,9 @@
 #ifndef INCLUDED_UHD_MUDISP_USRP_SINK_H
 #define INCLUDED_UHD_MUDISP_USRP_SINK_H
  
-
+/*!  Librerie MuDiSP				  */
 #include <mudisp/engine/mudisp.h> 
-
-#include <tnt/tnt.h> 
-#include <tnt/cmat.h> 
-#include <uhd/utils/thread_priority.hpp>
-#include <uhd/utils/safe_main.hpp>
-#include <uhd/utils/static.hpp>
-#include <uhd/usrp/multi_usrp.hpp>
-#include <boost/program_options.hpp>
-#include <boost/thread/thread_time.hpp> //system time
-#include <boost/math/special_functions/round.hpp>
-#include <boost/format.hpp>
-#include <boost/function.hpp>
+/*! Librerie STD  nuovo module USRP   */
 #include <cstdio>
 #include <cstdint>
 #include <getopt.h>
@@ -50,25 +39,32 @@
 #include <iostream>
 #include <complex>
 #include <cmath>
+#include <cstdlib> 
+/*! Librerie TNT  */
+#include <tnt/tnt.h> 
+#include <tnt/cmat.h> 
+/*! Librerie UHD  nuovo module USRP  */
+#include <uhd/utils/thread_priority.hpp>
+#include <uhd/utils/safe_main.hpp>
+#include <uhd/usrp/multi_usrp.hpp>
+/*! Librerie Boost  nuovo module USRP  */
+#include <boost/program_options.hpp>  //pharser dei parametri std_out  <-- può essere rimossa
+#include <boost/thread/thread.hpp>  
+#include <boost/format.hpp>
+#include <boost/function.hpp>
+#include <boost/thread/thread_time.hpp> //system time
+#include <boost/math/special_functions/round.hpp> 
+
 // #include <gruel/realtime.h>
 /*! Libreire di Matematica avanzata GLS */
 #include "gsl/gsl_randist.h"
 #include "gsl/gsl_complex.h"
 #include "gsl/gsl_complex_math.h"
-/*! Librerie UHD  nuovo module USRP  */
-#include <uhd/utils/thread_priority.hpp>
-#include <uhd/utils/safe_main.hpp>
-#include <uhd/utils/static.hpp>
-#include <uhd/usrp/single_usrp.hpp>
-#include <uhd/usrp/multi_usrp.hpp>
 
-/*! Librerie BoostLib   */
-#include <boost/program_options.hpp>  //pharser dei parametri std_out  <-- può essere rimossa
-#include <boost/thread/thread_time.hpp> //system time
-#include <boost/math/special_functions/round.hpp> 
-#include <boost/format.hpp>
-#include <boost/function.hpp>
-#include <cstdlib> 
+
+
+
+
 
 using namespace std; 
 using namespace TNT;

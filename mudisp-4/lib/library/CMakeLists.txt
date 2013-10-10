@@ -1,27 +1,9 @@
-########################################################################
-# Check Python Modules
-########################################################################
-#PYTHON_CHECK_MODULE(
-#    "Python version 2.6 or greater"
-#    "platform" "platform.python_version() >= '2.6'"
-#    HAVE_PYTHON_PLAT_MIN_VERSION
-#)
-#
-#PYTHON_CHECK_MODULE(
-#    "Cheetah templates 2.0.0 or greater"
-#    "Cheetah" "Cheetah.Version >= '2.0.0'"
-#    HAVE_PYTHON_MODULE_CHEETAH
-#)
-
-#IF(NOT HAVE_PYTHON_PLAT_MIN_VERSION OR NOT HAVE_PYTHON_MODULE_CHEETAH)
-#    MESSAGE(FATAL_ERROR "Error: python requirements not met for the build system.")
-#ENDIF(NOT HAVE_PYTHON_PLAT_MIN_VERSION OR NOT HAVE_PYTHON_MODULE_CHEETAH)
-#
-
 MESSAGE(\n "Ingresso nella cartella ../library/ "\n)
+
 ########################################################################
 # Helpful Macros
 ########################################################################
+
 MACRO(LIBLIBRARY_APPEND_SOURCES)
     LIST(APPEND libblocks_sources ${ARGV})
 ENDMACRO(LIBLIBRARY_APPEND_SOURCES)
@@ -80,7 +62,7 @@ MESSAGE(\n "DIRECTORY CORRENTE  ${CMAKE_CURRENT_SOURCE_DIR}")
 ########################################################################
 SET(BLOCKS_LIB ${CMAKE_CURRENT_SOURCE_DIR}
 	       ${CMAKE_CURRENT_SOURCE_DIR}/base
-	       ${CMAKE_CURRENT_SOURCE_DIR}/usrp
+	      # ${CMAKE_CURRENT_SOURCE_DIR}/usrp
 	      # ${CMAKE_SOURE_DIR}/mudisp/engine
 )
 
@@ -95,8 +77,8 @@ MESSAGE(STATUS " Directory Corrente Binary ${CMAKE_SOURCE_DIR}")
 LIBLIBRARY_APPEND_SOURCES(
     	${CMAKE_CURRENT_SOURCE_DIR}/base/filter.cpp  
 	${CMAKE_CURRENT_SOURCE_DIR}/base/write.cpp  
-	${CMAKE_CURRENT_SOURCE_DIR}/usrp/uhd_mudisp_usrp_sink.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/usrp/uhd_mudisp_usrp_source.cpp
+	# ${CMAKE_CURRENT_SOURCE_DIR}/usrp/uhd_mudisp_usrp_sink.cpp
+	# ${CMAKE_CURRENT_SOURCE_DIR}/usrp/uhd_mudisp_usrp_source.cpp
 )
 
 MESSAGE(STATUS " File Nella Cartella Corrente ${libblocks_sources}")
